@@ -10,6 +10,7 @@
   "section_break_eo9g",
   "article_name",
   "shortname",
+  "manufacturer",
   "old_code",
   "group",
   "is_active",
@@ -142,6 +143,7 @@
   {
    "fieldname": "stock_rules_tab",
    "fieldtype": "Tab Break",
+   "hidden": 1,
    "label": "Stock Rules"
   },
   {
@@ -149,12 +151,21 @@
    "fieldtype": "Link",
    "label": "Rules",
    "options": "Places Rules Main"
+  },
+  {
+   "fieldname": "manufacturer",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Manufacturer",
+   "unique": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-01 15:23:20.362876",
+ "modified": "2026-04-02 16:04:22.807701",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Article",
@@ -176,7 +187,7 @@
  ],
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
- "search_fields": "article_name, shortname",
+ "search_fields": "article_name, shortname, manufacturer",
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],

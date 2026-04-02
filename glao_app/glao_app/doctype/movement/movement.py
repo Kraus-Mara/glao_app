@@ -242,8 +242,20 @@ class Movement(Document):
 		if existing:
 			for doc in existing:
 				temp = frappe.get_doc("Places Stock", doc.name)
-				sources.append(str(temp.place))
+				sources.append(self.recursive_parent_places(temp.place))
 		return sources
+
+	def recursive_parent_places(self, place, place_path=None):
+		"""Should return Batiment/Zone/Etagere/[current place] instead of [current_place], but only
+		for the placeholder, not the actual placename"""
+		if place_path is None:
+			place_path = []
+		doc = frappe.get_doc("Places", place) if isinstance(place, str) else place
+		place_path.insert(0, doc.name)
+
+		if doc.parent_places:
+			self.recursive_parent_places(doc.parent_places, place_path)
+		return "/".join(place_path)
 
 	def _pull_referenced(self):
 		existing = frappe.get_all("Places Stock")

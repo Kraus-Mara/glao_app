@@ -54,6 +54,7 @@
    "fieldname": "target_place",
    "fieldtype": "Link",
    "label": "Target place",
+   "link_filters": "[[\"Places\",\"is_group\",\"=\",0]]",
    "options": "Places"
   },
   {
@@ -142,7 +143,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-01 09:02:18.720275",
+ "modified": "2026-04-02 13:33:41.572486",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Movement",

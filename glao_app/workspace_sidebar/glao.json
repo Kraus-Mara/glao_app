@@ -3,7 +3,7 @@
  "creation": "2026-02-23 14:30:53.853264",
  "docstatus": 0,
  "doctype": "Workspace Sidebar",
- "for_user": "",
+ "for_user": "Administrator",
  "header_icon": "monitor-dot",
  "idx": 1,
  "items": [
@@ -38,6 +38,18 @@
    "keep_closed": 0,
    "label": "Article Groups",
    "link_to": "Articles Group",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "pencil-ruler",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Units",
+   "link_to": "Units",
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"
@@ -171,7 +183,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-04-02 10:52:25.165509",
+ "modified": "2026-04-02 14:05:48.282824",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "GLAO",
