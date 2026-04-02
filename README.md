@@ -1,33 +1,39 @@
-### Glao App
+Docs : 
+- https://docs.frappe.io/framework/user/en/installation
+- https://docs.frappe.io/framework/user/en/tutorial/install-and-setup-bench
+- https://docs.frappe.io/framework/user/en/tutorial/create-a-site
+### How to re-install everything
 
-desc
-
-### Installation
-
-You can install this app using the [bench](https://github.com/frappe/bench) CLI:
-
+Start by installing all the dependencies,
+then 
 ```bash
-cd $PATH_TO_YOUR_BENCH
-bench get-app $URL_OF_THIS_REPO --branch develop
+bench init [my-bench]
+cd [my-bench]
+```
+
+Now you need to create a site to host the GLAO app on, so type 
+```bash
+bench new-site [my-site]
+```
+
+Now that the site exists, you must do 2 things : set it as default site, and install the glao_app
+```bash
+bench use [my-site]
+bench get-app https://github.com/Kraus-Mara/glao_app --branch develop # This downloads the app
 bench install-app glao_app
 ```
-
-### Contributing
-
-This app uses `pre-commit` for code formatting and linting. Please [install pre-commit](https://pre-commit.com/#installation) and enable it for this repository:
-
+Did everything went well ? Check it with 
 ```bash
-cd apps/glao_app
-pre-commit install
+bench --site [my-site] list-apps
 ```
-
-Pre-commit is configured to use the following tools for checking and formatting your code:
-
-- ruff
-- eslint
-- prettier
-- pyupgrade
-
-### License
-
-mit
+This command should return 
+```
+frappe
+glao_app
+```
+Now just do the usual
+```bash
+bench start
+```
+and go to 
+http://localhost:[port] (which can be found inside the terminal where bench start was launched)
