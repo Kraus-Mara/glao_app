@@ -18,12 +18,16 @@
   {
    "fieldname": "article",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Article",
    "options": "Article"
   },
   {
+   "default": "1",
    "fieldname": "quantity",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "Quantity"
   }
  ],
@@ -31,7 +35,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-02-25 10:53:43.333925",
+ "modified": "2026-04-02 10:55:50.610476",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "DMC Items",

@@ -22,23 +22,27 @@
   {
    "fieldname": "event",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Event ",
    "options": "VGP\nDLU\nOther"
   },
   {
    "fieldname": "event_date",
    "fieldtype": "Date",
+   "in_list_view": 1,
    "label": "Event Date"
   },
   {
    "default": "0",
    "fieldname": "passed",
    "fieldtype": "Check",
+   "in_list_view": 1,
    "label": "Passed"
   },
   {
    "fieldname": "increment",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "Increment",
    "placeholder": "In months"
   },
@@ -46,6 +50,7 @@
    "depends_on": "eval:event==\"VGP\";",
    "fieldname": "intervention_date",
    "fieldtype": "Date",
+   "in_list_view": 1,
    "label": "Intervention Date"
   },
   {
@@ -59,7 +64,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-02-25 10:53:42.155277",
+ "modified": "2026-04-02 10:54:36.559409",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Ref Events",

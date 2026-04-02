@@ -1,0 +1,126 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "DMC-.#####",
+ "creation": "2026-04-01 11:49:53.270839",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "dmc_tab",
+  "section_break_vqha",
+  "column_break_omms",
+  "dmc_items",
+  "column_break_gzfk",
+  "status",
+  "ship",
+  "ship_partially",
+  "details_tab",
+  "column_break_uabz",
+  "project",
+  "dmc_name",
+  "delivery_address"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_vqha",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Projects"
+  },
+  {
+   "fieldname": "dmc_name",
+   "fieldtype": "Data",
+   "label": "DMC Name",
+   "placeholder": "To easily find your DMC"
+  },
+  {
+   "fetch_from": "project.location",
+   "fieldname": "delivery_address",
+   "fieldtype": "Data",
+   "label": "Delivery address"
+  },
+  {
+   "fieldname": "dmc_items",
+   "fieldtype": "Link",
+   "label": "Items",
+   "options": "Stock"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Untreated\nValidated\nPartially validated"
+  },
+  {
+   "button_color": "Success",
+   "depends_on": "eval:doc.status==\"Validated\";",
+   "fieldname": "ship",
+   "fieldtype": "Button",
+   "label": "Ship"
+  },
+  {
+   "button_color": "Warning",
+   "depends_on": "eval:doc.status==\"Partially validated\";",
+   "fieldname": "ship_partially",
+   "fieldtype": "Button",
+   "label": "Ship partially"
+  },
+  {
+   "fieldname": "column_break_gzfk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_uabz",
+   "fieldtype": "Column Break",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_omms",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dmc_tab",
+   "fieldtype": "Tab Break",
+   "label": "DMC"
+  },
+  {
+   "fieldname": "details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Details"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-01 13:36:45.946282",
+ "modified_by": "Administrator",
+ "module": "Glao App",
+ "name": "Gestion DMC",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "GLAO User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "dmc_name",
+ "track_changes": 1
+}

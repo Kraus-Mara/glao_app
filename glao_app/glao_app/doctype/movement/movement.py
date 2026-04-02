@@ -45,7 +45,7 @@ class Movement(Document):
 		hour = now().split(".")[0].replace(":", "").replace("-", "")
 		self.name = str(hour) + " " + str(self.article)
 
-	def on_submit(self):
+	def validate(self):
 		if self.type == "Add":
 			if self.is_referenced:
 				self._creer_instances_referenced()
@@ -164,16 +164,14 @@ class Movement(Document):
 			# be erased
 
 	def quantity_calculus(self):
-		existing = frappe.get_all("Places Stock", filters={"article": self.article})
-		new_quantity = 0
+		# Now we only get the quantity field, no loop, less compute resources
+		existing = frappe.get_all("Places Stock", filters={"article": self.article}, fields=["quantity"])
+		new_quantity = sum(doc.quantity for doc in existing) if existing else 0
 		if existing:
-			for doc in existing:
-				ps = frappe.get_doc("Places Stock", doc.name)
-				new_quantity += ps.quantity
 			to_save = frappe.get_doc("Stock", str(self.article), for_update=True)
 			to_save.update({"quantity": int(new_quantity)}).save()
 		else:
-			frappe.msgprint("bah")
+			frappe.msgprint("Une erreur est survenue : quantity_calculus_optimized(self)")
 
 	def _creer_instances(self):
 		for doc in self.placetostock:

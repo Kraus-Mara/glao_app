@@ -17,12 +17,14 @@
   {
    "fieldname": "alternative_article",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Alternative article",
    "options": "Article"
   },
   {
    "fieldname": "notes",
    "fieldtype": "Small Text",
+   "in_list_view": 1,
    "label": "Notes"
   }
  ],
@@ -30,7 +32,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-02-25 10:53:43.728082",
+ "modified": "2026-04-02 10:56:07.979626",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Alternatives",

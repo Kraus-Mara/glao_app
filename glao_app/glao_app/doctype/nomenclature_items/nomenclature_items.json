@@ -19,12 +19,14 @@
   {
    "fieldname": "object_type",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Object type",
    "options": "Article\nComposition"
   },
   {
    "fieldname": "item",
    "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
    "label": "Item",
    "options": "object_type"
   },
@@ -32,6 +34,7 @@
    "default": "1",
    "fieldname": "quantity",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "Quantity"
   }
  ],
@@ -39,7 +42,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-02-25 10:53:44.200667",
+ "modified": "2026-04-02 10:57:30.556956",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Nomenclature Items",

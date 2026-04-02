@@ -10,6 +10,17 @@
   {
    "child": 0,
    "collapsible": 1,
+   "icon": "album",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Articles",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
    "icon": "book-marked",
    "indent": 0,
    "keep_closed": 0,
@@ -20,12 +31,12 @@
    "type": "Link"
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "icon": "group",
    "indent": 0,
    "keep_closed": 0,
-   "label": "Groups",
+   "label": "Article Groups",
    "link_to": "Articles Group",
    "link_type": "DocType",
    "show_arrow": 0,
@@ -33,6 +44,16 @@
   },
   {
    "child": 0,
+   "collapsible": 1,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Social",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
    "collapsible": 1,
    "icon": "warehouse",
    "indent": 0,
@@ -44,7 +65,7 @@
    "type": "Link"
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "icon": "building",
    "indent": 0,
@@ -58,6 +79,17 @@
   {
    "child": 0,
    "collapsible": 1,
+   "icon": "move-3d",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Stock manipulation",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
    "icon": "grid-2x2-plus",
    "indent": 0,
    "keep_closed": 0,
@@ -68,7 +100,7 @@
    "type": "Link"
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "icon": "package-search",
    "indent": 0,
@@ -78,9 +110,68 @@
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "boxes",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Management",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "project",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Projects",
+   "link_to": "Projects",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "book-plus",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Create DMC",
+   "link_to": "Creation DMC",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "book-copy",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "DMC",
+   "link_to": "Gestion DMC",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "book-down",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Return DMC",
+   "link_to": "Retour DMC",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
   }
  ],
- "modified": "2026-03-31 09:58:10.581389",
+ "modified": "2026-04-02 10:52:25.165509",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "GLAO",

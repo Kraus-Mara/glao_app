@@ -1,0 +1,75 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "NDMC-.#####",
+ "creation": "2026-02-11 09:16:12.414063",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_vqha",
+  "project",
+  "dmc_name",
+  "delivery_address",
+  "dmc_items"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_vqha",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "project.location",
+   "fieldname": "delivery_address",
+   "fieldtype": "Data",
+   "label": "Delivery address"
+  },
+  {
+   "fieldname": "dmc_items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "DMC Items"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Projects"
+  },
+  {
+   "fieldname": "dmc_name",
+   "fieldtype": "Data",
+   "label": "DMC Name",
+   "placeholder": "To easily find your DMC"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-01 11:49:50.667270",
+ "modified_by": "Administrator",
+ "module": "Glao App",
+ "name": "Creation DMC",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "GLAO User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "dmc_name",
+ "track_changes": 1
+}

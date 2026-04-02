@@ -1,8 +1,9 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "DMC-.#####",
- "creation": "2026-02-11 09:16:12.414063",
+ "autoname": "DMCR-.#####",
+ "creation": "2026-04-01 09:39:10.256198",
+ "default_view": "List",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -10,12 +11,26 @@
   "project",
   "dmc_name",
   "delivery_address",
-  "dmc_items"
+  "dmc_items",
+  "treated",
+  "completed"
  ],
  "fields": [
   {
    "fieldname": "section_break_vqha",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Projects"
+  },
+  {
+   "fieldname": "dmc_name",
+   "fieldtype": "Data",
+   "label": "DMC Name",
+   "placeholder": "To easily find your DMC"
   },
   {
    "fetch_from": "project.location",
@@ -30,25 +45,25 @@
    "options": "DMC Items"
   },
   {
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "label": "Project",
-   "options": "Projects"
+   "default": "0",
+   "fieldname": "treated",
+   "fieldtype": "Check",
+   "label": "Treated"
   },
   {
-   "fieldname": "dmc_name",
-   "fieldtype": "Data",
-   "label": "DMC Name",
-   "placeholder": "To easily find your DMC"
+   "default": "0",
+   "fieldname": "completed",
+   "fieldtype": "Check",
+   "label": "Completed"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-02-25 10:53:43.422454",
+ "modified": "2026-04-01 09:39:10.256198",
  "modified_by": "Administrator",
  "module": "Glao App",
- "name": "DMC",
+ "name": "Retour DMC",
  "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [

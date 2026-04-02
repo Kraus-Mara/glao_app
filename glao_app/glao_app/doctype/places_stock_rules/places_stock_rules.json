@@ -21,21 +21,25 @@
   {
    "fieldname": "expected_qty",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Expected QTY"
   },
   {
    "fieldname": "minimal_qty",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Minimal QTY"
   },
   {
    "fieldname": "maximal_qty",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Maximal QTY"
   },
   {
    "fieldname": "article",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Article",
    "options": "Article"
   }
@@ -44,7 +48,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-02-25 10:53:44.665265",
+ "modified": "2026-04-02 10:57:46.807567",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Places Stock Rules",

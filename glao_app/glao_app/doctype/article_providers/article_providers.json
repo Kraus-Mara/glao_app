@@ -20,6 +20,7 @@
   {
    "fieldname": "providers",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Providers",
    "link_filters": "[[\"Company\",\"company_type\",\"=\",\"Provider\"]]",
    "options": "Company"
@@ -27,18 +28,21 @@
   {
    "fieldname": "price_date",
    "fieldtype": "Date",
+   "in_list_view": 1,
    "label": "Price date",
    "placeholder": "For today, click on today"
   },
   {
    "fieldname": "last_price",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Last price",
    "placeholder": "19,99"
   },
   {
    "fieldname": "part_number",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Part number"
   }
  ],
@@ -46,7 +50,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-02-25 10:53:44.026966",
+ "modified": "2026-04-02 10:57:06.917265",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Article Providers",

@@ -23,12 +23,14 @@
    "depends_on": "eval:!doc.batch_no;",
    "fieldname": "serial_no",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Serial No"
   },
   {
    "depends_on": "eval:!doc.serial_no;",
    "fieldname": "batch_no",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Batch No"
   },
   {
@@ -36,6 +38,7 @@
    "description": "Consommation Date Limit",
    "fieldname": "cdl",
    "fieldtype": "Date",
+   "in_list_view": 1,
    "label": "CDL"
   },
   {
@@ -43,6 +46,7 @@
    "description": "RV : Revision Date",
    "fieldname": "next_rv",
    "fieldtype": "Date",
+   "in_list_view": 1,
    "label": "Next RV"
   },
   {
@@ -57,7 +61,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-02-25 10:53:43.006134",
+ "modified": "2026-04-02 10:55:27.018211",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Reference Details",
