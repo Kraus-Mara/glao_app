@@ -21,7 +21,10 @@
   "source_place",
   "reference_details",
   "movement_date",
-  "amended_from"
+  "amended_from",
+  "designation_add",
+  "designation_pull",
+  "designation"
  ],
  "fields": [
   {
@@ -138,12 +141,33 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "serial"
+  },
+  {
+   "fetch_from": "article.article_name",
+   "fieldname": "designation_add",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "add_des"
+  },
+  {
+   "fetch_from": "article_from_stock.designation",
+   "fieldname": "designation_pull",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "pull_des"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Designation",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-02 13:33:41.572486",
+ "modified": "2026-04-03 15:19:09.273601",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Movement",

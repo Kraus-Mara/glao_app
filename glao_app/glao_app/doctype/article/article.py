@@ -18,6 +18,7 @@ class Article(Document):
         from glao_app.glao_app.doctype.article_providers.article_providers import ArticleProviders
         from glao_app.glao_app.doctype.assembly_items.assembly_items import AssemblyItems
         from glao_app.glao_app.doctype.characteristics.characteristics import Characteristics
+        from glao_app.glao_app.doctype.places_stock_rules.places_stock_rules import PlacesStockRules
 
         article_name: DF.Data
         chars: DF.Table[Characteristics]
@@ -30,7 +31,7 @@ class Article(Document):
         notes: DF.Text | None
         old_code: DF.Data | None
         providers: DF.Table[ArticleProviders]
-        rules: DF.Link | None
+        rules: DF.Table[PlacesStockRules]
         shortname: DF.Data | None
         table_fucy: DF.Table[Alternatives]
     # end: auto-generated types

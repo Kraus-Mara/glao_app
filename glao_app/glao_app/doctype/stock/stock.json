@@ -99,7 +99,7 @@
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-04-02 15:59:17.251275",
+ "modified": "2026-04-03 14:34:07.161105",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",
@@ -122,7 +122,7 @@
  "route": "Stock",
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
- "search_fields": "serial_no, article, designation, batch_no",
+ "search_fields": "serial_no, article, designation, batch_no, quantity",
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": []

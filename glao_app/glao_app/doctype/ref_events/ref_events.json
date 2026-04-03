@@ -12,7 +12,8 @@
   "increment",
   "passed",
   "intervention_date",
-  "article"
+  "article",
+  "batch_no"
  ],
  "fields": [
   {
@@ -47,7 +48,6 @@
    "placeholder": "In months"
   },
   {
-   "depends_on": "eval:event==\"VGP\";",
    "fieldname": "intervention_date",
    "fieldtype": "Date",
    "in_list_view": 1,
@@ -56,15 +56,22 @@
   {
    "fieldname": "article",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Instance",
    "options": "Article"
+  },
+  {
+   "fieldname": "batch_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Batch_no"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-02 10:54:36.559409",
+ "modified": "2026-04-03 14:28:00.422047",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Ref Events",

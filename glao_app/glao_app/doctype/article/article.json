@@ -148,9 +148,9 @@
   },
   {
    "fieldname": "rules",
-   "fieldtype": "Link",
+   "fieldtype": "Table",
    "label": "Rules",
-   "options": "Places Rules Main"
+   "options": "Places Stock Rules"
   },
   {
    "fieldname": "manufacturer",
@@ -165,7 +165,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-02 16:04:22.807701",
+ "modified": "2026-04-03 14:46:33.667548",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Article",

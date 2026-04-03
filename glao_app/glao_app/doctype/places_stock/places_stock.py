@@ -16,6 +16,7 @@ class PlacesStock(Document):
 		from frappe.types import DF
 
 		article: DF.Link | None
+		batch: DF.Data | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data

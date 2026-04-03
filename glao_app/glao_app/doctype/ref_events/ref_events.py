@@ -15,6 +15,7 @@ class RefEvents(Document):
 		from frappe.types import DF
 
 		article: DF.Link | None
+		batch_no: DF.Data | None
 		event: DF.Literal["VGP", "DLU", "Other"]
 		event_date: DF.Date | None
 		increment: DF.Int

@@ -10,7 +10,8 @@
   "place",
   "quantity",
   "article",
-  "serial"
+  "serial",
+  "batch"
  ],
  "fields": [
   {
@@ -43,13 +44,19 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "serial"
+  },
+  {
+   "fieldname": "batch",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "batch"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-02 13:35:34.045237",
+ "modified": "2026-04-03 11:09:02.115152",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Places Stock",

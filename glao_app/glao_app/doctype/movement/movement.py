@@ -28,6 +28,9 @@ class Movement(Document):
 		article: DF.Link | None
 		article_from_stock: DF.Link | None
 		article_name: DF.Data | None
+		designation: DF.Data | None
+		designation_add: DF.Data | None
+		designation_pull: DF.Data | None
 		is_referenced: DF.Check
 		movement_date: DF.Datetime | None
 		placetostock: DF.Table[PlacesStock]
@@ -61,6 +64,8 @@ class Movement(Document):
 				self._transfert_referenced()
 			else:
 				self._transfert_normal()
+		# self._sort_events_by_closing_date()
+		self.designation = self.designation_add if self.designation_add is not None else self.designation_pull
 
 	def on_cancel(self):
 		if self.is_referenced:
@@ -68,69 +73,173 @@ class Movement(Document):
 		else:
 			self._cancel_normal()
 
+	def _sort_events_by_closing_date(self):
+		parent_name = frappe.get_all(
+			"Stock",
+			filters=[["article", "like", self.article], ["serial_no", "like", self.serial_no]],
+		)[0].name
+
+		parent_doc = frappe.get_doc("Stock", parent_name, for_update=True)
+		events = frappe.get_all(
+			"Ref Events",
+			filters=[
+				["parent", "=", parent_doc],
+				["article", "=", self.article],
+			],
+		)
+		frappe.msgprint(str(events))
+		# events.sort(key=lambda e: e.event_date)
+		#
+		# new_rows = []
+		# for event in events:
+		#   if event.event == "VGP" and event.passed:
+		#       next_date = frappe.utils.add_months(event.event_date, event.increment)
+		#       new_rows.append(
+		#           {
+		#               "doctype": "Ref Events",
+		#               "event": "VGP",
+		#               "event_date": next_date,
+		#               "batch_no": event.batch_no,
+		#               "increment": event.increment,
+		#               "passed": 0,
+		#           }
+		#       )
+		#
+		# for row in new_rows:
+		#   self.append("events", row)
+		#
+		# self.get("events").sort(key=lambda e: e.event_date)
+
 	def _creer_instances_referenced(self):
 		for detail in self.reference_details:
 			detail.article = self.article
+			# Here it should separate the stock construction between two types :
+			# The issue is that the quantities has to be grouped in the Places Stock but
+			# split by batches, how can we do that ? the obvious solution that comes to my mind is
+			# to regroup inside the Places Stock by batches, and so it would appear on multiple
+			# lines, for each batch : a quantity and a place.
+			# As for serials it's already handled
 			if detail.cdl:
 				event_date = detail.cdl
 				event = "DLU"
+				# Here should be the frappe.get_doc(...) for batches
+				# Getting all corresponding Places Stock
+				# existing = frappe.get_all(
+				#   "Places Stock",
+				#   filters={"article": self.article, "place": self.target_place, "batch": detail.batch_no},
+				# )
+				# frappe.msgprint("debug")
+				# if existing:
+				#   self.quantities_manipulation(existing, "add")
+				try:
+					frappe.get_doc(
+						{
+							"doctype": "Stock",
+							"article": self.article,
+							"is_referenced": self.is_referenced,
+							"quantity": 0,  # Calculated at the end
+							"place_table": [
+								{
+									"doctype": "Places Stock",
+									"place": self.target_place,
+									"quantity": detail.quantity_for_batch,
+									"article": self.article,
+									"batch": detail.batch_no,
+								}
+							],
+							"events": [
+								{
+									"doctype": "Ref Events",
+									"event": event,
+									"event_date": event_date,
+									"name": str(self.article) + str(detail.batch_no) + str(today()),
+									"batch_no": str(detail.batch_no),
+								}
+							],
+						}
+					).insert(ignore_if_duplicate=False, ignore_permissions=True)
+					self.quantity_calculus()
+				except:
+					# Already exists, so we must override the Places Stock line that matches
+					# the batch number with the new quantity
+					docname = frappe.get_all(
+						"Stock",
+						filters=[
+							["article", "like", self.article],
+						],
+					)[0].name
+
+					doc = frappe.get_doc("Stock", docname, for_update=True)
+					ps = frappe.get_all(
+						"Places Stock",
+						filters=[
+							["parent", "=", docname],
+							["article", "=", self.article],
+							["batch", "=", detail.batch_no],
+						],
+						fields=["name", "quantity"],
+					)
+					if ps:
+						ps_doc = frappe.get_doc("Places Stock", ps[0].name)
+						ps_doc.quantity += detail.quantity_for_batch
+						ps_doc.save()
 			else:
 				event_date = detail.next_rv
 				event = "VGP"
-			try:
-				frappe.get_doc(
-					{
-						"doctype": "Stock",
-						"article": self.article,
-						"is_referenced": self.is_referenced,
-						"quantity": 1,
-						"place_table": [
-							{
-								"doctype": "Places Stock",
-								"place": self.target_place,
-								"quantity": 1,
-								"article": self.article,
-								"serial": detail.serial_no,
-							}
+				# Here should be the frappe.get_doc(...) for serials
+				try:
+					frappe.get_doc(  # For Serial
+						{
+							"doctype": "Stock",
+							"article": self.article,
+							"is_referenced": self.is_referenced,
+							"quantity": 1,
+							"place_table": [
+								{
+									"doctype": "Places Stock",
+									"place": self.target_place,
+									"quantity": 1,
+									"article": self.article,
+									"serial": detail.serial_no,
+								}
+							],
+							"serial_no": detail.serial_no,
+							"events": [
+								{
+									"doctype": "Ref Events",
+									"event": event,
+									"event_date": event_date,
+									"name": str(self.article) + str(detail.serial_no) + str(today()),
+								}
+							],
+						}
+					).insert(ignore_if_duplicate=True, ignore_permissions=True)
+				except frappe.exceptions.UniqueValidationError:
+					frappe.msgprint("un des numéros de série existe dans le Stock")
+				finally:  # Quantity == 0
+					docname = frappe.get_all(
+						"Stock",
+						filters=[
+							["article", "like", self.article],
+							["serial_no", "like", detail.serial_no],
 						],
-						"serial_no": detail.serial_no,
-						"batch_no": detail.batch_no,
-						"events": [
-							{
-								"doctype": "Ref Events",
-								"event": event,
-								"event_date": event_date,
-								"name": str(self.article) + str(detail.serial_no) + str(today()),
-							}
-						],
-					}
-				).insert(ignore_if_duplicate=True, ignore_permissions=True)
-			except frappe.exceptions.UniqueValidationError:
-				frappe.msgprint("un des numéros de série existe dans le Stock")
-			finally:  # Quantity == 0
-				docname = frappe.get_all(
-					"Stock",
-					filters=[
-						["article", "like", self.article],
-						["serial_no", "like", detail.serial_no],
-					],
-				)[0].name
-				doc = frappe.get_doc("Stock", docname, for_update=True)
-				doc.update(
-					{
-						"quantity": 1,
-						"place_table": [
-							{
-								"doctype": "Places Stock",
-								"place": self.target_place,
-								"quantity": 1,
-								"article": self.article,
-								"serial": detail.serial_no,
-							}
-						],
-					}
-				).save()  # No need to insert, because I already know that there's only one child
-				frappe.msgprint("Articles suivis ajoutés avec succès")
+					)[0].name
+					doc = frappe.get_doc("Stock", docname, for_update=True)
+					doc.update(
+						{
+							"quantity": 1,
+							"place_table": [
+								{
+									"doctype": "Places Stock",
+									"place": self.target_place,
+									"quantity": 1,
+									"article": self.article,
+									"serial": detail.serial_no,
+								}
+							],
+						}
+					).save()  # No need to insert, because I already know that there's only one child
+		frappe.msgprint("Articles suivis ajoutés avec succès")
 
 	def quantities_manipulation(self, doc: Document, operand: str):
 		"""doc is the target Places Stock"""
@@ -315,6 +424,7 @@ class Movement(Document):
 						new_quantity += ps.quantity
 				to_save = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
 				to_save.update({"quantity": int(new_quantity)}).save()
+		frappe.msgprint("Articles retirés avec succès")
 
 	def _transfert_referenced(self):
 		existing = frappe.get_all("Places Stock")

@@ -12,7 +12,8 @@
   "serial_no",
   "batch_no",
   "cdl",
-  "next_rv"
+  "next_rv",
+  "quantity_for_batch"
  ],
  "fields": [
   {
@@ -55,13 +56,20 @@
    "hidden": 1,
    "label": "Article",
    "options": "Article"
+  },
+  {
+   "depends_on": "eval:!doc.serial_no;",
+   "fieldname": "quantity_for_batch",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Quantity"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-02 10:55:27.018211",
+ "modified": "2026-04-03 10:01:32.215948",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Reference Details",

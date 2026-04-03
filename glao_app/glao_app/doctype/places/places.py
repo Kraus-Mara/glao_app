@@ -27,7 +27,9 @@ class Places(Document):
         place_id: DF.Data
         place_name: DF.Data
         place_rules: DF.Table[PlacesStockRules]
+        qualité: DF.Check
         rgt: DF.Int
+        type: DF.Literal["Etalonnage", "Litige", "En cours d'inventaire", "Indisponible"]
     # end: auto-generated types
 
     pass
