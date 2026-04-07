@@ -37,3 +37,15 @@ bench start
 ```
 and go to 
 http://localhost:[port] (which can be found inside the terminal where bench start was launched)
+
+Now you can connect with the credentials that u typed when creating the site.
+If the site stutters/(is) laggy : 
+another tab in the azure shell, type :
+```bash
+bench clear-cache
+bench clear-website-cache
+bench build
+bench export-fixtures
+bench restart
+```
+
