@@ -7,7 +7,7 @@ Docs :
 Start by installing all the dependencies,
 then 
 ```bash
-bench init [my-bench]
+bench init [my-bench] --frappe-branch version-16 --python python3.14
 cd [my-bench]
 ```
 
