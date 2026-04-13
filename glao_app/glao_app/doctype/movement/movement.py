@@ -73,21 +73,21 @@ class Movement(Document):
 		else:
 			self._cancel_normal()
 
-	def _sort_events_by_closing_date(self):
-		parent_name = frappe.get_all(
-			"Stock",
-			filters=[["article", "like", self.article], ["serial_no", "like", self.serial_no]],
-		)[0].name
-
-		parent_doc = frappe.get_doc("Stock", parent_name, for_update=True)
-		events = frappe.get_all(
-			"Ref Events",
-			filters=[
-				["parent", "=", parent_doc],
-				["article", "=", self.article],
-			],
-		)
-		frappe.msgprint(str(events))
+	# def _sort_events_by_closing_date(self):
+	# 	parent_name = frappe.get_all(
+	# 		"Stock",
+	# 		filters=[["article", "like", self.article], ["serial_no", "like", self.serial_no]],
+	# 	)[0].name
+	#
+	# 	parent_doc = frappe.get_doc("Stock", parent_name, for_update=True)
+	# 	events = frappe.get_all(
+	# 		"Ref Events",
+	# 		filters=[
+	# 			["parent", "=", parent_doc],
+	# 			["article", "=", self.article],
+	# 		],
+	# 	)
+	# 	frappe.msgprint(str(events))
 		# events.sort(key=lambda e: e.event_date)
 		#
 		# new_rows = []
@@ -217,35 +217,6 @@ class Movement(Document):
 					)[0].name
 					doc = frappe.get_doc("Stock", docname, for_update=True)
 
-					# if detail.fabrication_date:
-					#   doc.update(
-					#       {
-					#           "quantity": 1,
-					#           "place_table": [
-					#               {
-					#                   "doctype": "Places Stock",
-					#                   "place": self.target_place,
-					#                   "quantity": 1,
-					#                   "article": self.article,
-					#                   "serial": detail.serial_no,
-					#               }
-					#           ],
-					#           "events": [
-					#               {
-					#                   "doctype": "Ref Events",
-					#                   "event": "End of life",
-					#                   "event_date": add_to_date(
-					#                       detail.fabrication_date,
-					#                       years=int(detail.incr_years),
-					#                   ),
-					#                   "name": str(self.article) + str(detail.serial_no) + "end_of_life",
-					#               }
-					#           ],
-					#       }
-					#   ).insert(
-					#       ignore_if_duplicate=True
-					#   )  # No need to insert, because I already know that there's only one child
-					# else:
 					doc.update(
 						{
 							"quantity": 1,
@@ -259,7 +230,22 @@ class Movement(Document):
 								}
 							],
 						}
-					).save()  # No need to insert, because I already know that there's only one child
+					)
+					if detail.fabrication_date:
+						end_of_life_event = {
+							"doctype": "Ref Events",
+							"event": "End of life",
+							"event_date": add_to_date(
+								detail.fabrication_date,
+								years=int(detail.incr_years),
+							),
+							"name": str(self.article) + str(detail.serial_no) + "end_of_life",
+						}
+						if hasattr(doc, "events") and isinstance(doc.events, list):
+							doc.events.append(end_of_life_event)
+						else:
+							doc.events = [end_of_life_event]
+					doc.save()  # No need to insert, because I already know that there's only one child
 		frappe.msgprint("Articles suivis ajoutés avec succès")
 
 	def quantities_manipulation(self, doc: Document, operand: str):
