@@ -7,7 +7,7 @@ Docs :
 Start by installing all the dependencies,
 then 
 ```bash
-bench init [my-bench]
+bench init [my-bench] --frappe-branch version-16 --python python3.14
 cd [my-bench]
 ```
 
@@ -37,3 +37,15 @@ bench start
 ```
 and go to 
 http://localhost:[port] (which can be found inside the terminal where bench start was launched)
+
+Now you can connect with the credentials that u typed when creating the site.
+If the site stutters/(is) laggy : 
+another tab in the azure shell, type :
+```bash
+bench clear-cache
+bench clear-website-cache
+bench build
+bench export-fixtures
+bench restart
+```
+
