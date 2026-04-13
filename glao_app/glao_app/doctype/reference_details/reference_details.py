@@ -18,7 +18,7 @@ class ReferenceDetails(Document):
 		batch_no: DF.Data | None
 		cdl: DF.Date | None
 		fabrication_date: DF.Date | None
-		incr_years: DF.Literal["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+		incr_years: DF.Literal["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 		next_rv: DF.Date | None
 		parent: DF.Data
 		parentfield: DF.Data

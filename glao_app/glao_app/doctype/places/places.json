@@ -1,8 +1,6 @@
 {
  "actions": [],
  "allow_import": 1,
- "allow_rename": 1,
- "autoname": "field:place_name",
  "creation": "2026-02-04 10:47:46.085185",
  "default_view": "Tree",
  "doctype": "DocType",
@@ -162,11 +160,11 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2026-04-10 14:32:09.777071",
+ "modified": "2026-04-13 14:11:28.137262",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Places",
- "naming_rule": "By fieldname",
+ "naming_rule": "By script",
  "nsm_parent_field": "parent_places",
  "owner": "Administrator",
  "permissions": [
@@ -188,6 +186,5 @@
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],
- "title_field": "place_id",
  "track_changes": 1
 }

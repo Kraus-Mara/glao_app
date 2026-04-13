@@ -30,7 +30,9 @@
   {
    "fieldname": "event_date",
    "fieldtype": "Date",
+   "in_filter": 1,
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Event Date"
   },
   {
@@ -71,7 +73,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-13 08:48:24.558607",
+ "modified": "2026-04-13 16:43:03.293924",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Ref Events",
