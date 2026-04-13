@@ -73,42 +73,42 @@ class Movement(Document):
 		else:
 			self._cancel_normal()
 
-	def _sort_events_by_closing_date(self):
-		parent_name = frappe.get_all(
-			"Stock",
-			filters=[["article", "like", self.article], ["serial_no", "like", self.serial_no]],
-		)[0].name
-
-		parent_doc = frappe.get_doc("Stock", parent_name, for_update=True)
-		events = frappe.get_all(
-			"Ref Events",
-			filters=[
-				["parent", "=", parent_doc],
-				["article", "=", self.article],
-			],
-		)
-		frappe.msgprint(str(events))
-		# events.sort(key=lambda e: e.event_date)
-		#
-		# new_rows = []
-		# for event in events:
-		#   if event.event == "VGP" and event.passed:
-		#       next_date = frappe.utils.add_months(event.event_date, event.increment)
-		#       new_rows.append(
-		#           {
-		#               "doctype": "Ref Events",
-		#               "event": "VGP",
-		#               "event_date": next_date,
-		#               "batch_no": event.batch_no,
-		#               "increment": event.increment,
-		#               "passed": 0,
-		#           }
-		#       )
-		#
-		# for row in new_rows:
-		#   self.append("events", row)
-		#
-		# self.get("events").sort(key=lambda e: e.event_date)
+	# def _sort_events_by_closing_date(self):
+	#   parent_name = frappe.get_all(
+	#       "Stock",
+	#       filters=[["article", "like", self.article], ["serial_no", "like", self.serial_no]],
+	#   )[0].name
+	#
+	#   parent_doc = frappe.get_doc("Stock", parent_name, for_update=True)
+	#   events = frappe.get_all(
+	#       "Ref Events",
+	#       filters=[
+	#           ["parent", "=", parent_doc],
+	#           ["article", "=", self.article],
+	#       ],
+	#   )
+	#   frappe.msgprint(str(events))
+	# events.sort(key=lambda e: e.event_date)
+	#
+	# new_rows = []
+	# for event in events:
+	#   if event.event == "VGP" and event.passed:
+	#       next_date = frappe.utils.add_months(event.event_date, event.increment)
+	#       new_rows.append(
+	#           {
+	#               "doctype": "Ref Events",
+	#               "event": "VGP",
+	#               "event_date": next_date,
+	#               "batch_no": event.batch_no,
+	#               "increment": event.increment,
+	#               "passed": 0,
+	#           }
+	#       )
+	#
+	# for row in new_rows:
+	#   self.append("events", row)
+	#
+	# self.get("events").sort(key=lambda e: e.event_date)
 
 	def _creer_instances_referenced(self):
 		for detail in self.reference_details:
@@ -247,7 +247,6 @@ class Movement(Document):
 								),
 							},
 						)
-
 					doc.save()  # No need to insert, because I already know that there's only one child
 		frappe.msgprint("Articles suivis ajoutés avec succès")
 
