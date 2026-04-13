@@ -11,7 +11,8 @@
   "quantity",
   "article",
   "serial",
-  "batch"
+  "batch",
+  "next_event_date"
  ],
  "fields": [
   {
@@ -50,13 +51,18 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "batch"
+  },
+  {
+   "fieldname": "next_event_date",
+   "fieldtype": "Date",
+   "label": "Next event date"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-03 11:09:02.115152",
+ "modified": "2026-04-10 13:56:53.345685",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Places Stock",

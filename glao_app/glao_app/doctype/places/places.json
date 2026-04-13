@@ -4,6 +4,7 @@
  "allow_rename": 1,
  "autoname": "field:place_name",
  "creation": "2026-02-04 10:47:46.085185",
+ "default_view": "Tree",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -161,7 +162,7 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2026-04-03 14:53:35.120255",
+ "modified": "2026-04-10 14:32:09.777071",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Places",

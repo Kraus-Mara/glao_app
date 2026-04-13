@@ -1,11 +1,11 @@
-# Copyright (c) 2026, Frappe Technologies and contributors
+# Copyright (c) 2026, kr and contributors
 # For license information, please see license.txt
 
 # import frappe
 from frappe.model.document import Document
 
 
-class AssemblyItems(Document):
+class Maintenancebook(Document):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
 
@@ -14,13 +14,10 @@ class AssemblyItems(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		item: DF.Link | None
-		item_quantity: DF.Int
+		date_initiale_intervention_réalisée: DF.Data | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
-		reference_man: DF.Data | None
-		shortname: DF.Data | None
 	# end: auto-generated types
 
 	pass

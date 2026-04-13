@@ -25,7 +25,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Event ",
-   "options": "VGP\nDLU\nOther"
+   "options": "VGP\nDLU\nEnd of life\nOther"
   },
   {
    "fieldname": "event_date",
@@ -71,7 +71,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-03 14:28:00.422047",
+ "modified": "2026-04-13 08:48:24.558607",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Ref Events",

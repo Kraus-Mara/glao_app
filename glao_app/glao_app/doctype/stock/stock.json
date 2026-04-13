@@ -12,12 +12,15 @@
   "article",
   "designation",
   "is_referenced",
+  "ref_constructeur",
   "section_break_tnxe",
   "serial_no",
   "batch_no",
   "quantity",
   "place_table",
-  "events"
+  "events",
+  "perime",
+  "carnet_de_maintenance"
  ],
  "fields": [
   {
@@ -95,11 +98,33 @@
    "fieldtype": "Table",
    "label": "Place(s)",
    "options": "Places Stock"
+  },
+  {
+   "bold": 1,
+   "default": "0",
+   "description": "PERIME",
+   "fieldname": "perime",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "PERIME",
+   "placeholder": "PERIME"
+  },
+  {
+   "fieldname": "carnet_de_maintenance",
+   "fieldtype": "Table",
+   "label": "Carnet de maintenance",
+   "options": "Maintenance book"
+  },
+  {
+   "fetch_from": "article.manufacturer",
+   "fieldname": "ref_constructeur",
+   "fieldtype": "Data",
+   "label": "Ref constructeur"
   }
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-04-03 14:34:07.161105",
+ "modified": "2026-04-10 16:02:12.037097",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",

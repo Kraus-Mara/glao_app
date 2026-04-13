@@ -122,15 +122,6 @@ class Movement(Document):
 			if detail.cdl:
 				event_date = detail.cdl
 				event = "DLU"
-				# Here should be the frappe.get_doc(...) for batches
-				# Getting all corresponding Places Stock
-				# existing = frappe.get_all(
-				#   "Places Stock",
-				#   filters={"article": self.article, "place": self.target_place, "batch": detail.batch_no},
-				# )
-				# frappe.msgprint("debug")
-				# if existing:
-				#   self.quantities_manipulation(existing, "add")
 				try:
 					frappe.get_doc(
 						{
@@ -154,7 +145,7 @@ class Movement(Document):
 									"event_date": event_date,
 									"name": str(self.article) + str(detail.batch_no) + str(today()),
 									"batch_no": str(detail.batch_no),
-								}
+								},
 							],
 						}
 					).insert(ignore_if_duplicate=False, ignore_permissions=True)
@@ -225,6 +216,36 @@ class Movement(Document):
 						],
 					)[0].name
 					doc = frappe.get_doc("Stock", docname, for_update=True)
+
+					# if detail.fabrication_date:
+					#   doc.update(
+					#       {
+					#           "quantity": 1,
+					#           "place_table": [
+					#               {
+					#                   "doctype": "Places Stock",
+					#                   "place": self.target_place,
+					#                   "quantity": 1,
+					#                   "article": self.article,
+					#                   "serial": detail.serial_no,
+					#               }
+					#           ],
+					#           "events": [
+					#               {
+					#                   "doctype": "Ref Events",
+					#                   "event": "End of life",
+					#                   "event_date": add_to_date(
+					#                       detail.fabrication_date,
+					#                       years=int(detail.incr_years),
+					#                   ),
+					#                   "name": str(self.article) + str(detail.serial_no) + "end_of_life",
+					#               }
+					#           ],
+					#       }
+					#   ).insert(
+					#       ignore_if_duplicate=True
+					#   )  # No need to insert, because I already know that there's only one child
+					# else:
 					doc.update(
 						{
 							"quantity": 1,
@@ -312,6 +333,7 @@ class Movement(Document):
 						}
 					).insert(ignore_if_duplicate=True)
 				self.quantity_calculus()  # Updating the quantities of the self.article Stock
+				frappe.msgprint("Articles ajoutés")
 			except frappe.exceptions.UniqueValidationError:
 				frappe.msgprint("An error occured")
 

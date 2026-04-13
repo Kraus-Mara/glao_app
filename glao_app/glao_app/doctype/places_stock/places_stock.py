@@ -17,6 +17,7 @@ class PlacesStock(Document):
 
 		article: DF.Link | None
 		batch: DF.Data | None
+		next_event_date: DF.Date | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data

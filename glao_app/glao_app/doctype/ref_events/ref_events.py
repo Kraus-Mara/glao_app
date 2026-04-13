@@ -16,7 +16,7 @@ class RefEvents(Document):
 
 		article: DF.Link | None
 		batch_no: DF.Data | None
-		event: DF.Literal["VGP", "DLU", "Other"]
+		event: DF.Literal["VGP", "DLU", "End of life", "Other"]
 		event_date: DF.Date | None
 		increment: DF.Int
 		intervention_date: DF.Date | None

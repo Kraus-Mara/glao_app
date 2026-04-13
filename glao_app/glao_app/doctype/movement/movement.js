@@ -13,5 +13,15 @@ frappe.ui.form.on("Movement", {
             })
         }
     },
+    quantity_to_manipulate(frm) {
+        if (frm.doc.quantity_to_manipulate) {
+            frappe.db.get_value('Stock', frm.doc.stock, 'quantity', (r) => {
+                if (frm.doc.quantity > r.quantity) {
+                    frappe.msgprint(`Quantité maxi dépassée : ${r.quantity}`);
+                    frm.set_value(`quantity_to_manipulate`, r.quantity);
+                }
+            })
+        }
+    }
 });
 

@@ -15,16 +15,20 @@ class Stock(Document):
 
     if TYPE_CHECKING:
         from frappe.types import DF
+        from glao_app.glao_app.doctype.maintenance_book.maintenance_book import Maintenancebook
         from glao_app.glao_app.doctype.places_stock.places_stock import PlacesStock
         from glao_app.glao_app.doctype.ref_events.ref_events import RefEvents
 
         article: DF.Link | None
         batch_no: DF.Data | None
+        carnet_de_maintenance: DF.Table[Maintenancebook]
         designation: DF.Data | None
         events: DF.Table[RefEvents]
         is_referenced: DF.Check
+        perime: DF.Check
         place_table: DF.Table[PlacesStock]
         quantity: DF.Int
+        ref_constructeur: DF.Data | None
         serial_no: DF.Data | None
     # end: auto-generated types
 
