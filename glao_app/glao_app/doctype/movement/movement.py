@@ -123,31 +123,29 @@ class Movement(Document):
 				event_date = detail.cdl
 				event = "DLU"
 				try:
-					frappe.get_doc(
-						{
-							"doctype": "Stock",
-							"article": self.article,
-							"is_referenced": self.is_referenced,
-							"quantity": 0,  # Calculated at the end
-							"place_table": [
-								{
-									"doctype": "Places Stock",
-									"place": self.target_place,
-									"quantity": detail.quantity_for_batch,
-									"article": self.article,
-									"batch": detail.batch_no,
-								}
-							],
-							"events": [
-								{
-									"doctype": "Ref Events",
-									"event": event,
-									"event_date": event_date,
-									"name": str(self.article) + str(detail.batch_no) + str(today()),
-									"batch_no": str(detail.batch_no),
-								},
-							],
-						}
+					frappe.new_doc(
+						"Stock",
+						article=self.article,
+						is_referenced=self.is_referenced,
+						quantity=0,  # Calculated at the end
+						place_table=[
+							{
+								"doctype": "Places Stock",
+								"place": self.target_place,
+								"quantity": detail.quantity_for_batch,
+								"article": self.article,
+								"batch": detail.batch_no,
+							}
+						],
+						events=[
+							{
+								"doctype": "Ref Events",
+								"event": event,
+								"event_date": event_date,
+								"name": str(self.article) + str(detail.batch_no) + str(today()),
+								"batch_no": str(detail.batch_no),
+							},
+						],
 					).insert(ignore_if_duplicate=False, ignore_permissions=True)
 					self.quantity_calculus()
 				except:
@@ -179,31 +177,29 @@ class Movement(Document):
 				event = "VGP"
 				# Here should be the frappe.get_doc(...) for serials
 				try:
-					frappe.get_doc(  # For Serial
-						{
-							"doctype": "Stock",
-							"article": self.article,
-							"is_referenced": self.is_referenced,
-							"quantity": 1,
-							"place_table": [
-								{
-									"doctype": "Places Stock",
-									"place": self.target_place,
-									"quantity": 1,
-									"article": self.article,
-									"serial": detail.serial_no,
-								}
-							],
-							"serial_no": detail.serial_no,
-							"events": [
-								{
-									"doctype": "Ref Events",
-									"event": event,
-									"event_date": event_date,
-									"name": str(self.article) + str(detail.serial_no) + str(today()),
-								}
-							],
-						}
+					frappe.new_doc(  # For Serial
+						"Stock",
+						article=self.article,
+						is_referenced=self.is_referenced,
+						quantity=1,
+						place_table=[
+							{
+								"doctype": "Places Stock",
+								"place": self.target_place,
+								"quantity": 1,
+								"article": self.article,
+								"serial": detail.serial_no,
+							}
+						],
+						serial_no=detail.serial_no,
+						events=[
+							{
+								"doctype": "Ref Events",
+								"event": event,
+								"event_date": event_date,
+								"name": str(self.article) + str(detail.serial_no) + str(today()),
+							}
+						],
 					).insert(ignore_if_duplicate=True, ignore_permissions=True)
 				except frappe.exceptions.UniqueValidationError:
 					frappe.msgprint("un des numéros de série existe dans le Stock")
@@ -217,49 +213,42 @@ class Movement(Document):
 					)[0].name
 					doc = frappe.get_doc("Stock", docname, for_update=True)
 
-					# if detail.fabrication_date:
-					#   doc.update(
-					#       {
-					#           "quantity": 1,
-					#           "place_table": [
-					#               {
-					#                   "doctype": "Places Stock",
-					#                   "place": self.target_place,
-					#                   "quantity": 1,
-					#                   "article": self.article,
-					#                   "serial": detail.serial_no,
-					#               }
-					#           ],
-					#           "events": [
-					#               {
-					#                   "doctype": "Ref Events",
-					#                   "event": "End of life",
-					#                   "event_date": add_to_date(
-					#                       detail.fabrication_date,
-					#                       years=int(detail.incr_years),
-					#                   ),
-					#                   "name": str(self.article) + str(detail.serial_no) + "end_of_life",
-					#               }
-					#           ],
-					#       }
-					#   ).insert(
-					#       ignore_if_duplicate=True
-					#   )  # No need to insert, because I already know that there's only one child
-					# else:
-					doc.update(
-						{
-							"quantity": 1,
-							"place_table": [
-								{
-									"doctype": "Places Stock",
-									"place": self.target_place,
-									"quantity": 1,
-									"article": self.article,
-									"serial": detail.serial_no,
-								}
-							],
-						}
-					).save()  # No need to insert, because I already know that there's only one child
+					# from: discuss.frappe.io/t/attributeerror-dict-object-has-no-attribute-is-new/
+					doc.quantity = 1
+					doc.set(
+						"place_table",
+						[
+							{
+								"doctype": "Places Stock",
+								"place": self.target_place,
+								"quantity": 1,
+								"article": self.article,
+								"serial": detail.serial_no,
+							}
+						],
+					)
+					if detail.fabrication_date and int(detail.incr_years) > 0:
+						end_of_life_date = add_to_date(
+							detail.fabrication_date,
+							years=int(detail.incr_years),
+						)
+						frappe.log_error(
+							f"EOL DATE: {end_of_life_date}, doc events avant: {doc.events}",
+							"DEBUG END OF LIFE",
+						)
+						doc.append(
+							"events",
+							{
+								"doctype": "Ref Events",
+								"event": "End of life",
+								"event_date": add_to_date(
+									detail.fabrication_date,
+									years=int(detail.incr_years),
+								),
+							},
+						)
+
+					doc.save()  # No need to insert, because I already know that there's only one child
 		frappe.msgprint("Articles suivis ajoutés avec succès")
 
 	def quantities_manipulation(self, doc: Document, operand: str):
