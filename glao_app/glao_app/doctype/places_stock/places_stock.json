@@ -12,7 +12,8 @@
   "article",
   "serial",
   "batch",
-  "next_event_date"
+  "next_event_date",
+  "code_spie_tm"
  ],
  "fields": [
   {
@@ -56,13 +57,19 @@
    "fieldname": "next_event_date",
    "fieldtype": "Date",
    "label": "Next event date"
+  },
+  {
+   "fieldname": "code_spie_tm",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Code SPIE TM"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-10 13:56:53.345685",
+ "modified": "2026-04-15 09:04:45.179072",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Places Stock",

@@ -10,6 +10,7 @@
   "section_break_zxeo",
   "article",
   "serial_no",
+  "code_spie_tm",
   "batch_no",
   "cdl",
   "next_rv",
@@ -81,13 +82,18 @@
    "in_list_view": 1,
    "label": "Incr\u00e9ment en ann\u00e9e",
    "options": "0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10"
+  },
+  {
+   "fieldname": "code_spie_tm",
+   "fieldtype": "Data",
+   "label": "Code SPIE TM"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-13 12:21:19.328440",
+ "modified": "2026-04-15 09:13:35.026169",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Reference Details",

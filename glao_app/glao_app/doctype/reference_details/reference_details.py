@@ -17,6 +17,7 @@ class ReferenceDetails(Document):
 		article: DF.Link | None
 		batch_no: DF.Data | None
 		cdl: DF.Date | None
+		code_spie_tm: DF.Data | None
 		fabrication_date: DF.Date | None
 		incr_years: DF.Literal["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 		next_rv: DF.Date | None

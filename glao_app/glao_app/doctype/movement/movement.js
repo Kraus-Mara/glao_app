@@ -6,7 +6,7 @@ frappe.ui.form.on("Movement", {
         if (frm.doc.article_from_stock) {
             frm.call("scrap_sources").then(({message: sources}) => {
                 const data = sources.map(path => ({
-                    value: path.split("/").pop(),
+                    value: path,
                     label: path
                 }));
                 frm.fields_dict.source_place.set_data(data);

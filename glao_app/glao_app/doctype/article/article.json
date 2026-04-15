@@ -35,6 +35,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "bold": 1,
    "fieldname": "article_name",
    "fieldtype": "Data",
    "label": "Name",
@@ -91,6 +92,7 @@
    "options": "Characteristics"
   },
   {
+   "bold": 1,
    "fieldname": "shortname",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -165,7 +167,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-03 14:46:33.667548",
+ "modified": "2026-04-15 09:15:58.739482",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Article",
