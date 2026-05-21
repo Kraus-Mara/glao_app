@@ -14,8 +14,7 @@ class NomenclatureItems(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		item: DF.DynamicLink | None
-		object_type: DF.Literal["Article", "Composition"]
+		item: DF.Link | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data

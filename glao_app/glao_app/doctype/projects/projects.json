@@ -8,7 +8,7 @@
  "field_order": [
   "section_break_6r89",
   "project_name",
-  "case_no",
+  "job_no",
   "company",
   "location",
   "starting_date",
@@ -47,16 +47,16 @@
    "label": "End date"
   },
   {
-   "fieldname": "case_no",
+   "fieldname": "job_no",
    "fieldtype": "Data",
-   "label": "Case No"
+   "label": "Job No"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_calendar_and_gantt": 1,
  "links": [],
- "modified": "2026-05-21 09:38:04.772740",
+ "modified": "2026-05-21 14:06:37.714232",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Projects",

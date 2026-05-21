@@ -14,9 +14,9 @@ class Projects(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		case_no: DF.Data | None
 		company: DF.Link | None
 		end_date: DF.Date | None
+		job_no: DF.Data | None
 		location: DF.Data | None
 		project_name: DF.Data | None
 		starting_date: DF.Date | None
