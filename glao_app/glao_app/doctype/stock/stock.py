@@ -35,6 +35,8 @@ class Stock(Document):
     def autoname(self):
         if self.is_referenced and self.serial_no:
             self.name = str(self.article) + "-SN-" + str(self.serial_no)
+        elif self.is_referenced and self.batch_no:
+            self.name = str(self.article) + "-BN-" + str(self.batch_no)
         else:
             self.name = str(self.article)
 

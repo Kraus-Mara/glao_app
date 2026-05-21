@@ -35,7 +35,7 @@ class Movement(Document):
 		movement_date: DF.Datetime | None
 		placetostock: DF.Table[PlacesStock]
 		quantity_to_manipulate: DF.Int
-		rebut_cause: DF.Data | None
+		rebut_cause: DF.Literal["Sur site", "NP", "Rebut", "Conclusion d'inventaire"]
 		reference_details: DF.Table[ReferenceDetails]
 		second: DF.Check
 		serial: DF.Data | None
@@ -371,7 +371,7 @@ class Movement(Document):
 									"place": doc.place,
 									"quantity": doc.quantity,
 									"article": self.article,
-									"batch": doc.batch_no,
+									"batch": doc.batch,
 								}
 							],
 						}

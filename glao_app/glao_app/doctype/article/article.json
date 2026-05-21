@@ -57,7 +57,7 @@
    "fieldname": "group",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Group",
+   "label": "Family",
    "options": "Articles Group",
    "reqd": 1
   },
@@ -167,7 +167,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-15 09:15:58.739482",
+ "modified": "2026-05-21 13:10:10.198474",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Article",

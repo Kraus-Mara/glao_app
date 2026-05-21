@@ -3,10 +3,12 @@
  "allow_rename": 1,
  "creation": "2026-02-09 16:02:22.048471",
  "doctype": "DocType",
+ "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "section_break_c0f7",
   "alternative_article",
+  "shortname",
   "notes"
  ],
  "fields": [
@@ -26,13 +28,20 @@
    "fieldtype": "Small Text",
    "in_list_view": 1,
    "label": "Notes"
+  },
+  {
+   "fetch_from": "alternative_article.shortname",
+   "fieldname": "shortname",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Shortname"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-02 10:56:07.979626",
+ "modified": "2026-04-17 10:47:50.156185",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Alternatives",

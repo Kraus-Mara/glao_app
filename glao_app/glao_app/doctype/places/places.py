@@ -15,8 +15,9 @@ class Places(Document):
 		from frappe.types import DF
 		from glao_app.glao_app.doctype.places_stock_rules.places_stock_rules import PlacesStockRules
 
+		address: DF.Check
 		company: DF.Link | None
-		extern: DF.Check
+		external: DF.Check
 		is_active: DF.Check
 		is_group: DF.Check
 		lft: DF.Int
@@ -27,9 +28,7 @@ class Places(Document):
 		place_id: DF.Data
 		place_name: DF.Data
 		place_rules: DF.Table[PlacesStockRules]
-		qualité: DF.Check
 		rgt: DF.Int
-		type: DF.Literal["Etalonnage", "Litige", "En cours d'inventaire", "Indisponible"]
 	# end: auto-generated types
 
 	def autoname(self):

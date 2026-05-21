@@ -18,9 +18,11 @@ class PlacesStockRules(Document):
 		expected_qty: DF.Data | None
 		maximal_qty: DF.Data | None
 		minimal_qty: DF.Data | None
+		name: DF.Int | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
+		shortname: DF.Data | None
 	# end: auto-generated types
 
 	pass

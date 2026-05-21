@@ -19,6 +19,7 @@ class Alternatives(Document):
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
+		shortname: DF.Data | None
 	# end: auto-generated types
 
 	pass

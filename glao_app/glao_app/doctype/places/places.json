@@ -12,11 +12,10 @@
   "place_name",
   "parent_places",
   "is_group",
-  "qualit\u00e9",
-  "type",
-  "extern",
-  "company",
+  "address",
   "location",
+  "company",
+  "external",
   "is_active",
   "rules_tab",
   "rules_section",
@@ -138,29 +137,23 @@
   },
   {
    "default": "0",
-   "fieldname": "extern",
+   "fieldname": "address",
    "fieldtype": "Check",
-   "label": "Extern"
+   "label": "Address"
   },
   {
    "default": "0",
-   "fieldname": "qualit\u00e9",
+   "description": "Movements statistics inside this place won't be fetched",
+   "fieldname": "external",
    "fieldtype": "Check",
-   "label": "Qualit\u00e9"
-  },
-  {
-   "depends_on": "eval:doc.qualit\u00e9==1;",
-   "fieldname": "type",
-   "fieldtype": "Select",
-   "label": "Type",
-   "options": "Etalonnage\nLitige\nEn cours d'inventaire\nIndisponible"
+   "label": "External"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2026-04-13 14:11:28.137262",
+ "modified": "2026-05-21 11:01:33.203589",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Places",

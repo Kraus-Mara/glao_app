@@ -18,14 +18,14 @@ class Contacts(Document):
 		address: DF.Data | None
 		city: DF.Data | None
 		country: DF.Data | None
-		email: DF.Data
+		email: DF.Data | None
+		fonction: DF.Data
 		lastname: DF.Data
-		mobile: DF.Data | None
 		notes: DF.LongText | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
-		phone: DF.Data | None
+		phone: DF.Data
 		postcode: DF.Data | None
 		surname: DF.Data
 	# end: auto-generated types

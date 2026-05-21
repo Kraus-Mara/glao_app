@@ -16,7 +16,7 @@ class Company(Document):
         from glao_app.glao_app.doctype.contacts.contacts import Contacts
 
         company_name: DF.Data | None
-        company_type: DF.Literal["", "Client"]
+        company_type: DF.Literal["Provider", "Client"]
         contacts: DF.Table[Contacts]
         location: DF.Data | None
         shortname: DF.Data | None

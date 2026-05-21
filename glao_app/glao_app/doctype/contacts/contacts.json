@@ -9,9 +9,9 @@
   "section_break_un5m",
   "lastname",
   "surname",
-  "email",
   "phone",
-  "mobile",
+  "fonction",
+  "email",
   "address",
   "city",
   "country",
@@ -44,25 +44,18 @@
   {
    "fieldname": "phone",
    "fieldtype": "Data",
-   "label": "Phone"
-  },
-  {
-   "fieldname": "mobile",
-   "fieldtype": "Data",
-   "label": "Mobile"
+   "in_list_view": 1,
+   "label": "Phone",
+   "reqd": 1
   },
   {
    "fieldname": "email",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Email",
-   "reqd": 1
+   "label": "Email"
   },
   {
    "fieldname": "address",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "in_preview": 1,
    "label": "Address"
   },
   {
@@ -91,13 +84,20 @@
    "fieldname": "add_notes",
    "fieldtype": "Check",
    "label": "Add Notes"
+  },
+  {
+   "fieldname": "fonction",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Fonction",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-02-25 10:53:45.008126",
+ "modified": "2026-05-21 10:28:09.693891",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Contacts",

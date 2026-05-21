@@ -36,7 +36,7 @@
    "icon": "group",
    "indent": 0,
    "keep_closed": 0,
-   "label": "Article Groups",
+   "label": "Article Families",
    "link_to": "Articles Group",
    "link_type": "DocType",
    "show_arrow": 0,
@@ -183,7 +183,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-04-02 14:05:48.282824",
+ "modified": "2026-05-21 13:09:36.505597",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "GLAO",
