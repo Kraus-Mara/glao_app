@@ -22,6 +22,7 @@ class Stock(Document):
         article: DF.Link | None
         batch_no: DF.Data | None
         carnet_de_maintenance: DF.Table[Maintenancebook]
+        code_spie_tm: DF.Data | None
         designation: DF.Data | None
         events: DF.Table[RefEvents]
         is_referenced: DF.Check

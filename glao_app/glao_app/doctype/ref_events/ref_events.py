@@ -16,17 +16,15 @@ class RefEvents(Document):
 
 		article: DF.Link | None
 		batch_no: DF.Data | None
-		completion_date: DF.Date | None
 		event: DF.Literal["VGP", "DLU", "End of life", "Other"]
 		event_date: DF.Date | None
-		expiry_date: DF.Date | None
+		file: DF.Attach | None
 		increment: DF.Int
 		intervention_date: DF.Date | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
 		passed: DF.Check
-		start_date: DF.Date | None
 	# end: auto-generated types
 
 	pass

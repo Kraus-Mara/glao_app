@@ -9,6 +9,7 @@
   "section_break_xelt",
   "type",
   "article",
+  "article_referenced",
   "article_from_stock",
   "rebut_cause",
   "article_name",
@@ -18,6 +19,7 @@
   "placetostock",
   "total_quantity",
   "quantity_to_manipulate",
+  "quantity_stock_entry",
   "target_place",
   "source_place",
   "reference_details",
@@ -36,7 +38,7 @@
    "fieldname": "type",
    "fieldtype": "Select",
    "label": "Type",
-   "options": "Add\nPull\nTransfert"
+   "options": "Stock Entry\nRegister\nAdd\nPull\nTransfert"
   },
   {
    "depends_on": "eval:doc.type==\"Add\";",
@@ -94,7 +96,7 @@
    "search_index": 1
   },
   {
-   "depends_on": "eval:doc.type!=\"Add\";",
+   "depends_on": "eval:doc.type==\"Pull\" || doc.type==\"Transfert\";",
    "fieldname": "article_from_stock",
    "fieldtype": "Link",
    "label": "Article",
@@ -170,12 +172,26 @@
    "fieldtype": "Select",
    "label": "Rebut cause",
    "options": "Sur site\nNP\nRebut\nConclusion d'inventaire"
+  },
+  {
+   "depends_on": "eval:doc.type==\"Stock Entry\";",
+   "fieldname": "article_referenced",
+   "fieldtype": "Link",
+   "label": "Article",
+   "link_filters": "[[\"Article\",\"is_referenced\",\"=\",1]]",
+   "options": "Article"
+  },
+  {
+   "depends_on": "eval:doc.type==\"Stock Entry\";",
+   "fieldname": "quantity_stock_entry",
+   "fieldtype": "Int",
+   "label": "Quantity"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-17 11:46:13.535844",
+ "modified": "2026-05-22 15:10:04.149156",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Movement",

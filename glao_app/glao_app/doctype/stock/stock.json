@@ -17,6 +17,7 @@
   "serial_no",
   "batch_no",
   "quantity",
+  "code_spie_tm",
   "place_table",
   "events",
   "perime",
@@ -63,6 +64,7 @@
   },
   {
    "default": "1",
+   "depends_on": "eval:doc.is_referenced==0;",
    "fieldname": "quantity",
    "fieldtype": "Int",
    "label": "Quantity",
@@ -123,11 +125,16 @@
    "fieldname": "ref_constructeur",
    "fieldtype": "Data",
    "label": "Ref constructeur"
+  },
+  {
+   "fieldname": "code_spie_tm",
+   "fieldtype": "Data",
+   "label": "Code SPIE TM"
   }
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-05-21 10:34:23.587691",
+ "modified": "2026-05-22 15:02:37.299535",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",
@@ -135,7 +142,6 @@
  "owner": "Administrator",
  "permissions": [
   {
-   "create": 1,
    "delete": 1,
    "email": 1,
    "export": 1,

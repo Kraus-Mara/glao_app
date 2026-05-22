@@ -75,7 +75,7 @@
   {
    "fieldname": "tab_break_dcvv",
    "fieldtype": "Tab Break",
-   "label": "Providers"
+   "label": "Suppliers"
   },
   {
    "fieldname": "tabnotes",
@@ -103,7 +103,7 @@
   {
    "fieldname": "alternatives_tab",
    "fieldtype": "Tab Break",
-   "label": "Alternatives"
+   "label": "Substitutes"
   },
   {
    "fieldname": "table_fucy",
@@ -167,7 +167,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-21 13:10:10.198474",
+ "modified": "2026-05-22 14:36:22.842675",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Article",

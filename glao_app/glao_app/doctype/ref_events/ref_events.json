@@ -14,9 +14,7 @@
   "intervention_date",
   "article",
   "batch_no",
-  "start_date",
-  "expiry_date",
-  "completion_date"
+  "file"
  ],
  "fields": [
   {
@@ -49,8 +47,8 @@
    "fieldname": "increment",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Increment",
-   "placeholder": "In months"
+   "label": "Fr\u00e9quence de suivi",
+   "placeholder": "In days"
   },
   {
    "fieldname": "intervention_date",
@@ -72,26 +70,17 @@
    "label": "Batch_no"
   },
   {
-   "fieldname": "start_date",
-   "fieldtype": "Date",
-   "label": "Start Date"
-  },
-  {
-   "fieldname": "expiry_date",
-   "fieldtype": "Date",
-   "label": "Expiry Date"
-  },
-  {
-   "fieldname": "completion_date",
-   "fieldtype": "Date",
-   "label": "Completion Date"
+   "fieldname": "file",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": "file"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-05-21 09:36:49.938220",
+ "modified": "2026-05-22 14:59:13.777527",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Ref Events",

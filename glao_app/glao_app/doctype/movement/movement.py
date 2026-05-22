@@ -28,12 +28,14 @@ class Movement(Document):
 		article: DF.Link | None
 		article_from_stock: DF.Link | None
 		article_name: DF.Data | None
+		article_referenced: DF.Link | None
 		designation: DF.Data | None
 		designation_add: DF.Data | None
 		designation_pull: DF.Data | None
 		is_referenced: DF.Check
 		movement_date: DF.Datetime | None
 		placetostock: DF.Table[PlacesStock]
+		quantity_stock_entry: DF.Int
 		quantity_to_manipulate: DF.Int
 		rebut_cause: DF.Literal["Sur site", "NP", "Rebut", "Conclusion d'inventaire"]
 		reference_details: DF.Table[ReferenceDetails]
@@ -42,7 +44,7 @@ class Movement(Document):
 		source_place: DF.Autocomplete | None
 		target_place: DF.Link | None
 		total_quantity: DF.Int
-		type: DF.Literal["Add", "Pull", "Transfert"]
+		type: DF.Literal["Stock Entry", "Register", "Add", "Pull", "Transfert"]
 	# end: auto-generated types
 
 	def autoname(self):
@@ -56,10 +58,11 @@ class Movement(Document):
 
 	def validate(self):
 		if self.type == "Add":
-			if self.is_referenced:
-				self._creer_instances_referenced()
-			else:
-				self._creer_instances()
+			self._creer_instances()
+		if self.type == "Stock Entry":
+			self._creer_stock_entry()
+		if self.type == "Register":
+			self._creer_instances_referenced()
 		if self.type == "Pull":
 			if self.second:
 				self._pull_referenced()
@@ -116,7 +119,69 @@ class Movement(Document):
 	#
 	# self.get("events").sort(key=lambda e: e.event_date)
 
+	def _creer_stock_entry(self):
+		existing = frappe.get_all(
+			"Stock",
+			filters=[["article", "=", self.article], ["is_referenced", "=", 1]],
+		)
+		if existing:
+			# Incrémente la quantité tampon existante
+			doc = frappe.get_doc("Stock", existing[0].name, for_update=True)
+			ps = frappe.get_all(
+				"Places Stock",
+				filters=[["parent", "=", existing[0].name], ["place", "=", self.target_place]],
+				fields=["name", "quantity"],
+			)
+			if ps:
+				ps_doc = frappe.get_doc("Places Stock", ps[0].name)
+				ps_doc.quantity += self.quantity_to_manipulate
+				ps_doc.save()
+			else:
+				doc.append(
+					"place_table",
+					{
+						"doctype": "Places Stock",
+						"place": self.target_place,
+						"quantity": self.quantity_to_manipulate,
+						"article": self.article,
+					},
+				)
+				doc.save()
+			self.quantity_calculus()
+		else:
+			frappe.get_doc(
+				{
+					"doctype": "Stock",
+					"article": self.article,
+					"is_referenced": 0,
+					"quantity": self.quantity_to_manipulate,
+					"place_table": [
+						{
+							"doctype": "Places Stock",
+							"place": self.target_place,
+                            "quantity": self.quantity_stock_entry,
+							"article": self.article,
+						}
+					],
+				}
+			).insert(ignore_permissions=True)
+		frappe.msgprint("Stock Entry enregistrée")
+
 	def _creer_instances_referenced(self):
+		tampon = frappe.get_all("Stock", filters=[["article", "=", self.article], ["is_referenced", "=", 0]])
+		if not tampon:
+			frappe.throw("Aucun Stock Entry trouvé pour cet article. Faites d'abord un 'Stock Entry'.")
+
+		tampon_doc = frappe.get_doc("Stock", tampon[0].name, for_update=True)
+		total_to_register = len(self.reference_details)  # ou sum des quantités selon le cas
+
+		if tampon_doc.quantity < total_to_register:
+			frappe.throw(
+				f"Stock tampon insuffisant : {tampon_doc.quantity} disponible(s), {total_to_register} demandé(s)."
+			)
+
+		tampon_doc.quantity -= total_to_register
+		tampon_doc.save()
 		for detail in self.reference_details:
 			detail.article = self.article
 			# Here it should separate the stock construction between two types :
