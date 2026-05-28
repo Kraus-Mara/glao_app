@@ -33,6 +33,18 @@
   {
    "child": 1,
    "collapsible": 1,
+   "icon": "cuboid",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Nomenclature",
+   "link_to": "Nomenclature",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
    "icon": "group",
    "indent": 0,
    "keep_closed": 0,
@@ -183,7 +195,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-05-21 13:09:36.505597",
+ "modified": "2026-05-28 15:04:35.715829",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "GLAO",
