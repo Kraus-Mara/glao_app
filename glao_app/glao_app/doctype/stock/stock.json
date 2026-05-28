@@ -21,6 +21,7 @@
   "place_table",
   "events",
   "perime",
+  "not_yet_registered",
   "carnet_de_maintenance"
  ],
  "fields": [
@@ -107,7 +108,6 @@
   {
    "bold": 1,
    "default": "0",
-   "description": "PERIME",
    "fieldname": "perime",
    "fieldtype": "Check",
    "in_list_view": 1,
@@ -130,11 +130,18 @@
    "fieldname": "code_spie_tm",
    "fieldtype": "Data",
    "label": "Code SPIE TM"
+  },
+  {
+   "default": "0",
+   "fieldname": "not_yet_registered",
+   "fieldtype": "Check",
+   "label": "not_yet_registered",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-05-22 15:02:37.299535",
+ "modified": "2026-05-28 13:49:29.985546",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",

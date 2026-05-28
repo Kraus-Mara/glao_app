@@ -13,6 +13,17 @@ frappe.ui.form.on("Movement", {
             })
         }
     },
+    article_to_register(frm) {
+        if (frm.doc.article_to_register) {
+            frm.call("scrap_sources").then(({message: sources}) => {
+                const data = sources.map(path => ({
+                    value: path,
+                    label: path
+                }));
+                frm.fields_dict.source_place.set_data(data);
+            })
+        }
+    },
     quantity_to_manipulate(frm) {
         if (frm.doc.quantity_to_manipulate) {
             frappe.db.get_value('Stock', frm.doc.stock, 'quantity', (r) => {

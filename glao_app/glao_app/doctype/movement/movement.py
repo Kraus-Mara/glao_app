@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 from hashlib import new
+from warnings import filters
 import frappe
 from frappe.core.doctype.doctype import doctype
 from frappe.exceptions import UniqueValidationError
@@ -29,6 +30,7 @@ class Movement(Document):
 		article_from_stock: DF.Link | None
 		article_name: DF.Data | None
 		article_referenced: DF.Link | None
+		article_to_register: DF.Link | None
 		designation: DF.Data | None
 		designation_add: DF.Data | None
 		designation_pull: DF.Data | None
@@ -37,11 +39,13 @@ class Movement(Document):
 		placetostock: DF.Table[PlacesStock]
 		quantity_stock_entry: DF.Int
 		quantity_to_manipulate: DF.Int
+		re_des: DF.Data | None
 		rebut_cause: DF.Literal["Sur site", "NP", "Rebut", "Conclusion d'inventaire"]
 		reference_details: DF.Table[ReferenceDetails]
 		second: DF.Check
 		serial: DF.Data | None
 		source_place: DF.Autocomplete | None
+		stock_entry_designation: DF.Data | None
 		target_place: DF.Link | None
 		total_quantity: DF.Int
 		type: DF.Literal["Stock Entry", "Register", "Add", "Pull", "Transfert"]
@@ -53,6 +57,10 @@ class Movement(Document):
 			self.name = str(hour) + " " + str(self.article)
 		elif self.article_from_stock:
 			self.name = str(hour) + " " + str(self.article_from_stock)
+		elif self.article_referenced:
+			self.name = str(hour) + " " + str(self.article_referenced)
+		elif self.article_to_register:
+			self.name = str(hour) + " " + str(self.article_to_register)
 		else:
 			frappe.msgprint("Une erreur est survenue : probleme sur les autonames")
 
@@ -74,7 +82,9 @@ class Movement(Document):
 			else:
 				self._transfert_normal()
 		# self._sort_events_by_closing_date()
-		self.designation = self.designation_add if self.designation_add is not None else self.designation_pull
+		self.designation = (
+			self.designation_add or self.stock_entry_designation or self.designation_pull or self.re_des
+		)
 
 	def on_cancel(self):
 		if self.is_referenced:
@@ -120,68 +130,109 @@ class Movement(Document):
 	# self.get("events").sort(key=lambda e: e.event_date)
 
 	def _creer_stock_entry(self):
-		existing = frappe.get_all(
-			"Stock",
-			filters=[["article", "=", self.article], ["is_referenced", "=", 1]],
-		)
-		if existing:
-			# Incrémente la quantité tampon existante
+		existing = frappe.get_all("Stock", filters=[["name", "=", self.article_referenced]])
+		if not existing:
+			frappe.get_doc(
+				{
+					"doctype": "Stock",
+					"article": self.article_referenced,
+					"is_referenced": 1,
+					"quantity": self.quantity_stock_entry,
+					"place_table": [
+						{
+							"doctype": "Places Stock",
+							"place": self.target_place,
+							"quantity": self.quantity_stock_entry,
+							"article": self.article_referenced,
+						}
+					],
+					"not_yet_registered": 1,
+				}
+			).insert(ignore_permissions=True)
+			frappe.msgprint("Stock Entry enregistrée")
+		else:
+			existing = frappe.get_all("Stock", filters=[["name", "=", self.article_referenced]])
 			doc = frappe.get_doc("Stock", existing[0].name, for_update=True)
 			ps = frappe.get_all(
-				"Places Stock",
-				filters=[["parent", "=", existing[0].name], ["place", "=", self.target_place]],
-				fields=["name", "quantity"],
+				"Places Stock", filters=[["parent", "=", existing[0].name], ["place", "=", self.target_place]]
 			)
 			if ps:
-				ps_doc = frappe.get_doc("Places Stock", ps[0].name)
-				ps_doc.quantity += self.quantity_to_manipulate
-				ps_doc.save()
+				frappe.msgprint("ps trouvé")
+				ps_doc = frappe.get_doc("Places Stock", ps[0].name, for_update=True)
+				new_quantity = int(ps_doc.quantity) + self.quantity_stock_entry
+				frappe.msgprint(
+					"debug : ancienne qty" + str(ps_doc.quantity) + " et nouvelle qty : " + str(new_quantity)
+				)
+				ps_doc.update(
+					{
+						"quantity": int(new_quantity),
+					}
+				).save(ignore_permissions=True)
+
 			else:
 				doc.append(
 					"place_table",
 					{
 						"doctype": "Places Stock",
 						"place": self.target_place,
-						"quantity": self.quantity_to_manipulate,
-						"article": self.article,
+						"quantity": self.quantity_stock_entry,
+						"article": self.article_referenced,
 					},
 				)
 				doc.save()
-			self.quantity_calculus()
-		else:
-			frappe.get_doc(
-				{
-					"doctype": "Stock",
-					"article": self.article,
-					"is_referenced": 0,
-					"quantity": self.quantity_to_manipulate,
-					"place_table": [
-						{
-							"doctype": "Places Stock",
-							"place": self.target_place,
-                            "quantity": self.quantity_stock_entry,
-							"article": self.article,
-						}
-					],
-				}
-			).insert(ignore_permissions=True)
-		frappe.msgprint("Stock Entry enregistrée")
+			all_ps = frappe.get_all(
+				"Places Stock", filters=[["parent", "=", existing[0].name]], fields="quantity"
+			)
+			new_quantity = sum(int(doc.quantity) for doc in all_ps) if existing else 0
+			if existing:
+				to_save = frappe.get_doc("Stock", str(self.article_referenced), for_update=True)
+				to_save.update({"quantity": int(new_quantity)}).save()
+			else:
+				frappe.msgprint("Une erreur est survenue : ligne 183")
 
 	def _creer_instances_referenced(self):
-		tampon = frappe.get_all("Stock", filters=[["article", "=", self.article], ["is_referenced", "=", 0]])
+		self.article = self.article_to_register
+		tampon = frappe.get_all(
+			"Stock",
+			filters=[
+				["article", "=", self.article],
+				["is_referenced", "=", 1],
+				["not_yet_registered", "=", 1],
+			],
+		)
 		if not tampon:
 			frappe.throw("Aucun Stock Entry trouvé pour cet article. Faites d'abord un 'Stock Entry'.")
-
 		tampon_doc = frappe.get_doc("Stock", tampon[0].name, for_update=True)
-		total_to_register = len(self.reference_details)  # ou sum des quantités selon le cas
+		tampon_place_tables = frappe.get_all(
+			"Places Stock",
+			filters=[["parent", "like", tampon_doc.name], ["place", "=", self.source_place]],
+		)
+		place_table_doc = frappe.get_doc("Places Stock", tampon_place_tables[0].name)
+		tot_quantity = place_table_doc.quantity
 
-		if tampon_doc.quantity < total_to_register:
+		total_to_register = sum(row.quantity_for_batch or 1 for row in self.reference_details)
+
+		# total_to_register = len(self.reference_details)
+
+		if total_to_register <= 0:
+			frappe.throw("You did not put reference details in the form, please add some")
+		if tot_quantity < total_to_register:
 			frappe.throw(
-				f"Stock tampon insuffisant : {tampon_doc.quantity} disponible(s), {total_to_register} demandé(s)."
+				f"Stock tampon insuffisant : {tot_quantity} disponible(s), {total_to_register} demandé(s)."
 			)
-
+		for row in tampon_doc.place_table:
+			if row.name == tampon_place_tables[0].name and row.place == self.source_place:
+				row.quantity -= total_to_register
+				if row.quantity <= 0:
+					tampon_doc.remove(row)
+			break
+		# frappe.msgprint(str(tampon_doc.place_table))
 		tampon_doc.quantity -= total_to_register
-		tampon_doc.save()
+		if tampon_doc.quantity <= 0:
+			tampon_doc.delete(force=True)
+		else:
+			tampon_doc.save()
+
 		for detail in self.reference_details:
 			detail.article = self.article
 			# Here it should separate the stock construction between two types :
@@ -194,12 +245,13 @@ class Movement(Document):
 				event_date = detail.cdl
 				event = "DLU"
 				try:
-					frappe.msgprint(str(detail.batch_no))
+					# frappe.msgprint(str(detail.batch_no))
 					frappe.new_doc(
 						"Stock",
 						article=self.article,
 						is_referenced=self.is_referenced,
-						quantity=0,  # Calculated at the end
+						quantity=detail.quantity_for_batch,
+						batch_no=detail.batch_no,
 						place_table=[
 							{
 								"doctype": "Places Stock",
@@ -220,31 +272,23 @@ class Movement(Document):
 							},
 						],
 					).insert(ignore_if_duplicate=False, ignore_permissions=True)
-					self.quantity_calculus()
-				except:
+				except frappe.exceptions.DuplicateEntryError:
 					# Already exists, so we must override the Places Stock line that matches
 					# the batch number with the new quantity
 					docname = frappe.get_all(
 						"Stock",
-						filters=[
-							["article", "like", self.article],
-						],
+						filters=[["article", "like", self.article], ["batch_no", "like", detail.batch_no]],
 					)[0].name
-
 					doc = frappe.get_doc("Stock", docname, for_update=True)
-					ps = frappe.get_all(
-						"Places Stock",
-						filters=[
-							["parent", "=", docname],
-							["article", "=", self.article],
-							["batch", "=", detail.batch_no],
-						],
-						fields=["name", "quantity"],
-					)
-					if ps:
-						ps_doc = frappe.get_doc("Places Stock", ps[0].name)
-						ps_doc.quantity += detail.quantity_for_batch
-						ps_doc.save()
+					# So here, i am supposed to fetch from the parent doctype, the child, then
+					# increment quantity of an amount of detail.quantity_for_batch
+					# doc.place_table points towards the child,
+					ps = doc.place_table
+					for row in ps:
+						if self.target_place == row.place:
+							row.quantity += detail.quantity_for_batch
+					doc.save()
+
 			elif detail.next_rv:
 				event_date = detail.next_rv
 				event = "VGP"
@@ -370,9 +414,9 @@ class Movement(Document):
 		frappe.msgprint("Articles suivis ajoutés avec succès")
 
 	def quantities_manipulation(self, doc: Document, operand: str):
-		"""doc is the target Places Stock"""
+		"""doc is supposed to be extracted by doing a for doc in placetostock"""
 		if operand not in ["sub", "add"]:
-			frappe.msgprint("Pas le temps pour tes conneries")
+			frappe.msgprint("sub or add")
 		existing = frappe.get_all("Places Stock", filters={"article": self.article, "place": doc.place})
 		if existing:
 			ps = frappe.get_doc("Places Stock", existing[0].name)
@@ -471,18 +515,31 @@ class Movement(Document):
 
 	@frappe.whitelist()
 	def scrap_sources(self):
-		existing = frappe.get_all(
-			"Places Stock",
-			filters=[
-				["article", "like", self.article_from_stock],
-				["quantity", ">", 0],
-			],
-		)
+		if self.article_from_stock:
+			doc = frappe.get_all(
+				"Stock",
+				filters=[
+					["article", "like", self.article_from_stock],
+					["quantity", ">", 0],
+					["not_yet_registered", "=", 1],
+				],
+			)[0]
+			existing = frappe.get_doc("Stock", doc, for_update=True)
+		else:
+			doc = frappe.get_all(
+				"Stock",
+				filters=[
+					["article", "like", self.article_to_register],
+					["quantity", ">", 0],
+					["not_yet_registered", "=", 1],
+				],
+			)[0]
+			existing = frappe.get_doc("Stock", doc, for_update=True)
+
 		sources = []
-		if existing:
-			for doc in existing:
-				temp = frappe.get_doc("Places Stock", doc.name)
-				sources.append(temp.place)
+		for row in existing.place_table:
+			sources.append(row.place)
+
 		return sources
 
 	def _pull_referenced(self):

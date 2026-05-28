@@ -10,6 +10,7 @@
   "type",
   "article",
   "article_referenced",
+  "article_to_register",
   "article_from_stock",
   "rebut_cause",
   "article_name",
@@ -20,12 +21,14 @@
   "total_quantity",
   "quantity_to_manipulate",
   "quantity_stock_entry",
-  "target_place",
   "source_place",
+  "target_place",
   "reference_details",
   "movement_date",
   "amended_from",
   "designation_add",
+  "stock_entry_designation",
+  "re_des",
   "designation_pull",
   "designation"
  ],
@@ -56,7 +59,7 @@
    "label": "Is Referenced"
   },
   {
-   "depends_on": "eval:doc.type==\"Transfert\" || (doc.type==\"Add\" && doc.is_referenced==1);",
+   "depends_on": "eval:doc.type==\"Transfert\" || doc.type==\"Stock Entry\" || doc.type==\"Register\";",
    "fieldname": "target_place",
    "fieldtype": "Link",
    "label": "Target place",
@@ -64,13 +67,12 @@
    "options": "Places"
   },
   {
-   "depends_on": "eval:doc.type==\"Transfert\" || (doc.type==\"Pull\" && doc.second==0);",
+   "depends_on": "eval:doc.type==\"Transfert\" || (doc.type==\"Pull\" && doc.second==0) || doc.type==\"Register\";",
    "fieldname": "source_place",
    "fieldtype": "Autocomplete",
    "label": "Source place"
   },
   {
-   "depends_on": "eval:doc.is_referenced==1 && doc.type!=\"Pull\";",
    "fieldname": "reference_details",
    "fieldtype": "Table",
    "label": "Reference details",
@@ -186,12 +188,34 @@
    "fieldname": "quantity_stock_entry",
    "fieldtype": "Int",
    "label": "Quantity"
+  },
+  {
+   "fetch_from": "article_referenced.article_name",
+   "fieldname": "stock_entry_designation",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "se_des"
+  },
+  {
+   "depends_on": "eval:doc.type==\"Register\"",
+   "fieldname": "article_to_register",
+   "fieldtype": "Link",
+   "label": "Article to register",
+   "link_filters": "[[\"Stock\",\"not_yet_registered\",\"=\",1]]",
+   "options": "Stock"
+  },
+  {
+   "fetch_from": "article_to_register.designation",
+   "fieldname": "re_des",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "re_des"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-22 15:10:04.149156",
+ "modified": "2026-05-28 14:14:32.749237",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Movement",

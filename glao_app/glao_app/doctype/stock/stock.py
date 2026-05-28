@@ -26,6 +26,7 @@ class Stock(Document):
         designation: DF.Data | None
         events: DF.Table[RefEvents]
         is_referenced: DF.Check
+        not_yet_registered: DF.Check
         perime: DF.Check
         place_table: DF.Table[PlacesStock]
         quantity: DF.Int
