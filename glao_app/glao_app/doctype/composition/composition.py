@@ -48,14 +48,24 @@ class Composition(Document):
 						frappe.throw(
 							f"Stock insuffisant pour {doc.name} : {ps[0].quantity} disponible, {row.quantity} requis"
 						)
-					else:
-						ps_doc = frappe.get_doc("Places Stock", ps[0].name, for_update=True)
-						row_qty = ps_doc.quantity - row.quantity
-						ps_doc.quantity = row_qty
-						ps_doc.save(ignore_permissions=True)
-						# frappe.throw(str(row_qty))  # Le bon chiffre
-						doc.place_saved = ps_doc.place
-						doc.save(ignore_permissions=True)
+					ps_doc = frappe.get_doc("Places Stock", ps[0].name, for_update=True)
+					row_qty = ps_doc.quantity - row.quantity
+					# frappe.throw(str(row_qty))  # Le bon chiffre
+					place_to_save = ps_doc.place
+					ps_doc.delete()
+					# frappe.throw(str(doc.place_table))
+					# working
+					doc.append(
+						"place_table",
+						{
+							"doctype": "Places Stock",
+							"place": place_to_save,
+							"quantity": row_qty,
+							"article": doc.article,
+						},
+					)
+					doc.place_saved = ps_doc.place
+					doc.save(ignore_permissions=True)
 					##
 					doc = frappe.get_doc("Stock", str(stock[0].name), for_update=True)
 					end_qty = sum(row.quantity for row in doc.place_table) if doc.place_table else 0
