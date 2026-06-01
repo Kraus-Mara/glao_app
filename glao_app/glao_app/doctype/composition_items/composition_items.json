@@ -8,6 +8,7 @@
  "field_order": [
   "section_break_cwkc",
   "item",
+  "designation",
   "quantity"
  ],
  "fields": [
@@ -28,13 +29,20 @@
    "fieldtype": "Int",
    "in_list_view": 1,
    "label": "Quantity"
+  },
+  {
+   "fetch_from": "item.designation",
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Designation"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-05-21 15:47:41.717155",
+ "modified": "2026-06-01 09:39:30.135888",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Composition Items",

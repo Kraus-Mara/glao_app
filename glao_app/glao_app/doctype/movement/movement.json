@@ -48,6 +48,7 @@
    "fieldname": "article",
    "fieldtype": "Link",
    "label": "Article",
+   "link_filters": "[[\"Article\",\"is_referenced\",\"=\",0]]",
    "options": "Article"
   },
   {
@@ -73,6 +74,7 @@
    "label": "Source place"
   },
   {
+   "depends_on": "eval:doc.type==\"Register\"",
    "fieldname": "reference_details",
    "fieldtype": "Table",
    "label": "Reference details",
@@ -173,7 +175,7 @@
    "fieldname": "rebut_cause",
    "fieldtype": "Select",
    "label": "Rebut cause",
-   "options": "Sur site\nNP\nRebut\nConclusion d'inventaire"
+   "options": "Sur site\nNP\nRebut\nConclusion d'inventaire\nManipulation"
   },
   {
    "depends_on": "eval:doc.type==\"Stock Entry\";",
@@ -215,7 +217,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-28 14:14:32.749237",
+ "modified": "2026-06-01 10:31:07.138322",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Movement",

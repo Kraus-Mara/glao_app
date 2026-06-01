@@ -23,11 +23,13 @@ class Stock(Document):
         batch_no: DF.Data | None
         carnet_de_maintenance: DF.Table[Maintenancebook]
         code_spie_tm: DF.Data | None
+        composition: DF.Link | None
         designation: DF.Data | None
         events: DF.Table[RefEvents]
         is_referenced: DF.Check
         not_yet_registered: DF.Check
         perime: DF.Check
+        place_saved: DF.Link | None
         place_table: DF.Table[PlacesStock]
         quantity: DF.Int
         ref_constructeur: DF.Data | None

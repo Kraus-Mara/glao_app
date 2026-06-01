@@ -40,7 +40,7 @@ class Movement(Document):
 		quantity_stock_entry: DF.Int
 		quantity_to_manipulate: DF.Int
 		re_des: DF.Data | None
-		rebut_cause: DF.Literal["Sur site", "NP", "Rebut", "Conclusion d'inventaire"]
+		rebut_cause: DF.Literal["Sur site", "NP", "Rebut", "Conclusion d'inventaire", "Manipulation"]
 		reference_details: DF.Table[ReferenceDetails]
 		second: DF.Check
 		serial: DF.Data | None
@@ -85,12 +85,6 @@ class Movement(Document):
 		self.designation = (
 			self.designation_add or self.stock_entry_designation or self.designation_pull or self.re_des
 		)
-
-	def on_cancel(self):
-		if self.is_referenced:
-			self._cancel_referenced_instances()
-		else:
-			self._cancel_normal()
 
 	# def _sort_events_by_closing_date(self):
 	#   parent_name = frappe.get_all(
@@ -209,17 +203,11 @@ class Movement(Document):
 		)
 		place_table_doc = frappe.get_doc("Places Stock", tampon_place_tables[0].name)
 		tot_quantity = place_table_doc.quantity
-
 		total_to_register = sum(row.quantity_for_batch or 1 for row in self.reference_details)
-
-		# total_to_register = len(self.reference_details)
-
 		if total_to_register <= 0:
 			frappe.throw("You did not put reference details in the form, please add some")
 		if tot_quantity < total_to_register:
-			frappe.throw(
-				f"Stock tampon insuffisant : {tot_quantity} disponible(s), {total_to_register} demandé(s)."
-			)
+			frappe.throw(f"No enough quantity : {tot_quantity} available, {total_to_register} needed")
 		for row in tampon_doc.place_table:
 			if row.name == tampon_place_tables[0].name and row.place == self.source_place:
 				row.quantity -= total_to_register
@@ -437,7 +425,7 @@ class Movement(Document):
 							"quantity": new_place_qty,
 							"article": self.article,
 							"serial": sr,
-							"batch": detail.batch_no,
+							"batch": doc.batch if doc.batch else None,
 						}
 					],
 				}
@@ -453,9 +441,12 @@ class Movement(Document):
 			to_save = frappe.get_doc("Stock", str(self.article), for_update=True)
 			to_save.update({"quantity": int(new_quantity)}).save()
 		else:
-			frappe.msgprint("Une erreur est survenue : quantity_calculus_optimized(self)")
+			frappe.throw("An error occured : 444")
 
 	def _creer_instances(self):
+		for row in self.placetostock:
+			if row.quantity <= 0:
+				frappe.throw("Quantity issue")
 		for doc in self.placetostock:
 			try:
 				# Getting all corresponding Places Stock, obviously there's only one
@@ -490,51 +481,12 @@ class Movement(Document):
 			except frappe.exceptions.UniqueValidationError:
 				frappe.msgprint("An error occured")
 
-	def _cancel_referenced_instances(self):
-		for detail in self.reference_details:
-			try:
-				for e in frappe.get_all("Ref Events"):
-					if str(e).startswith(str(self.article) + str(detail.serial_no)):
-						e.delete()
-				frappe.get_doc("Reference Details", str(detail.name)).delete()  # The child table is deleted
-				frappe.get_doc(
-					"Stock", str(self.article) + "-SN-" + str(detail.serial_no)
-				).delete()  # Then the table is deleted
-			except frappe.exceptions.ValidationError:
-				frappe.msgprint("An error occured")
-		frappe.msgprint("Referenced article deleted from Stock")
-
-	def _cancel_normal(self):
-		for doc in self.placetostock:
-			try:
-				self.quantities_manipulation(doc, "sub")
-				self.quantity_calculus()  # Updating the quantities of the self.article Stock
-				doc.delete()
-			except frappe.exceptions.UniqueValidationError:
-				frappe.msgprint("An error occured")
-
 	@frappe.whitelist()
 	def scrap_sources(self):
 		if self.article_from_stock:
-			doc = frappe.get_all(
-				"Stock",
-				filters=[
-					["article", "like", self.article_from_stock],
-					["quantity", ">", 0],
-					["not_yet_registered", "=", 1],
-				],
-			)[0]
-			existing = frappe.get_doc("Stock", doc, for_update=True)
+			existing = frappe.get_doc("Stock", self.article_from_stock, for_update=True)
 		else:
-			doc = frappe.get_all(
-				"Stock",
-				filters=[
-					["article", "like", self.article_to_register],
-					["quantity", ">", 0],
-					["not_yet_registered", "=", 1],
-				],
-			)[0]
-			existing = frappe.get_doc("Stock", doc, for_update=True)
+			existing = frappe.get_doc("Stock", self.article_to_register, for_update=True)
 
 		sources = []
 		for row in existing.place_table:
@@ -572,28 +524,30 @@ class Movement(Document):
 			doc = frappe.get_doc("Places Stock", existing[0].name)
 			if doc.quantity < self.quantity_to_manipulate:
 				# Pas OK
-				frappe.msgprint("Pas assez de quantité")
+				frappe.throw("No enough quantity available", title="Error")
 			else:
 				# On doit retirer quantity_to_manipulate
 				new_place_qty = doc.quantity - self.quantity_to_manipulate
 
-				frappe.msgprint("quantité finale : " + str(new_place_qty))
+				# frappe.msgprint("quantité finale : " + str(new_place_qty))
 
 				doc.delete()  # Deleting the child, to replace
+
 				to_insert = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
-				to_insert.update(  # Replacing the child
-					{
-						"place_table": [
-							{
-								"doctype": "Places Stock",
-								"name": str(self.article_from_stock) + str(self.source_place),
-								"place": self.source_place,
-								"quantity": new_place_qty,
-								"article": self.article_from_stock,
-							}
-						],
-					}
-				).insert(ignore_if_duplicate=True, ignore_permissions=True)
+				if new_place_qty > 0:
+					to_insert.update(  # Replacing the child
+						{
+							"place_table": [
+								{
+									"doctype": "Places Stock",
+									"name": str(self.article_from_stock) + str(self.source_place),
+									"place": self.source_place,
+									"quantity": new_place_qty,
+									"article": self.article_from_stock,
+								}
+							],
+						}
+					).insert(ignore_if_duplicate=True, ignore_permissions=True)
 
 				allps = frappe.get_all("Places Stock", filters={"article": self.article_from_stock})
 				new_quantity = 0
@@ -601,10 +555,15 @@ class Movement(Document):
 					for doc in allps:
 						ps = frappe.get_doc("Places Stock", doc.name)
 						new_quantity += ps.quantity
+
 				to_save = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
-				to_save.update({"quantity": int(new_quantity)}).save()
+				if new_quantity <= 0:
+					to_save.delete(force=True)
+				else:
+					to_save.update({"quantity": int(new_quantity)}).save()
 			frappe.msgprint("Articles retirés avec succès")
-		frappe.msgprint("Les articles n'ont pas été trouvés", indicator="red")
+		else:
+			frappe.msgprint("Les articles n'ont pas été trouvés", indicator="red")
 
 	def _transfert_referenced(self):
 		existing = frappe.get_all("Places Stock")
@@ -636,6 +595,8 @@ class Movement(Document):
 			frappe.msgprint("Referenced article transfered", title="Confirmation")
 
 	def _transfert_normal(self):
+		tot_qty = frappe.get_doc("Stock", str(self.article_from_stock)).quantity
+		# frappe.throw(str(tot_qty))
 		source = frappe.get_all(
 			"Places Stock",
 			filters=[
@@ -645,7 +606,8 @@ class Movement(Document):
 		)
 		if source:
 			doc = frappe.get_doc("Places Stock", source[0].name)
-			if self.quantity_to_manipulate > doc.quantity:
+			new_qty = doc.quantity - self.quantity_to_manipulate
+			if new_qty < 0:
 				frappe.msgprint("Not enough quantity in this place")
 			else:
 				self._pull_normal()  # Pull quantity_to_manipulate from source_place
@@ -654,7 +616,12 @@ class Movement(Document):
 					filters={"article": self.article, "place": self.target_place},
 				)
 				if existing:
-					self.quantities_manipulation(doc, "add")  # not tested yet
+					# frappe.throw(str(doc))
+
+					frappe.db.set_value("Places Stock", existing[0].name, "quantity", new_qty)
+
+					# frappe.throw(str(doc))
+					# self.quantities_manipulation(doc, "add")  # not tested yet
 				else:
 					to_insert = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
 					to_insert.update(
@@ -673,7 +640,11 @@ class Movement(Document):
 							],
 						}
 					).insert(ignore_if_duplicate=True)
-				self.quantity_calculus()  # Updating the quantities of the self.article Stock
+				# frappe.throw(str(doc))
+				frappe.db.set_value(
+					"Stock", self.article_from_stock, "quantity", tot_qty - self.quantity_to_manipulate
+				)
+				# self.quantity_calculus()  # Updating the quantities of the self.article Stock
 
 
 pass

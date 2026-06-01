@@ -136,6 +136,18 @@
    "type": "Link"
   },
   {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "combine",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Composition",
+   "link_to": "Composition",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
    "child": 0,
    "collapsible": 1,
    "icon": "boxes",
@@ -195,7 +207,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-05-28 15:04:35.715829",
+ "modified": "2026-05-29 13:07:40.858413",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "GLAO",
