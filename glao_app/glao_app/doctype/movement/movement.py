@@ -444,8 +444,12 @@ class Movement(Document):
 			frappe.throw("An error occured : 444")
 
 	def _creer_instances(self):
+		if frappe.get_doc("Article", str(self.article)).is_assembly:
+			frappe.throw("yeah")
+		else:
+			frappe.throw("no")
 		for row in self.placetostock:
-			if row.quantity <= 0:
+			if row.quantity < 0:
 				frappe.throw("Quantity issue")
 		for doc in self.placetostock:
 			try:
@@ -495,22 +499,30 @@ class Movement(Document):
 		return sources
 
 	def _pull_referenced(self):
-		existing = frappe.get_all("Places Stock")
+		existing = frappe.get_all(
+			"Places Stock",
+			filters=[
+				["article", "like", self.article_name],
+				["parent", "like", self.article_from_stock],
+			],
+		)
 		if existing:
 			for doc in existing:
-				if doc.name.startswith(str(self.article_name) + "-SN-" + str(self.serial)):
-					# Obviously there's only one place
-					temp = frappe.get_doc("Places Stock", doc.name)
-					if temp.quantity == 0:
-						frappe.msgprint("The article has no quantity, add some before doing this")
-					else:
-						temp.delete()
-						to_save = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
-						to_save.update({"quantity": 0}).save()
-						frappe.msgprint(
-							"Referenced article pulled out of stock",
-							title="Confirmation",
-						)
+				# frappe.throw(str(doc.name))
+				# if doc.name.startswith(str(self.article_name) + "-SN-" + str(self.serial)):
+				# Obviously there's only one place
+				temp = frappe.get_doc("Places Stock", doc.name)
+				if temp.quantity == 0:
+					frappe.msgprint("The article has no quantity, add some before doing this")
+				else:
+					temp.delete()
+					to_save = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
+					to_save.update({"quantity": 0}).save()
+					frappe.msgprint(
+						"Referenced article pulled out of stock",
+						title="Confirmation",
+					)
+			# frappe.throw("ah")
 
 	def _pull_normal(self):
 		existing = frappe.get_all(
@@ -558,7 +570,9 @@ class Movement(Document):
 
 				to_save = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
 				if new_quantity <= 0:
-					to_save.delete(force=True)
+					if to_save.composition is None:
+						frappe.throw("oui")
+						to_save.delete(force=True)
 				else:
 					to_save.update({"quantity": int(new_quantity)}).save()
 			frappe.msgprint("Articles retirés avec succès")

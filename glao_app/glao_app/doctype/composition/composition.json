@@ -6,7 +6,8 @@
  "engine": "InnoDB",
  "field_order": [
   "nomenclature",
-  "items"
+  "items",
+  "place"
  ],
  "fields": [
   {
@@ -20,12 +21,19 @@
    "fieldtype": "Table",
    "label": "Items",
    "options": "Composition Items"
+  },
+  {
+   "fieldname": "place",
+   "fieldtype": "Link",
+   "label": "Place",
+   "link_filters": "[[\"Places\", \"is_group\",\"=\",0]]",
+   "options": "Places"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-21 15:22:50.852612",
+ "modified": "2026-06-03 10:24:27.316475",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Composition",

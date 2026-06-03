@@ -20,6 +20,7 @@ class CompositionItems(Document):
 		parentfield: DF.Data
 		parenttype: DF.Data
 		quantity: DF.Int
+		saved_place: DF.Link | None
 	# end: auto-generated types
 
 	pass
