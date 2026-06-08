@@ -17,6 +17,7 @@
   "serial",
   "is_referenced",
   "second",
+  "has_batch_no",
   "placetostock",
   "total_quantity",
   "quantity_to_manipulate",
@@ -68,7 +69,7 @@
    "options": "Places"
   },
   {
-   "depends_on": "eval:doc.type==\"Transfert\" || (doc.type==\"Pull\" && doc.second==0) || doc.type==\"Register\";",
+   "depends_on": "eval:doc.type==\"Transfert\" || (doc.type==\"Pull\" && (doc.second==0 || doc.has_batch_no)) || doc.type==\"Register\";",
    "fieldname": "source_place",
    "fieldtype": "Autocomplete",
    "label": "Source place"
@@ -104,6 +105,7 @@
    "fieldname": "article_from_stock",
    "fieldtype": "Link",
    "label": "Article",
+   "link_filters": "[[\"Stock\", \"quantity\",\">\", 0]]",
    "options": "Stock"
   },
   {
@@ -130,7 +132,7 @@
    "label": "second"
   },
   {
-   "depends_on": "eval:doc.article_from_stock && doc.second==0;",
+   "depends_on": "eval:(doc.type==\"Pull\" || doc.type ==\"Transfert\") && (doc.second == 0 || doc.has_batch_no);",
    "fieldname": "quantity_to_manipulate",
    "fieldtype": "Int",
    "label": "Quantity to manipulate"
@@ -212,12 +214,20 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "re_des"
+  },
+  {
+   "default": "0",
+   "fetch_from": "article_from_stock.batch_no",
+   "fieldname": "has_batch_no",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "has_batch_no"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-01 10:31:07.138322",
+ "modified": "2026-06-08 10:02:31.727294",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Movement",

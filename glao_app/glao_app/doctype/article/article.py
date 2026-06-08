@@ -1,6 +1,7 @@
 # Copyright (c) 2026, Frappe Technologies and contributors
 # For license information, please see license.txt
 
+from operator import contains
 import frappe
 from frappe.model.document import Document
 from frappe.model.naming import make_autoname
@@ -62,5 +63,9 @@ class Article(Document):
 					title="⚠️ Deletion of an assembly ⚠️",
 					indicator="red",
 				)
+
+	def validate(self):
+		if contains(str(self.manufacturer), " "):
+			frappe.throw("A blank space is present in the manufacturer")
 
 	pass

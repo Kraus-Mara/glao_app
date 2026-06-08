@@ -10,6 +10,7 @@
   "section_break_vqha",
   "column_break_omms",
   "dmc_items",
+  "gestion_items",
   "column_break_gzfk",
   "status",
   "ship",
@@ -91,12 +92,18 @@
    "fieldname": "details_tab",
    "fieldtype": "Tab Break",
    "label": "Details"
+  },
+  {
+   "fieldname": "gestion_items",
+   "fieldtype": "Table",
+   "label": "Items de DMC",
+   "options": "Gestion DMC Items"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-01 13:36:45.946282",
+ "modified": "2026-06-05 13:36:36.302957",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC",

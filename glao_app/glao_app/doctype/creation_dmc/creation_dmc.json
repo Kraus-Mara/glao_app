@@ -10,7 +10,9 @@
   "project",
   "dmc_name",
   "delivery_address",
-  "dmc_items"
+  "dmc_items",
+  "compositions",
+  "amended_from"
  ],
  "fields": [
   {
@@ -40,12 +42,29 @@
    "fieldtype": "Data",
    "label": "DMC Name",
    "placeholder": "To easily find your DMC"
+  },
+  {
+   "fieldname": "compositions",
+   "fieldtype": "Table",
+   "label": "Compositions",
+   "options": "DMC Compositions"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Creation DMC",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2026-04-01 11:49:50.667270",
+ "modified": "2026-06-05 09:26:27.454938",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Creation DMC",

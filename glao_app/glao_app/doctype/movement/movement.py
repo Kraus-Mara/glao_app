@@ -5,7 +5,7 @@ from hashlib import new
 from warnings import filters
 import frappe
 from frappe.core.doctype.doctype import doctype
-from frappe.exceptions import UniqueValidationError
+from frappe.exceptions import NotFound, UniqueValidationError
 from frappe.model.document import Document
 from frappe.types import DF
 from frappe.utils import now
@@ -34,6 +34,7 @@ class Movement(Document):
 		designation: DF.Data | None
 		designation_add: DF.Data | None
 		designation_pull: DF.Data | None
+		has_batch_no: DF.Data | None
 		is_referenced: DF.Check
 		movement_date: DF.Datetime | None
 		placetostock: DF.Table[PlacesStock]
@@ -420,7 +421,7 @@ class Movement(Document):
 					"place_table": [
 						{
 							"doctype": "Places Stock",
-							"name": str(self.article) + str(doc.place),
+							# "name": str(self.article) + str(doc.place),
 							"place": doc.place,
 							"quantity": new_place_qty,
 							"article": self.article,
@@ -444,10 +445,18 @@ class Movement(Document):
 			frappe.throw("An error occured : 444")
 
 	def _creer_instances(self):
-		if frappe.get_doc("Article", str(self.article)).is_assembly:
-			frappe.throw("yeah")
-		else:
-			frappe.throw("no")
+		throw_msg = []
+		doc_for_assembly = frappe.get_doc("Article", str(self.article))
+		if doc_for_assembly.is_assembly:
+			for row in doc_for_assembly.items:
+				exists = frappe.get_all("Stock", filters=[["article", "like", str(row.item)]])
+				if len(exists) == 0:
+					throw_msg.append(
+						"Item jamais instancié : " + str(row.shortname) + " (" + str(row.item) + ")"
+					)
+		if len(throw_msg) > 0:
+			frappe.throw(throw_msg, as_list=True)
+
 		for row in self.placetostock:
 			if row.quantity < 0:
 				frappe.throw("Quantity issue")
@@ -488,41 +497,76 @@ class Movement(Document):
 	@frappe.whitelist()
 	def scrap_sources(self):
 		if self.article_from_stock:
-			existing = frappe.get_doc("Stock", self.article_from_stock, for_update=True)
+			existing = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
+			# frappe.msgprint(str(existing.place_table[0]))
 		else:
-			existing = frappe.get_doc("Stock", self.article_to_register, for_update=True)
+			existing = frappe.get_doc("Stock", str(self.article_to_register), for_update=True)
 
 		sources = []
 		for row in existing.place_table:
-			sources.append(row.place)
-
+			sources.append({"place": row.place, "quantity": row.quantity})
 		return sources
 
 	def _pull_referenced(self):
-		existing = frappe.get_all(
-			"Places Stock",
-			filters=[
-				["article", "like", self.article_name],
-				["parent", "like", self.article_from_stock],
-			],
-		)
-		if existing:
-			for doc in existing:
-				# frappe.throw(str(doc.name))
-				# if doc.name.startswith(str(self.article_name) + "-SN-" + str(self.serial)):
-				# Obviously there's only one place
-				temp = frappe.get_doc("Places Stock", doc.name)
-				if temp.quantity == 0:
-					frappe.msgprint("The article has no quantity, add some before doing this")
-				else:
-					temp.delete()
-					to_save = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
-					to_save.update({"quantity": 0}).save()
-					frappe.msgprint(
-						"Referenced article pulled out of stock",
-						title="Confirmation",
-					)
-			# frappe.throw("ah")
+		# we should first check if this is a referenced article with a batch number ( that decides
+		# if we need to move more than one item)
+		checker = frappe.get_doc("Stock", self.article_from_stock)
+		if checker.batch_no:
+			existing = frappe.get_all(
+				"Places Stock",
+				filters=[
+					["article", "like", self.article_name],
+					["parent", "like", self.article_from_stock],
+					["place", "like", self.source_place],
+				],
+			)
+			doc = frappe.get_doc("Places Stock", str(existing[0].name), for_update=True)
+			new_qty = doc.quantity - self.quantity_to_manipulate
+			if new_qty < 0:
+				frappe.throw("Quantité à manipuler trop grande")
+			doc.delete()
+			to_insert = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
+			to_insert.append(
+				"place_table",
+				{
+					"doctype": "Places Stock",
+					"place": self.source_place,
+					"quantity": new_qty,
+					"article": self.article_name,
+				},
+			).insert(ignore_permissions=True)
+			to_insert.save()
+			tot_qty = 0
+			new_doc = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
+			for row in new_doc.place_table:
+				tot_qty += row.quantity
+			frappe.db.set_value("Stock", str(self.article_from_stock), "quantity", tot_qty)
+			# frappe.throw(str(to_insert.name))
+		else:
+			existing = frappe.get_all(
+				"Places Stock",
+				filters=[
+					["article", "like", self.article_name],
+					["parent", "like", self.article_from_stock],
+				],
+			)
+			if existing:
+				for doc in existing:
+					# frappe.throw(str(doc.name))
+					# if doc.name.startswith(str(self.article_name) + "-SN-" + str(self.serial)):
+					# Obviously there's only one place
+					temp = frappe.get_doc("Places Stock", doc.name)
+					if temp.quantity == 0:
+						frappe.msgprint("The article has no quantity, add some before doing this")
+					else:
+						temp.delete()
+						to_save = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
+						to_save.update({"quantity": 0}).save()
+						frappe.msgprint(
+							"Referenced article pulled out of stock",
+							title="Confirmation",
+						)
+		# frappe.throw("ah")
 
 	def _pull_normal(self):
 		existing = frappe.get_all(
@@ -571,7 +615,7 @@ class Movement(Document):
 				to_save = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
 				if new_quantity <= 0:
 					if to_save.composition is None:
-						frappe.throw("oui")
+						# frappe.throw("oui")
 						to_save.delete(force=True)
 				else:
 					to_save.update({"quantity": int(new_quantity)}).save()
@@ -609,8 +653,6 @@ class Movement(Document):
 			frappe.msgprint("Referenced article transfered", title="Confirmation")
 
 	def _transfert_normal(self):
-		tot_qty = frappe.get_doc("Stock", str(self.article_from_stock)).quantity
-		# frappe.throw(str(tot_qty))
 		source = frappe.get_all(
 			"Places Stock",
 			filters=[
@@ -627,38 +669,54 @@ class Movement(Document):
 				self._pull_normal()  # Pull quantity_to_manipulate from source_place
 				existing = frappe.get_all(
 					"Places Stock",
-					filters={"article": self.article, "place": self.target_place},
+					filters={"article": self.article_name, "place": self.target_place},
 				)
 				if existing:
-					# frappe.throw(str(doc))
+					# Delete and replace
+					all = frappe.get_all(
+						"Places Stock",
+						filters=[
+							["article", "like", str(self.article_from_stock)],
+							["place", "like", str(self.target_place)],
+						],
+					)
+					row_qty = (
+						frappe.get_doc("Places Stock", str(all[0].name)).quantity
+						+ self.quantity_to_manipulate
+					)
+					to_modify = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
+					frappe.get_doc("Places Stock", str(all[0].name)).delete()
+					to_modify.append(
+						"place_table",
+						{
+							"doctype": "Places Stock",
+							"place": self.target_place,
+							"quantity": row_qty,
+							"article": self.article_name,
+						},
+					)
+					to_modify.save()
 
-					frappe.db.set_value("Places Stock", existing[0].name, "quantity", new_qty)
-
-					# frappe.throw(str(doc))
-					# self.quantities_manipulation(doc, "add")  # not tested yet
 				else:
 					to_insert = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
-					to_insert.update(
+					# frappe.throw(str(to_insert))
+					to_insert.append(
+						"place_table",
 						{
-							"article": self.article,
-							"is_referenced": self.is_referenced,
+							"doctype": "Places Stock",
+							"place": self.target_place,
 							"quantity": self.quantity_to_manipulate,
-							"place_table": [
-								{
-									"doctype": "Places Stock",
-									"name": str(self.article_from_stock) + str(self.target_place),
-									"place": self.target_place,
-									"quantity": self.quantity_to_manipulate,
-									"article": self.article_from_stock,
-								}
-							],
-						}
-					).insert(ignore_if_duplicate=True)
-				# frappe.throw(str(doc))
-				frappe.db.set_value(
-					"Stock", self.article_from_stock, "quantity", tot_qty - self.quantity_to_manipulate
-				)
-				# self.quantity_calculus()  # Updating the quantities of the self.article Stock
+							"article": self.article_name,
+						},
+					)
+					to_insert.save()
+					# frappe.throw("dans le bon")
+				d = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
+				tot_row = 0
+				for row in d.place_table:
+					tot_row += row.quantity
+				frappe.db.set_value("Stock", str(self.article_from_stock), "quantity", tot_row)
+			frappe.msgprint("articles déplacés")
 
 
 pass

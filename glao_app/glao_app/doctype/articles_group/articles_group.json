@@ -9,6 +9,7 @@
   "section_break_a6ve",
   "group_name",
   "full_group_name",
+  "periodicity_in_days",
   "lft",
   "rgt",
   "is_group",
@@ -66,13 +67,18 @@
    "ignore_user_permissions": 1,
    "label": "Parent Articles Group",
    "options": "Articles Group"
+  },
+  {
+   "fieldname": "periodicity_in_days",
+   "fieldtype": "Int",
+   "label": "Periodicity in days"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2026-05-22 14:45:38.946539",
+ "modified": "2026-06-05 16:11:44.678142",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Articles Group",

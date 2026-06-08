@@ -5,9 +5,9 @@ frappe.ui.form.on("Movement", {
     article_from_stock(frm) {
         if (frm.doc.article_from_stock) {
             frm.call("scrap_sources").then(({message: sources}) => {
-                const data = sources.map(path => ({
-                    value: path,
-                    label: path
+                const data = sources.map(item => ({
+                    value: item.place,
+                    label: `${item.place} (${item.quantity} disponible(s))`
                 }));
                 frm.fields_dict.source_place.set_data(data);
             })
@@ -16,9 +16,9 @@ frappe.ui.form.on("Movement", {
     article_to_register(frm) {
         if (frm.doc.article_to_register) {
             frm.call("scrap_sources").then(({message: sources}) => {
-                const data = sources.map(path => ({
-                    value: path,
-                    label: path
+                const data = sources.map(item => ({
+                    value: item.place,
+                    label: `${item.place} (${item.quantity} disponible(s))`
                 }));
                 frm.fields_dict.source_place.set_data(data);
             })
@@ -35,4 +35,3 @@ frappe.ui.form.on("Movement", {
         }
     }
 });
-

@@ -141,23 +141,23 @@ fixtures = [{"dt": "Workspace", "filters": [["module", "=", "Glao App"]]}]
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-#   "all": [
-#       "glao_app.tasks.all"
-#   ],
-#   "daily": [
-#       "glao_app.tasks.daily"
-#   ],
-#   "hourly": [
-#       "glao_app.tasks.hourly"
-#   ],
-#   "weekly": [
-#       "glao_app.tasks.weekly"
-#   ],
-#   "monthly": [
-#       "glao_app.tasks.monthly"
-#   ],
-# }
+scheduler_events = {
+  # "all": [
+  #     "glao_app.tasks.all"
+  # ],
+  "daily": [
+      "glao_app.tasks.check_ref_events"
+  ],
+  # "hourly": [
+  #     "glao_app.tasks.hourly"
+  # ],
+  # "weekly": [
+  #     "glao_app.tasks.weekly"
+  # ],
+  # "monthly": [
+  #     "glao_app.tasks.monthly"
+  # ],
+}
 
 # Testing
 # -------

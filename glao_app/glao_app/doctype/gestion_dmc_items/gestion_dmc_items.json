@@ -1,0 +1,60 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-05 11:30:03.177173",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "article",
+  "quantity",
+  "item_from_stock",
+  "source_place",
+  "movement_ref"
+ ],
+ "fields": [
+  {
+   "fieldname": "article",
+   "fieldtype": "Link",
+   "label": "Article souhait\u00e9",
+   "options": "Article"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "label": "Quantity"
+  },
+  {
+   "fieldname": "item_from_stock",
+   "fieldtype": "Link",
+   "label": "Article",
+   "options": "Stock"
+  },
+  {
+   "fieldname": "source_place",
+   "fieldtype": "Link",
+   "label": "Source place",
+   "options": "Places"
+  },
+  {
+   "fieldname": "movement_ref",
+   "fieldtype": "Data",
+   "label": "ref du move"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-06-05 13:41:11.147581",
+ "modified_by": "Administrator",
+ "module": "Glao App",
+ "name": "Gestion DMC Items",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
