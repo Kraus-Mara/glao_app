@@ -10,6 +10,7 @@
   "section_break_eo9g",
   "article_name",
   "shortname",
+  "manufacturer_name",
   "manufacturer",
   "old_code",
   "group",
@@ -160,15 +161,21 @@
    "in_filter": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Manufacturer",
+   "label": "Reference",
    "reqd": 1,
    "unique": 1
+  },
+  {
+   "fieldname": "manufacturer_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Manufacturer"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-03 14:25:29.076803",
+ "modified": "2026-06-12 16:01:50.247849",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Article",

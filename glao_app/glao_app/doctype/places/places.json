@@ -48,8 +48,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Place Name",
-   "reqd": 1,
-   "unique": 1
+   "reqd": 1
   },
   {
    "fieldname": "place_rules",
@@ -153,7 +152,7 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2026-05-21 11:01:33.203589",
+ "modified": "2026-06-15 10:52:58.083143",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Places",

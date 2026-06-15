@@ -16,16 +16,22 @@ class Composition(Document):
 		from frappe.types import DF
 		from glao_app.glao_app.doctype.composition_items.composition_items import CompositionItems
 
+		amended_from: DF.Link | None
 		items: DF.Table[CompositionItems]
 		nomenclature: DF.Link | None
+		not_available: DF.Check
 		place: DF.Link | None
+		project: DF.Link | None
 	# end: auto-generated types
 
 	def autoname(self):
 		self.name = make_autoname(str(self.nomenclature) + "-.##.")
 
-	def validate(self):
-		self._link_stocks()
+	def on_submit(self):
+		return 0
+
+	# def validate(self):
+	#   self._link_stocks()
 
 	def on_trash(self):
 		self._unlink_stocks()

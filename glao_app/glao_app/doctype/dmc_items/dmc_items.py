@@ -15,6 +15,7 @@ class DMCItems(Document):
 		from frappe.types import DF
 
 		article: DF.Link | None
+		designation: DF.Data | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data

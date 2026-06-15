@@ -9,15 +9,14 @@
   "dmc_tab",
   "section_break_vqha",
   "column_break_omms",
-  "dmc_items",
   "gestion_items",
-  "column_break_gzfk",
+  "compositions_de_dmc",
   "status",
-  "ship",
-  "ship_partially",
+  "yeah",
   "details_tab",
   "column_break_uabz",
   "project",
+  "client",
   "dmc_name",
   "delivery_address"
  ],
@@ -45,34 +44,10 @@
    "label": "Delivery address"
   },
   {
-   "fieldname": "dmc_items",
-   "fieldtype": "Link",
-   "label": "Items",
-   "options": "Stock"
-  },
-  {
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
    "options": "Untreated\nValidated\nPartially validated"
-  },
-  {
-   "button_color": "Success",
-   "depends_on": "eval:doc.status==\"Validated\";",
-   "fieldname": "ship",
-   "fieldtype": "Button",
-   "label": "Ship"
-  },
-  {
-   "button_color": "Warning",
-   "depends_on": "eval:doc.status==\"Partially validated\";",
-   "fieldname": "ship_partially",
-   "fieldtype": "Button",
-   "label": "Ship partially"
-  },
-  {
-   "fieldname": "column_break_gzfk",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "column_break_uabz",
@@ -98,12 +73,29 @@
    "fieldtype": "Table",
    "label": "Items de DMC",
    "options": "Gestion DMC Items"
+  },
+  {
+   "fieldname": "compositions_de_dmc",
+   "fieldtype": "Table",
+   "label": "Compositions de DMC",
+   "options": "Gestion DMC Compositions"
+  },
+  {
+   "fieldname": "yeah",
+   "fieldtype": "Autocomplete",
+   "label": "yeah"
+  },
+  {
+   "fetch_from": "project.company",
+   "fieldname": "client",
+   "fieldtype": "Data",
+   "label": "Client"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-05 13:36:36.302957",
+ "modified": "2026-06-15 10:19:16.074307",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC",

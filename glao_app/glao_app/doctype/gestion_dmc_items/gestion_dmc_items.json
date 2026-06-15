@@ -7,10 +7,13 @@
  "engine": "InnoDB",
  "field_order": [
   "article",
+  "designation",
   "quantity",
   "item_from_stock",
+  "true_quantity",
   "source_place",
-  "movement_ref"
+  "movement_ref",
+  "is_referenced"
  ],
  "fields": [
   {
@@ -22,31 +25,53 @@
   {
    "fieldname": "quantity",
    "fieldtype": "Int",
-   "label": "Quantity"
+   "label": "Quantity asked"
   },
   {
    "fieldname": "item_from_stock",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Article",
+   "link_filters": "[[\"Stock\", \"quantity\", \">\", 0]]",
    "options": "Stock"
   },
   {
    "fieldname": "source_place",
-   "fieldtype": "Link",
-   "label": "Source place",
-   "options": "Places"
+   "fieldtype": "Autocomplete",
+   "label": "Source place"
   },
   {
    "fieldname": "movement_ref",
    "fieldtype": "Data",
    "label": "ref du move"
+  },
+  {
+   "fetch_from": "article.shortname",
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Designation"
+  },
+  {
+   "fieldname": "true_quantity",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "True quantity"
+  },
+  {
+   "default": "0",
+   "fetch_from": "article.is_referenced",
+   "fieldname": "is_referenced",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "is_referenced"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-06-05 13:41:11.147581",
+ "modified": "2026-06-12 09:19:46.596482",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC Items",

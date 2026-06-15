@@ -17,6 +17,7 @@
   "serial_no",
   "batch_no",
   "quantity",
+  "quantity_in_spie_tm",
   "code_spie_tm",
   "place_table",
   "events",
@@ -155,11 +156,16 @@
    "fieldtype": "Link",
    "label": "place_saved",
    "options": "Places"
+  },
+  {
+   "fieldname": "quantity_in_spie_tm",
+   "fieldtype": "Int",
+   "label": "quantity in SPIE TM"
   }
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-06-01 10:47:01.607933",
+ "modified": "2026-06-15 13:32:00.906287",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",

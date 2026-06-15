@@ -8,6 +8,7 @@
  "field_order": [
   "section_break_if6x",
   "article",
+  "designation",
   "quantity"
  ],
  "fields": [
@@ -29,13 +30,20 @@
    "fieldtype": "Int",
    "in_list_view": 1,
    "label": "Quantity"
+  },
+  {
+   "fetch_from": "article.shortname",
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Designation"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-02 10:55:50.610476",
+ "modified": "2026-06-10 15:15:06.490288",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "DMC Items",

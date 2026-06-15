@@ -12,7 +12,8 @@
   "article",
   "serial",
   "batch",
-  "next_event_date"
+  "next_event_date",
+  "external"
  ],
  "fields": [
   {
@@ -56,13 +57,21 @@
    "fieldname": "next_event_date",
    "fieldtype": "Date",
    "label": "Next event date"
+  },
+  {
+   "default": "0",
+   "fetch_from": "place.external",
+   "fieldname": "external",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "external"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-05-22 14:54:53.234270",
+ "modified": "2026-06-15 13:59:37.600607",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Places Stock",

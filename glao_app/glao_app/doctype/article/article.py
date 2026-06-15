@@ -29,6 +29,7 @@ class Article(Document):
 		is_referenced: DF.Check
 		items: DF.Table[AssemblyItems]
 		manufacturer: DF.Data
+		manufacturer_name: DF.Data | None
 		notes: DF.Text | None
 		old_code: DF.Data | None
 		providers: DF.Table[ArticleProviders]

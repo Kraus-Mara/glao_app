@@ -5,7 +5,7 @@
 from frappe.model.document import Document
 
 
-class GestionDMCItems(Document):
+class GestionDMCCompositions(Document):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
 
@@ -14,17 +14,10 @@ class GestionDMCItems(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		article: DF.Link | None
-		designation: DF.Data | None
-		is_referenced: DF.Check
-		item_from_stock: DF.Link | None
-		movement_ref: DF.Data | None
+		composition: DF.Link | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
-		quantity: DF.Int
-		source_place: DF.Autocomplete | None
-		true_quantity: DF.Int
 	# end: auto-generated types
 
 	pass

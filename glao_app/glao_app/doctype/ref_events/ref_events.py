@@ -14,6 +14,7 @@ class RefEvents(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		already_checked: DF.Check
 		article: DF.Link | None
 		batch_no: DF.Data | None
 		event: DF.Literal["VGP", "DLU", "End of life", "Other"]

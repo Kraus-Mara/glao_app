@@ -27,16 +27,45 @@ class CreationDMC(Document):
 	def on_submit(self):
 		self._create_gestion_dmc()
 
+	def _gen_item(self, to_append: list, doctype: str, article, quantity: int, serial_no: bool):
+		if serial_no:
+			for count in range(quantity):
+				to_append.append(
+					{
+						"doctype": doctype,
+						"article": article,
+						"quantity": 1,
+						"item_from_stock": None,
+						"source_place": None,
+					}
+				)
+		else:
+			to_append.append(
+				{
+					"doctype": doctype,
+					"article": article,
+					"quantity": quantity,
+					"item_from_stock": None,
+					"source_place": None,
+				}
+			)
+
+	# def _gen_compo(self, to_append: list):
+
 	def _create_gestion_dmc(self):
 		gestion_items = []
 		for row in self.dmc_items:
-			gestion_items.append(
+			list_article_from_stock = frappe.get_all("Stock", filters=[["article", "like", str(row.article)]])
+			article_example = frappe.get_doc("Stock", str(list_article_from_stock[0].name))
+			self._gen_item(
+				gestion_items, "Gestion DMC Items", row.article, row.quantity, article_example.serial_no
+			)
+		gestion_compo = []
+		for rowc in self.compositions:
+			gestion_compo.append(
 				{
-					"doctype": "Gestion DMC Items",
-					"article": row.article,
-					"quantity": row.quantity,
-					"item_from_stock": None,
-					"source_place": None,
+					"doctype": "Gestion DMC Compositions",
+					"composition": rowc.composition,
 				}
 			)
 
@@ -49,6 +78,7 @@ class CreationDMC(Document):
 				"creation_dmc": self.name,
 				"status": "Untreated",
 				"gestion_items": gestion_items,
+				"compositions_de_dmc": gestion_compo,
 			}
 		).insert(ignore_permissions=True)
 
