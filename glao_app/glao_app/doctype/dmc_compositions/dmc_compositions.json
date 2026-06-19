@@ -6,23 +6,30 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "composition"
+  "nomenclature",
+  "quantity"
  ],
  "fields": [
   {
-   "fieldname": "composition",
+   "fieldname": "nomenclature",
    "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Composition",
-   "options": "Composition"
+   "label": "Nomenclature",
+   "options": "Nomenclature"
+  },
+  {
+   "default": "0",
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "label": "Quantity"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-06-04 16:32:10.634076",
+ "modified": "2026-06-18 09:26:00.247196",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "DMC Compositions",

@@ -1,10 +1,12 @@
 # Copyright (c) 2026, Frappe Technologies and contributors
 # For license information, please see license.txt
 
+from __future__ import unicode_literals
 from operator import contains
 import frappe
 from frappe.model.document import Document
 from frappe.model.naming import make_autoname
+import unidecode
 
 
 class Article(Document):
@@ -66,6 +68,10 @@ class Article(Document):
 				)
 
 	def validate(self):
+		self.article_name = unidecode.unidecode(str(self.article_name).upper())
+		self.shortname = unidecode.unidecode(str(self.shortname).upper())
+		self.manufacturer_name = unidecode.unidecode(str(self.manufacturer_name).upper())
+		self.manufacturer = unidecode.unidecode(str(self.manufacturer).upper())
 		if contains(str(self.manufacturer), " "):
 			frappe.throw("A blank space is present in the manufacturer")
 

@@ -7,12 +7,14 @@
  "engine": "InnoDB",
  "field_order": [
   "dmc_tab",
+  "starting_date",
+  "column_break_ryhu",
+  "end_date",
   "section_break_vqha",
   "column_break_omms",
   "gestion_items",
   "compositions_de_dmc",
   "status",
-  "yeah",
   "details_tab",
   "column_break_uabz",
   "project",
@@ -81,21 +83,32 @@
    "options": "Gestion DMC Compositions"
   },
   {
-   "fieldname": "yeah",
-   "fieldtype": "Autocomplete",
-   "label": "yeah"
-  },
-  {
    "fetch_from": "project.company",
    "fieldname": "client",
    "fieldtype": "Data",
    "label": "Client"
+  },
+  {
+   "fetch_from": "project.starting_date",
+   "fieldname": "starting_date",
+   "fieldtype": "Date",
+   "label": "Starting date"
+  },
+  {
+   "fetch_from": "project.end_date",
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End date"
+  },
+  {
+   "fieldname": "column_break_ryhu",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-15 10:19:16.074307",
+ "modified": "2026-06-19 13:54:04.799684",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC",

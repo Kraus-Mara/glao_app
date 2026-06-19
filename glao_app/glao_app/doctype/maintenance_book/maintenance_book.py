@@ -14,7 +14,9 @@ class Maintenancebook(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		date_initiale_intervention_réalisée: DF.Data | None
+		intervention: DF.Data | None
+		intervention_date: DF.Date | None
+		nom: DF.Data | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data

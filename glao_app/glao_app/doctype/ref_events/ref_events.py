@@ -26,6 +26,7 @@ class RefEvents(Document):
 		parentfield: DF.Data
 		parenttype: DF.Data
 		passed: DF.Check
+		second_file: DF.Attach | None
 	# end: auto-generated types
 
 	pass

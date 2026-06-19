@@ -15,6 +15,7 @@ class GestionDMCItems(Document):
 		from frappe.types import DF
 
 		article: DF.Link | None
+		closest_event: DF.Date | None
 		designation: DF.Data | None
 		is_referenced: DF.Check
 		item_from_stock: DF.Link | None
@@ -23,6 +24,8 @@ class GestionDMCItems(Document):
 		parentfield: DF.Data
 		parenttype: DF.Data
 		quantity: DF.Int
+		reserved: DF.Check
+		saved_item: DF.Link | None
 		source_place: DF.Autocomplete | None
 		true_quantity: DF.Int
 	# end: auto-generated types

@@ -15,6 +15,7 @@
   "article",
   "batch_no",
   "file",
+  "second_file",
   "already_checked"
  ],
  "fields": [
@@ -47,6 +48,7 @@
   {
    "fieldname": "increment",
    "fieldtype": "Int",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Fr\u00e9quence de suivi",
    "placeholder": "In days"
@@ -82,13 +84,19 @@
    "fieldtype": "Check",
    "hidden": 1,
    "label": "already_checked"
+  },
+  {
+   "fieldname": "second_file",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": "Second file"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-06-10 10:08:06.213847",
+ "modified": "2026-06-17 15:40:15.164385",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Ref Events",

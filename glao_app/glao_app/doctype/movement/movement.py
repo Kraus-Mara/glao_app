@@ -134,6 +134,30 @@ class Movement(Document):
 			)
 			qty = sum(row.quantity if row.external == 0 else 0 for row in places_stock)
 			frappe.db.set_value("Stock", str(self.article_referenced), "quantity_in_spie_tm", qty)
+		elif self.article_to_register:
+			# we suppose we're about to modify the not yet registered item AND the registered items
+			# first we count the items thats are not yet registered
+			all_stocks_not_registered = frappe.get_all(
+				"Stock",
+				filters=[["article", "like", str(self.article_to_register)], ["not_yet_registered", "=", 1]],
+			)
+			if all_stocks_not_registered:
+				qty = sum(
+					row.quantity if row.external == 0 else 0
+					for row in frappe.get_doc("Stock", str(all_stocks_not_registered[0].name)).place_table
+				)
+				# frappe.throw(str(qty))
+				frappe.db.set_value(
+					"Stock", str(all_stocks_not_registered[0].name), "quantity_in_spie_tm", qty
+				)
+
+			all_stocks_registered = frappe.get_all(
+				"Stock",
+				filters=[["article", "like", str(self.article_to_register)], ["not_yet_registered", "=", 0]],
+			)
+			for doc in all_stocks_registered:
+				qty = sum(row.quantity for row in frappe.get_doc("Stock", str(doc.name)).place_table)
+				frappe.db.set_value("Stock", str(doc.name), "quantity_in_spie_tm", qty)
 		elif self.article:
 			all_places = frappe.get_all(
 				"Places Stock",
@@ -149,37 +173,18 @@ class Movement(Document):
 				fields=["quantity"],
 			)
 			qty = sum(row.quantity for row in all_places)
+			# frappe.throw(str(qty))
 			frappe.db.set_value("Stock", str(self.article_from_stock), "quantity_in_spie_tm", qty)
-		elif self.article_to_register:
-			# we suppose we're about to modify the not yet registered item AND the registered items
-			# first we count the items thats are not yet registered
-			all_stocks_not_registered = frappe.get_all(
-				"Stock",
-				filters=[["article", "like", str(self.article_to_register)], ["not_yet_registered", "=", 1]],
-				fields=["place_table"],
-			)
-			if all_stocks_not_registered:
-				qty = sum(
-					row.quantity if row.external == 0 else 0
-					for row in all_stocks_not_registered[0].place_table
-				)
-				frappe.db.set_value("Stock", str(all_stocks_not_registered[0]), "quantity_in_spie_tm", qty)
-
-			all_stocks_registered = frappe.get_all(
-				"Stock",
-				filters=[["article", "like", str(self.article_to_register)], ["not_yet_registered", "=", 0]],
-				fields=["place_table"],
-			)
-			for doc in all_stocks_registered:
-				qty = sum(row.quantity for row in doc.place_table)
-				frappe.db.set_value("Stock", str(doc), "quantity_in_spie_tm", qty)
 
 	def _creer_stock_entry(self):
-		existing = frappe.get_all("Stock", filters=[["name", "=", self.article_referenced]])
+		existing = frappe.get_all(
+			"Stock", filters=[["article", "=", self.article_referenced], ["not_yet_registered", "=", 1]]
+		)
 		if not existing:
 			frappe.get_doc(
 				{
 					"doctype": "Stock",
+					"name": str(self.article_referenced),
 					"article": self.article_referenced,
 					"is_referenced": 1,
 					"quantity": self.quantity_stock_entry,
@@ -196,7 +201,9 @@ class Movement(Document):
 			).insert(ignore_permissions=True)
 			frappe.msgprint("Stock Entry enregistrée")
 		else:
-			existing = frappe.get_all("Stock", filters=[["name", "=", self.article_referenced]])
+			existing = frappe.get_all(
+				"Stock", filters=[["article", "=", self.article_referenced], ["not_yet_registered", "=", 1]]
+			)
 			doc = frappe.get_doc("Stock", existing[0].name, for_update=True)
 			ps = frappe.get_all(
 				"Places Stock", filters=[["parent", "=", existing[0].name], ["place", "=", self.target_place]]
@@ -369,8 +376,6 @@ class Movement(Document):
 						],
 					)[0].name
 					doc = frappe.get_doc("Stock", docname, for_update=True)
-
-					# from: discuss.frappe.io/t/attributeerror-dict-object-has-no-attribute-is-new/
 					doc.quantity = 1
 					doc.set(
 						"place_table",
@@ -471,7 +476,7 @@ class Movement(Document):
 					"place_table": [
 						{
 							"doctype": "Places Stock",
-							# "name": str(self.article) + str(doc.place),
+							"name": str(self.article) + str(doc.place),
 							"place": doc.place,
 							"quantity": new_place_qty,
 							"article": self.article,
@@ -515,7 +520,7 @@ class Movement(Document):
 				# Getting all corresponding Places Stock, obviously there's only one
 				existing = frappe.get_all(
 					"Places Stock",
-					filters={"article": self.article, "place": doc.place},
+					filters=[["parent", "like", self.article], ["place", "like", doc.place]],
 				)
 				if existing:
 					self.quantities_manipulation(doc, "add")
@@ -634,7 +639,9 @@ class Movement(Document):
 			else:
 				# On doit retirer quantity_to_manipulate
 				new_place_qty = doc.quantity - self.quantity_to_manipulate
-
+				if new_place_qty == 0:
+					doc.delete()
+					return 1
 				# frappe.msgprint("quantité finale : " + str(new_place_qty))
 
 				doc.delete()  # Deleting the child, to replace
@@ -663,10 +670,9 @@ class Movement(Document):
 						new_quantity += ps.quantity
 
 				to_save = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
-				if new_quantity <= 0:
+				if new_quantity < 0:
 					if to_save.composition is None:
-						# frappe.throw("oui")
-						to_save.delete(force=True)
+						frappe.throw("How did you manage to get a negative new_quantity ?")
 				else:
 					to_save.update({"quantity": int(new_quantity)}).save()
 			frappe.msgprint("Articles retirés avec succès")
@@ -749,10 +755,6 @@ class Movement(Document):
 					to_modify.save()
 
 				else:
-					test = frappe.get_all(
-						"Stock", filters=[["article", "like", str(self.article_from_stock)]]
-					)
-					# frappe.throw(str(test))
 					to_insert = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
 					# frappe.throw(str(to_insert))
 					to_insert.append(

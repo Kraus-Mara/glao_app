@@ -25,7 +25,10 @@
   "not_yet_registered",
   "composition",
   "place_saved",
-  "carnet_de_maintenance"
+  "carnet_de_maintenance",
+  "quantit\u00e9_minimale_requise",
+  "actif",
+  "closest_event_date"
  ],
  "fields": [
   {
@@ -105,8 +108,7 @@
    "fieldname": "place_table",
    "fieldtype": "Table",
    "label": "Place(s)",
-   "options": "Places Stock",
-   "read_only": 1
+   "options": "Places Stock"
   },
   {
    "bold": 1,
@@ -161,11 +163,28 @@
    "fieldname": "quantity_in_spie_tm",
    "fieldtype": "Int",
    "label": "quantity in SPIE TM"
+  },
+  {
+   "fieldname": "quantit\u00e9_minimale_requise",
+   "fieldtype": "Int",
+   "label": "Quantit\u00e9 minimale requise"
+  },
+  {
+   "default": "0",
+   "fieldname": "actif",
+   "fieldtype": "Check",
+   "label": "Actif"
+  },
+  {
+   "fieldname": "closest_event_date",
+   "fieldtype": "Date",
+   "label": "Closest event date",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-06-15 13:32:00.906287",
+ "modified": "2026-06-19 11:51:24.211750",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",
@@ -187,7 +206,7 @@
  "route": "Stock",
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
- "search_fields": "serial_no, article, designation, batch_no, quantity",
+ "search_fields": "serial_no, article, designation, batch_no, quantity, closest_event_date",
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": []

@@ -3,6 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
+from pydantic_core.core_schema import field_after_validator_function
 
 
 class CreationDMC(Document):
@@ -21,7 +22,7 @@ class CreationDMC(Document):
 		delivery_address: DF.Data | None
 		dmc_items: DF.Table[DMCItems]
 		dmc_name: DF.Data | None
-		project: DF.Data | None
+		project: DF.Link | None
 	# end: auto-generated types
 
 	def on_submit(self):
@@ -50,24 +51,47 @@ class CreationDMC(Document):
 				}
 			)
 
-	# def _gen_compo(self, to_append: list):
+	def _gen_compo(self, to_append: list, quantity: int, nomenclature):
+		for count in range(quantity):
+			to_append.append(
+				{
+					"doctype": "Gestion DMC Compositions",
+					"nomenclature": nomenclature,
+				}
+			)
 
 	def _create_gestion_dmc(self):
 		gestion_items = []
 		for row in self.dmc_items:
-			list_article_from_stock = frappe.get_all("Stock", filters=[["article", "like", str(row.article)]])
-			article_example = frappe.get_doc("Stock", str(list_article_from_stock[0].name))
-			self._gen_item(
-				gestion_items, "Gestion DMC Items", row.article, row.quantity, article_example.serial_no
-			)
+			frappe.msgprint(str(row.article))
+			flag_serial = False
+			if frappe.get_doc("Article", str(row.article)).is_referenced:
+				# Absolutely not bug-proof
+				list_article_from_stock = frappe.get_all(
+					"Stock", filters=[["article", "like", str(row.article)]]
+				)
+				article_example = frappe.get_doc("Stock", str(list_article_from_stock[0].name))
+				if article_example.serial_no:
+					flag_serial = True
+				self._gen_item(
+					gestion_items,
+					"Gestion DMC Items",
+					row.article,
+					row.quantity,
+					flag_serial,
+				)
+
+			else:
+				self._gen_item(
+					gestion_items,
+					"Gestion DMC Items",
+					row.article,
+					row.quantity,
+					False,
+				)
 		gestion_compo = []
 		for rowc in self.compositions:
-			gestion_compo.append(
-				{
-					"doctype": "Gestion DMC Compositions",
-					"composition": rowc.composition,
-				}
-			)
+			self._gen_compo(gestion_compo, rowc.quantity, rowc.nomenclature)
 
 		frappe.get_doc(
 			{
@@ -82,4 +106,4 @@ class CreationDMC(Document):
 			}
 		).insert(ignore_permissions=True)
 
-		frappe.msgprint("GestionDMC créée avec succès", title="Confirmation")
+		frappe.msgprint("DMC créée avec succès", title="Confirmation")

@@ -6,6 +6,8 @@ from frappe.model.document import Document
 from frappe.model.naming import make_autoname
 from glao_app.glao_app.doctype.ref_events.ref_events import RefEvents
 from frappe.utils import add_to_date
+from frappe.utils import date_diff
+from frappe.utils import today
 
 
 class Stock(Document):
@@ -20,9 +22,11 @@ class Stock(Document):
 		from glao_app.glao_app.doctype.places_stock.places_stock import PlacesStock
 		from glao_app.glao_app.doctype.ref_events.ref_events import RefEvents
 
+		actif: DF.Check
 		article: DF.Link | None
 		batch_no: DF.Data | None
 		carnet_de_maintenance: DF.Table[Maintenancebook]
+		closest_event_date: DF.Date | None
 		code_spie_tm: DF.Data | None
 		composition: DF.Link | None
 		designation: DF.Data | None
@@ -34,6 +38,7 @@ class Stock(Document):
 		place_table: DF.Table[PlacesStock]
 		quantity: DF.Int
 		quantity_in_spie_tm: DF.Int
+		quantité_minimale_requise: DF.Int
 		ref_constructeur: DF.Data | None
 		serial_no: DF.Data | None
 	# end: auto-generated types
@@ -50,7 +55,8 @@ class Stock(Document):
 		self._check_dates()
 
 	def _check_dates(self):
-		for row in self.events:
+		# list(self.events) prevents any issue from the modification of a self.events element during the process
+		for row in list(self.events):
 			if row.passed and not row.already_checked:
 				if row.event == "VGP":
 					item_doc = frappe.get_doc(
@@ -64,7 +70,6 @@ class Stock(Document):
 					family = item_doc.group
 					periodicity = frappe.get_doc("Articles Group", family).periodicity_in_days
 					row.already_checked = 1
-					assert row.already_checked == 1, "ça n'a pas fonctionné"
 					self.append(
 						"events",
 						{
@@ -75,7 +80,14 @@ class Stock(Document):
 							"batch_no": row.batch_no,
 						},
 					).insert(ignore_permissions=True)
-				if row.event == "DLU" or "End of life":
+				if row.event in ["DLU", "End of life"]:
 					self.perime = 1
+			# keep the closest event date then put it in self.closest_event_date
+		for row in self.events:
+			if not row.passed and row.event_date:
+				if self.closest_event_date is None or date_diff(row.event_date, today()) < date_diff(
+					self.closest_event_date, today()
+				):
+					self.closest_event_date = row.event_date
 
 	pass

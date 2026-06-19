@@ -15,9 +15,11 @@ class GestionDMCCompositions(Document):
 		from frappe.types import DF
 
 		composition: DF.Link | None
+		nomenclature: DF.Link | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
+		quantity: DF.Int
 	# end: auto-generated types
 
 	pass

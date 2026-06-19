@@ -31,11 +31,13 @@ frappe.ui.form.on("Composition", {
             });
             Promise.all(stock_requests).then(() => {
                 let final_rows = [];
-                let is_blocked = false;
+                let missing_items_messages = [];
+
                 for (let nom_item of nomenclature_doc.items) {
                     let required_qty = flt(nom_item.quantity);
                     let available_lines = Object.values(global_stock_pool)
                         .filter(s => s.article === nom_item.item && s.remaining_qty > 0);
+
                     for (let stock_line of available_lines) {
                         if (required_qty <= 0) break;
                         let take = Math.min(required_qty, stock_line.remaining_qty);
@@ -47,21 +49,25 @@ frappe.ui.form.on("Composition", {
                         stock_line.remaining_qty -= take;
                         required_qty -= take;
                     }
+
                     if (required_qty > 0) {
-                        frappe.msgprint({
-                            title: __("Stock insuffisant"),
-                            message: __(`Article {0} ({1}) : quantité requise manquante de {2}`, [nom_item.designation, nom_item.item, required_qty]),
-                            indicator: "red",
-                        });
-                        is_blocked = true;
-                        break;
+                        missing_items_messages.push(
+                            __(`Article {0} ({1}) : quantité requise manquante de {2}`, [nom_item.designation, nom_item.item, required_qty])
+                        );
                     }
                 }
 
-                if (is_blocked) {
+                if (missing_items_messages.length > 0) {
+                    frappe.msgprint({
+                        title: __("Stock insuffisant"),
+                        message: missing_items_messages,
+                        indicator: "red",
+                        as_list: true
+                    });
                     frm.set_value("nomenclature", "");
                     return;
                 }
+
                 frm.clear_table("items");
                 final_rows.forEach(r => {
                     let row = frm.add_child("items");
