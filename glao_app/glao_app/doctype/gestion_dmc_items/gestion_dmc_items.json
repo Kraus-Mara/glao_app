@@ -12,11 +12,12 @@
   "item_from_stock",
   "true_quantity",
   "source_place",
-  "movement_ref",
   "is_referenced",
   "closest_event",
   "reserved",
-  "saved_item"
+  "saved_item",
+  "saved_place",
+  "moved_quantity"
  ],
  "fields": [
   {
@@ -42,11 +43,6 @@
    "fieldname": "source_place",
    "fieldtype": "Autocomplete",
    "label": "Source place"
-  },
-  {
-   "fieldname": "movement_ref",
-   "fieldtype": "Data",
-   "label": "ref du move"
   },
   {
    "fetch_from": "article.shortname",
@@ -80,20 +76,37 @@
    "default": "0",
    "fieldname": "reserved",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "reserved"
   },
   {
    "fieldname": "saved_item",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "saved_item",
    "options": "Stock"
+  },
+  {
+   "fieldname": "saved_place",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "saved_place",
+   "options": "Places"
+  },
+  {
+   "fieldname": "moved_quantity",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "moved_quantity"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-06-19 15:26:13.702959",
+ "modified": "2026-06-22 13:57:22.517329",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC Items",

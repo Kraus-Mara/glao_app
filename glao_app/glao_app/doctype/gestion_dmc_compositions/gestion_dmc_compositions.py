@@ -14,11 +14,13 @@ class GestionDMCCompositions(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		comp_saved: DF.Link | None
 		composition: DF.Link | None
 		nomenclature: DF.Link | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
+		place_saved: DF.Link | None
 		quantity: DF.Int
 	# end: auto-generated types
 

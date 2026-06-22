@@ -8,7 +8,9 @@
  "field_order": [
   "nomenclature",
   "composition",
-  "quantity"
+  "quantity",
+  "place_saved",
+  "comp_saved"
  ],
  "fields": [
   {
@@ -31,13 +33,25 @@
    "in_list_view": 1,
    "label": "Quantity",
    "options": "0\n1"
+  },
+  {
+   "fieldname": "place_saved",
+   "fieldtype": "Link",
+   "label": "place_saved",
+   "options": "Places"
+  },
+  {
+   "fieldname": "comp_saved",
+   "fieldtype": "Link",
+   "label": "comp_saved",
+   "options": "Composition"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-06-18 13:29:33.959356",
+ "modified": "2026-06-22 14:41:00.899123",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC Compositions",

@@ -19,13 +19,14 @@ class GestionDMCItems(Document):
 		designation: DF.Data | None
 		is_referenced: DF.Check
 		item_from_stock: DF.Link | None
-		movement_ref: DF.Data | None
+		moved_quantity: DF.Int
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
 		quantity: DF.Int
 		reserved: DF.Check
 		saved_item: DF.Link | None
+		saved_place: DF.Link | None
 		source_place: DF.Autocomplete | None
 		true_quantity: DF.Int
 	# end: auto-generated types

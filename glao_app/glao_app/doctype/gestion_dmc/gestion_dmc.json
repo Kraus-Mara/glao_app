@@ -14,6 +14,7 @@
   "column_break_omms",
   "gestion_items",
   "compositions_de_dmc",
+  "state",
   "status",
   "details_tab",
   "column_break_uabz",
@@ -48,8 +49,10 @@
   {
    "fieldname": "status",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Status",
-   "options": "Untreated\nValidated\nPartially validated"
+   "options": "Draft\nValidated\nPartially validated"
   },
   {
    "fieldname": "column_break_uabz",
@@ -103,12 +106,19 @@
   {
    "fieldname": "column_break_ryhu",
    "fieldtype": "Column Break"
+  },
+  {
+   "description": "Toute modification du document doit \u00eatre confirm\u00e9 en enregistrant sous \"Draft\" (m\u00eame avant une validation)",
+   "fieldname": "state",
+   "fieldtype": "Select",
+   "label": "State",
+   "options": "Draft\nValidated"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-19 13:54:04.799684",
+ "modified": "2026-06-22 13:54:57.422884",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC",

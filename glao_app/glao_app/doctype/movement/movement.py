@@ -9,7 +9,7 @@ from frappe.exceptions import NotFound, UniqueValidationError
 from frappe.model.document import Document
 from frappe.types import DF
 from frappe.utils import now
-
+from frappe.model.naming import make_autoname
 from frappe.utils import add_to_date
 from frappe.utils.data import today
 
@@ -55,13 +55,13 @@ class Movement(Document):
 	def autoname(self):
 		hour = now().split(".")[0].replace(":", "").replace("-", "")
 		if self.article:
-			self.name = str(hour) + " " + str(self.article)
+			self.name = make_autoname(str(hour) + " " + str(self.article) + "-.#")
 		elif self.article_from_stock:
-			self.name = str(hour) + " " + str(self.article_from_stock)
+			self.name = make_autoname(str(hour) + " " + str(self.article_from_stock) + "-.#")
 		elif self.article_referenced:
-			self.name = str(hour) + " " + str(self.article_referenced)
+			self.name = make_autoname(str(hour) + " " + str(self.article_referenced) + "-.#")
 		elif self.article_to_register:
-			self.name = str(hour) + " " + str(self.article_to_register)
+			self.name = make_autoname(str(hour) + " " + str(self.article_to_register) + "-.#")
 		else:
 			frappe.msgprint("Une erreur est survenue : probleme sur les autonames")
 

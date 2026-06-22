@@ -14,6 +14,7 @@ class CompositionItems(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		closest_event_date: DF.Date | None
 		designation: DF.Data | None
 		item: DF.Link | None
 		parent: DF.Data
