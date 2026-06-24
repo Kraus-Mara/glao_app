@@ -20,6 +20,7 @@ class CreationDMC(Document):
 		amended_from: DF.Link | None
 		compositions: DF.Table[DMCCompositions]
 		delivery_address: DF.Data | None
+		delivery_date: DF.Date | None
 		dmc_items: DF.Table[DMCItems]
 		dmc_name: DF.Data | None
 		project: DF.Link | None
@@ -90,17 +91,16 @@ class CreationDMC(Document):
 					False,
 				)
 		gestion_compo = []
-		for rowc in self.compositions:
-			self._gen_compo(gestion_compo, rowc.quantity, rowc.nomenclature)
-
+		for r in self.compositions:
+			self._gen_compo(gestion_compo, r.quantity, r.nomenclature)
 		frappe.get_doc(
 			{
 				"doctype": "Gestion DMC",
-				"dmc_name": self.dmc_name,
 				"project": self.project,
 				"delivery_address": self.delivery_address,
+				"delivery_date": self.delivery_date,
 				"creation_dmc": self.name,
-				"status": "Untreated",
+				"status": "Draft",
 				"gestion_items": gestion_items,
 				"compositions_de_dmc": gestion_compo,
 			}

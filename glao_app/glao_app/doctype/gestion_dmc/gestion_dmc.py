@@ -6,6 +6,7 @@ import frappe
 from frappe.model.document import Document
 from glao_app.glao_app.doctype.gestion_dmc_items.gestion_dmc_items import GestionDMCItems
 from glao_app.glao_app.doctype.movement import movement
+from frappe.model.naming import getseries, make_autoname
 
 
 class GestionDMC(Document):
@@ -24,6 +25,7 @@ class GestionDMC(Document):
 		client: DF.Data | None
 		compositions_de_dmc: DF.Table[GestionDMCCompositions]
 		delivery_address: DF.Data | None
+		delivery_date: DF.Date | None
 		dmc_name: DF.Data | None
 		end_date: DF.Date | None
 		gestion_items: DF.Table[GestionDMCItems]
@@ -33,6 +35,13 @@ class GestionDMC(Document):
 		status: DF.Literal["Draft", "Validated", "Partially validated"]
 	# end: auto-generated types
 
+	def autoname(self):
+		if not self.dmc_name:
+			self.name = make_autoname("DMC-.#")
+		else:
+			series = getseries(str(self.dmc_name), 1)
+			self.name = str(self.dmc_name) + "-" + series
+
 	def recup_compo(self):
 		compos = frappe.get_all("Composition")[0].name
 		frappe.db.set_value("Composition", compos, "place", "BAT2/MAG2/ETAGEREJ")
@@ -41,6 +50,8 @@ class GestionDMC(Document):
 
 	def validate(self):
 		if self.state == "Draft":
+			# self.recup_compo()
+			# return 1
 			self._save_dmc()
 
 		else:
@@ -48,52 +59,37 @@ class GestionDMC(Document):
 			self._save_dmc()
 
 	def _validation_verif(self):
-		"""Attribute the true status of the DMC depending of the state of the items"""
+		"""Attribute the status depending of the state of the items"""
 		if self.state != "Validated":
 			return
-		self.status = "Draft"  # not yet validated
 
-		cond_items_part = False
-		cond_items_val = False
-		cond_compos_val = False
-		cond_compos_part = False
+		self.status = "Draft"
 
-		# all() for validated
-		# and any() either
-		if self.gestion_items and any(
-			row.item_from_stock and row.true_quantity != 0 for row in self.gestion_items
-		):
-			cond_items_part = True
-		if all(row.item_from_stock for row in self.gestion_items):
-			cond_items_val = True
-		if all(row.composition for row in self.compositions_de_dmc):
-			cond_compos_val = True
+		items_valid = (
+			[bool(r.item_from_stock and r.true_quantity > 0) for r in self.gestion_items]
+			if self.gestion_items
+			else []
+		)
+		compos_valid = (
+			[bool(r.composition and r.quantity > 0) for r in self.compositions_de_dmc]
+			if self.compositions_de_dmc
+			else []
+		)
 
-		if self.compositions_de_dmc and any(
-			row.composition and row.quantity != 0 for row in self.compositions_de_dmc
-		):
-			cond_compos_part = True
+		has_items_val = all(items_valid) if items_valid else True
+		has_compos_val = all(compos_valid) if compos_valid else True
 
-		# validated need both tables to be True
-		if cond_items_val and cond_compos_val:
+		has_items_part = any(items_valid)
+		has_compos_part = any(compos_valid)
+
+		if has_items_val and has_compos_val:
 			self.status = "Validated"
-			return 1
-		elif cond_compos_part or cond_items_part:
+		elif has_items_part or has_compos_part:
 			self.status = "Partially validated"
-			return 1
-		err = []
-		err.append("Impossible de valider, ni même de partiellement valider : ")
-		if not cond_items_val:
-			err.append("Des items posent un problème")
-		if not cond_compos_val:
-			err.append("Des compos posent un problème")
-
-		frappe.throw(err, as_list=True)
-
-	# def _dates_verif(self):
+		else:
+			frappe.throw("Impossible de valider")
 
 	def _save_dmc(self):
-		warnings = []
 		errors = []
 
 		self._check_places()
@@ -102,7 +98,6 @@ class GestionDMC(Document):
 			if row.saved_item and row.saved_item != row.item_from_stock:
 				# did you just change the old item ?
 				# In this case, take back the item from the Book place
-				old_item = frappe.get_doc("Stock", str(row.saved_item))
 				is_ref = "-SN-" in str(row.saved_item) or "-BN-" in str(row.saved_item)
 
 				frappe.get_doc(
@@ -126,7 +121,43 @@ class GestionDMC(Document):
 				row.reserved = 0
 				row.saved_place = None
 				row.moved_quantity = 0
-
+			if row.saved_item and (row.moved_quantity != row.true_quantity):
+				is_ref = "-SN-" in str(row.saved_item) or "-BN-" in str(row.saved_item)
+				if "-SN-" in str(row.saved_item) and row.true_quantity > 1:
+					frappe.throw("Il faut ajouter une ligne pour les articles suivis en serial no")
+				res = row.moved_quantity - row.true_quantity
+				if res > 0:  # get back jojo
+					frappe.get_doc(
+						{
+							"doctype": "Movement",
+							"type": "Transfert",
+							"second": 1 if is_ref else 0,
+							"article_from_stock": row.saved_item,
+							"article_name": row.article,
+							"source_place": frappe.get_doc(
+								"Places", "CLIENTS/" + str(self.client) + "/Book"
+							).name,
+							"target_place": row.saved_place,
+							"quantity_to_manipulate": res,
+						}
+					).save(ignore_permissions=True)
+					row.moved_quantity = row.true_quantity
+				elif res < 0:  # add
+					frappe.get_doc(
+						{
+							"doctype": "Movement",
+							"type": "Transfert",
+							"second": 1 if is_ref else 0,
+							"article_from_stock": row.saved_item,
+							"article_name": row.article,
+							"target_place": frappe.get_doc(
+								"Places", "CLIENTS/" + str(self.client) + "/Book"
+							).name,
+							"source_place": row.saved_place,
+							"quantity_to_manipulate": abs(res),
+						}
+					).save(ignore_permissions=True)
+					row.moved_quantity = row.true_quantity
 			if row.reserved:
 				continue
 			if not (row.item_from_stock and row.source_place):
@@ -161,49 +192,39 @@ class GestionDMC(Document):
 
 		# compositions
 		for comp_row in self.compositions_de_dmc:
-			if comp_row.comp_saved and comp_row.comp_saved != comp_row.composition:
+			if comp_row.comp_saved and (str(comp_row.comp_saved) != str(comp_row.composition)):
 				frappe.db.set_value("Composition", comp_row.comp_saved, "place", comp_row.place_saved)
 				frappe.db.set_value("Composition", comp_row.comp_saved, "not_available", 0)
 				comp_row.place_saved = None
 				comp_row.comp_saved = None
-			if not comp_row.composition or comp_row.quantity <= 0:
+			if not comp_row.composition or (comp_row.quantity <= 0):
 				continue
-
-			comp_doc = frappe.get_doc("Composition", str(comp_row.composition))
-			# if comp_doc.not_available:
-			# frappe.throw(str(comp_row.composition) + " n'est pas disponible")
-			comp_row.place_saved = frappe.get_doc("Composition", str(comp_row.composition)).place
-			self._composition_booking(
-				comp_row, frappe.get_doc("Places", "CLIENTS/" + str(self.client) + "/Book").name
-			)
-			comp_row.moved_quantity = comp_row.quantity
-			comp_row.comp_saved = comp_row.composition
+			if not comp_row.comp_saved:
+				comp_row.place_saved = frappe.get_doc("Composition", str(comp_row.composition)).place
+				self._composition_booking(
+					comp_row, frappe.get_doc("Places", "CLIENTS/" + str(self.client) + "/Book").name
+				)
+				comp_row.moved_quantity = comp_row.quantity
+				comp_row.comp_saved = comp_row.composition
 		# if warnings:
 		#   frappe.msgprint(warnings, title="Attention", as_list=True)
 
 		if errors:
 			frappe.throw("\n".join(errors), title="Erreurs lors du Pull")
 
-		self.status = "Draft"
+		# self.status = "Draft"
 		frappe.msgprint("DMC enregistrée, articles réservés", title="Confirmation")
 		# Passed through all without throwing an error
-		if self.status == "Partially Validated":
-			self.create_next_dmc()
-		if not self.status == "Draft":
-			self._send_dmc()
-
-	def _send_dmc(self):
-		"""Takes every items in CLIENTS/BOOK and call _transfer_item() to CLIENTS/SITE"""
-		for row in self.gestion_items:
-			if row.reserved:
-				self._transfer_item(
-					row, frappe.get_doc("Places", "CLIENTS/" + str(self.client) + "/SITE").name
-				)
-		for comp_row in self.compositions_de_dmc:
-			if comp_row.comp_saved:
-				self._composition_booking(
-					comp_row, frappe.get_doc("Places", "CLIENTS/" + str(self.client) + "/SITE").name
-				)
+		if self.status != "Draft":
+			if self.status == "Partially validated":
+				self.create_next_dmc()
+			frappe.get_doc(
+				{
+					"doctype": "Expedition",
+					"dmc": self.name,
+					"delivery_date": self.delivery_date,
+				}
+			).insert(ignore_permissions=True)
 
 	def create_next_dmc(self):
 		items_to_add = []
@@ -240,9 +261,10 @@ class GestionDMC(Document):
 		frappe.get_doc(
 			{
 				"doctype": "Gestion DMC",
-				"dmc_name": self.dmc_name,
+				"dmc_name": self.name,
 				"project": self.project,
 				"delivery_address": self.delivery_address,
+				"delivery_date": self.delivery_date,
 				"creation_dmc": self.name,
 				"state": "Draft",
 				"status": "Draft",

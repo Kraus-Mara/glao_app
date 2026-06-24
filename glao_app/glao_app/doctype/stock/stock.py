@@ -40,6 +40,7 @@ class Stock(Document):
 		quantity_in_spie_tm: DF.Int
 		quantité_minimale_requise: DF.Int
 		ref_constructeur: DF.Data | None
+		reserved_quantity: DF.Int
 		serial_no: DF.Data | None
 	# end: auto-generated types
 

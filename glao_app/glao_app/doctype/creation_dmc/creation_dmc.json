@@ -10,6 +10,7 @@
   "project",
   "dmc_name",
   "delivery_address",
+  "delivery_date",
   "dmc_items",
   "compositions",
   "amended_from"
@@ -58,13 +59,18 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "delivery_date",
+   "fieldtype": "Date",
+   "label": "Delivery date"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-17 10:19:20.497780",
+ "modified": "2026-06-24 11:35:18.608007",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Creation DMC",

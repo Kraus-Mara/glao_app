@@ -188,8 +188,20 @@
    "icon": "book-copy",
    "indent": 0,
    "keep_closed": 0,
-   "label": "Expedition",
+   "label": "Validation DMC",
    "link_to": "Gestion DMC",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "send",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Expedition DMC",
+   "link_to": "Expedition",
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"
@@ -207,7 +219,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-06-12 14:55:06.537708",
+ "modified": "2026-06-24 13:27:30.921089",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "GLAO",

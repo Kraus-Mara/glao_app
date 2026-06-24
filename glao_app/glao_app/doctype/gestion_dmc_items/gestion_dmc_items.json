@@ -97,7 +97,6 @@
   {
    "fieldname": "moved_quantity",
    "fieldtype": "Int",
-   "hidden": 1,
    "in_list_view": 1,
    "label": "moved_quantity"
   }
@@ -106,7 +105,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-06-22 13:57:22.517329",
+ "modified": "2026-06-24 10:48:51.063467",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC Items",

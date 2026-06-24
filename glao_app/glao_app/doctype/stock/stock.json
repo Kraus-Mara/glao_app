@@ -28,7 +28,8 @@
   "carnet_de_maintenance",
   "quantit\u00e9_minimale_requise",
   "actif",
-  "closest_event_date"
+  "closest_event_date",
+  "reserved_quantity"
  ],
  "fields": [
   {
@@ -180,11 +181,16 @@
    "fieldtype": "Date",
    "label": "Closest event date",
    "read_only": 1
+  },
+  {
+   "fieldname": "reserved_quantity",
+   "fieldtype": "Int",
+   "label": "reserved_quantity"
   }
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-06-19 11:51:24.211750",
+ "modified": "2026-06-24 15:39:00.500870",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",
