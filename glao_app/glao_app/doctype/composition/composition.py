@@ -22,6 +22,7 @@ class Composition(Document):
 		not_available: DF.Check
 		place: DF.Link | None
 		project: DF.Link | None
+		reserved: DF.Check
 	# end: auto-generated types
 
 	def autoname(self):

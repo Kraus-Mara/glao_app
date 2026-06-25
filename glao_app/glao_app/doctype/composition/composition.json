@@ -10,7 +10,8 @@
   "place",
   "not_available",
   "project",
-  "amended_from"
+  "amended_from",
+  "reserved"
  ],
  "fields": [
   {
@@ -54,13 +55,19 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "reserved",
+   "fieldtype": "Check",
+   "label": "reserved"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-18 11:36:11.501220",
+ "modified": "2026-06-24 16:29:58.755662",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Composition",

@@ -97,67 +97,25 @@ class GestionDMC(Document):
 		for row in self.gestion_items:
 			if row.saved_item and row.saved_item != row.item_from_stock:
 				# did you just change the old item ?
-				# In this case, take back the item from the Book place
-				is_ref = "-SN-" in str(row.saved_item) or "-BN-" in str(row.saved_item)
-
-				frappe.get_doc(
-					{
-						"doctype": "Movement",
-						"type": "Transfert",
-						"second": 1 if is_ref else 0,
-						"article_from_stock": row.saved_item,
-						"article_name": row.article,
-						"source_place": frappe.get_doc(
-							"Places", "CLIENTS/" + str(self.client) + "/Book"
-						).name,
-						"target_place": row.saved_place,
-						"quantity_to_manipulate": row.moved_quantity,
-					}
-				).save(ignore_permissions=True)
+				# In this case, manipulate reserved_quantity from its Stock doctype
+				stock = frappe.get_doc("Stock", row.saved_item, for_update=True)
+				stock.reserved_quantity -= row.moved_quantity
+				stock.save()
 				if not row.item_from_stock:
 					row.source_place = None
 					row.closest_event = None
 				row.saved_item = None
 				row.reserved = 0
-				row.saved_place = None
-				row.moved_quantity = 0
 			if row.saved_item and (row.moved_quantity != row.true_quantity):
 				is_ref = "-SN-" in str(row.saved_item) or "-BN-" in str(row.saved_item)
 				if "-SN-" in str(row.saved_item) and row.true_quantity > 1:
 					frappe.throw("Il faut ajouter une ligne pour les articles suivis en serial no")
-				res = row.moved_quantity - row.true_quantity
-				if res > 0:  # get back jojo
-					frappe.get_doc(
-						{
-							"doctype": "Movement",
-							"type": "Transfert",
-							"second": 1 if is_ref else 0,
-							"article_from_stock": row.saved_item,
-							"article_name": row.article,
-							"source_place": frappe.get_doc(
-								"Places", "CLIENTS/" + str(self.client) + "/Book"
-							).name,
-							"target_place": row.saved_place,
-							"quantity_to_manipulate": res,
-						}
-					).save(ignore_permissions=True)
-					row.moved_quantity = row.true_quantity
-				elif res < 0:  # add
-					frappe.get_doc(
-						{
-							"doctype": "Movement",
-							"type": "Transfert",
-							"second": 1 if is_ref else 0,
-							"article_from_stock": row.saved_item,
-							"article_name": row.article,
-							"target_place": frappe.get_doc(
-								"Places", "CLIENTS/" + str(self.client) + "/Book"
-							).name,
-							"source_place": row.saved_place,
-							"quantity_to_manipulate": abs(res),
-						}
-					).save(ignore_permissions=True)
-					row.moved_quantity = row.true_quantity
+				stock = frappe.get_doc("Stock", row.saved_item, for_update=True)
+				stock.reserved_quantity += row.true_quantity - row.moved_quantity
+				if stock.reserved_quantity > stock.quantity_in_spie_tm:
+					frappe.throw("No enough items in stock : " + str(row.item_from_stock))
+				stock.save()
+				row.moved_quantity = row.true_quantity
 			if row.reserved:
 				continue
 			if not (row.item_from_stock and row.source_place):
@@ -181,29 +139,25 @@ class GestionDMC(Document):
 					title="Error",
 				)
 			if row.true_quantity > 0:
-				self._transfer_item(
-					row, frappe.get_doc("Places", "CLIENTS/" + str(self.client) + "/Book").name
-				)
-				# Item transfered in the "book" place, so now its reserved
+				stock = frappe.get_doc("Stock", row.item_from_stock, for_update=True)
+				stock.reserved_quantity += row.true_quantity
+				if stock.reserved_quantity > stock.quantity_in_spie_tm:
+					frappe.throw("No enough items in stock : " + str(row.item_from_stock))
+				stock.save()
+				row.moved_quantity = row.true_quantity
 				row.saved_item = row.item_from_stock
 				row.reserved = 1
-				row.saved_place = row.source_place
-				row.moved_quantity = row.true_quantity
 
 		# compositions
 		for comp_row in self.compositions_de_dmc:
 			if comp_row.comp_saved and (str(comp_row.comp_saved) != str(comp_row.composition)):
-				frappe.db.set_value("Composition", comp_row.comp_saved, "place", comp_row.place_saved)
-				frappe.db.set_value("Composition", comp_row.comp_saved, "not_available", 0)
+				frappe.db.set_value("Composition", comp_row.comp_saved, "reserved", 0)
 				comp_row.place_saved = None
 				comp_row.comp_saved = None
 			if not comp_row.composition or (comp_row.quantity <= 0):
 				continue
 			if not comp_row.comp_saved:
-				comp_row.place_saved = frappe.get_doc("Composition", str(comp_row.composition)).place
-				self._composition_booking(
-					comp_row, frappe.get_doc("Places", "CLIENTS/" + str(self.client) + "/Book").name
-				)
+				frappe.db.set_value("Composition", comp_row.composition, "reserved", 1)
 				comp_row.moved_quantity = comp_row.quantity
 				comp_row.comp_saved = comp_row.composition
 		# if warnings:
@@ -288,13 +242,9 @@ class GestionDMC(Document):
 		# Parent place
 		self.new_place(place_name=str(self.client), parent_place="CLIENTS", is_group=1)
 		# Children places
-		self.new_place(place_name="BOOK", parent_place="CLIENTS/" + str(self.client), external=False)
+		# self.new_place(place_name="BOOK", parent_place="CLIENTS/" + str(self.client), external=False)
 		self.new_place(place_name="SITE", parent_place="CLIENTS/" + str(self.client))
 		self.new_place(place_name="WAIT", parent_place="CLIENTS/" + str(self.client), external=False)
-
-	def _composition_booking(self, row, target_place):
-		frappe.db.set_value("Composition", str(row.composition), "not_available", 1)
-		frappe.db.set_value("Composition", str(row.composition), "place", target_place)
 
 	def _check_places(self):
 		# First we check if the place client already exists
@@ -306,19 +256,6 @@ class GestionDMC(Document):
 		if not places:
 			self._create_client_place()
 			# So now the place exists
-
-	def _transfer_item(self, row, target_place):
-		is_ref = "-SN-" in row.item_from_stock or "-BN-" in row.item_from_stock
-		frappe.new_doc(
-			doctype="Movement",
-			type="Transfert",
-			second=1 if is_ref else 0,
-			article_from_stock=row.item_from_stock,
-			article_name=row.article,
-			source_place=row.source_place,
-			target_place=target_place,
-			quantity_to_manipulate=None if "-SN-" in row.item_from_stock else row.true_quantity,
-		).save(ignore_permissions=True)
 
 	@frappe.whitelist()
 	def get_source_places(self, item_from_stock):
