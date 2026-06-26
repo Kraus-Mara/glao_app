@@ -29,6 +29,7 @@ class GestionDMC(Document):
 		dmc_name: DF.Data | None
 		end_date: DF.Date | None
 		gestion_items: DF.Table[GestionDMCItems]
+		job_no: DF.Data | None
 		project: DF.Link | None
 		starting_date: DF.Date | None
 		state: DF.Literal["Draft", "Validated"]
@@ -65,26 +66,31 @@ class GestionDMC(Document):
 
 		self.status = "Draft"
 
-		items_valid = (
-			[bool(r.item_from_stock and r.true_quantity > 0) for r in self.gestion_items]
-			if self.gestion_items
-			else []
-		)
+		items_status = []
+		if self.gestion_items:
+			for r in self.gestion_items:
+				if bool(r.item_from_stock and r.true_quantity > 0):
+					items_status.append(2 if r.true_quantity == r.quantity else 1)
+				else:
+					items_status.append(0)
+
 		compos_valid = (
 			[bool(r.composition and r.quantity > 0) for r in self.compositions_de_dmc]
 			if self.compositions_de_dmc
 			else []
 		)
 
-		has_items_val = all(items_valid) if items_valid else True
+		has_items_val = all(s == 2 for s in items_status) if items_status else True
 		has_compos_val = all(compos_valid) if compos_valid else True
 
-		has_items_part = any(items_valid)
+		has_items_part = any(s > 0 for s in items_status)
 		has_compos_part = any(compos_valid)
+
+		contains_partial_item = any(s == 1 for s in items_status)
 
 		if has_items_val and has_compos_val:
 			self.status = "Validated"
-		elif has_items_part or has_compos_part:
+		elif (has_items_part or has_compos_part) or contains_partial_item:
 			self.status = "Partially validated"
 		else:
 			frappe.throw("Impossible de valider")
@@ -113,10 +119,19 @@ class GestionDMC(Document):
 				stock = frappe.get_doc("Stock", row.saved_item, for_update=True)
 				stock.reserved_quantity += row.true_quantity - row.moved_quantity
 				if stock.reserved_quantity > stock.quantity_in_spie_tm:
-					frappe.throw("No enough items in stock : " + str(row.item_from_stock))
+					frappe.throw(
+						"No enough items available in stock : "
+						+ str(row.item_from_stock)
+						+ " (Maybe too much reserved)"
+						+ "quantity on spie tm site : "
+						+ str(stock.quantity_in_spie_tm)
+						+ " of which "
+						+ str(stock.reserved_quantity)
+						+ " are reserved"
+					)
 				stock.save()
 				row.moved_quantity = row.true_quantity
-			if row.reserved:
+			if row.reserved or row.no_serving:
 				continue
 			if not (row.item_from_stock and row.source_place):
 				continue
@@ -157,7 +172,25 @@ class GestionDMC(Document):
 			if not comp_row.composition or (comp_row.quantity <= 0):
 				continue
 			if not comp_row.comp_saved:
+				# check if already reserved and validated :
+				cd = frappe.get_doc("Composition", comp_row.composition)
+				if cd.reserved:
+					is_validated = frappe.get_doc("Gestion DMC", cd.by_dmc).status != "Draft"
+					if is_validated:
+						frappe.throw(
+							"This composition comes from a validated DMC, please use the dedicated tab to modify it"
+						)
+					else:
+						cs = frappe.get_all("Gestion DMC Composition", filters=[["parent", "=", cd.by_dmc]])
+						for c in cs:
+							for r in c:
+								if r.composition == comp_row.composition:
+									r.composition = None
+									c.save()
+									break
+							break
 				frappe.db.set_value("Composition", comp_row.composition, "reserved", 1)
+				frappe.db.set_value("Composition", comp_row.composition, "by_dmc", self.name)
 				comp_row.moved_quantity = comp_row.quantity
 				comp_row.comp_saved = comp_row.composition
 		# if warnings:
@@ -184,26 +217,27 @@ class GestionDMC(Document):
 		items_to_add = []
 		compos_to_add = []
 		for row in self.gestion_items:
-			if row.item_from_stock and (row.quantity - row.true_quantity) > 0:
-				items_to_add.append(
-					{
-						"doctype": "Gestion DMC Items",
-						"article": row.article,
-						"quantity": (row.quantity - row.true_quantity),
-						"item_from_stock": None,
-						"source_place": None,
-					}
-				)
-			if not row.item_from_stock:
-				items_to_add.append(
-					{
-						"doctype": "Gestion DMC Items",
-						"article": row.article,
-						"quantity": row.quantity,
-						"item_from_stock": None,
-						"source_place": None,
-					}
-				)
+			if not row.no_serving:
+				if row.item_from_stock and (row.quantity - row.true_quantity) > 0:
+					items_to_add.append(
+						{
+							"doctype": "Gestion DMC Items",
+							"article": row.article,
+							"quantity": (row.quantity - row.true_quantity),
+							"item_from_stock": None,
+							"source_place": None,
+						}
+					)
+				if not row.item_from_stock:
+					items_to_add.append(
+						{
+							"doctype": "Gestion DMC Items",
+							"article": row.article,
+							"quantity": row.quantity,
+							"item_from_stock": None,
+							"source_place": None,
+						}
+					)
 		for comp_row in self.compositions_de_dmc:
 			if not comp_row.composition:
 				compos_to_add.append(
@@ -250,7 +284,7 @@ class GestionDMC(Document):
 		# First we check if the place client already exists
 		places = frappe.get_all(
 			"Places",
-			filters=[["name", "like", "CLIENTS/" + str(self.client) + "/Book"]],
+			filters=[["name", "like", "CLIENTS/" + str(self.client) + "/SITE"]],
 			fields=["name"],
 		)  # returns either the place if it exists, neither a null list
 		if not places:

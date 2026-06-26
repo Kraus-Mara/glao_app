@@ -75,6 +75,7 @@
    "depends_on": "eval:doc.is_referenced==0;",
    "fieldname": "quantity",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "Quantity",
    "non_negative": 1,
    "read_only": 1
@@ -97,7 +98,7 @@
    "label": "Details"
   },
   {
-   "fetch_from": "article.shortname",
+   "fetch_from": "article.article_name",
    "fieldname": "designation",
    "fieldtype": "Data",
    "in_filter": 1,
@@ -163,6 +164,7 @@
   {
    "fieldname": "quantity_in_spie_tm",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "quantity in SPIE TM"
   },
   {
@@ -185,12 +187,13 @@
   {
    "fieldname": "reserved_quantity",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "reserved_quantity"
   }
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-06-24 15:39:00.500870",
+ "modified": "2026-06-26 09:22:05.715807",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",

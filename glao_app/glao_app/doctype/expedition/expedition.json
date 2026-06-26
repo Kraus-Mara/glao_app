@@ -9,7 +9,9 @@
   "dmc",
   "project",
   "delivery_date",
-  "status"
+  "status",
+  "job_no",
+  "client"
  ],
  "fields": [
   {
@@ -36,12 +38,24 @@
    "fieldtype": "Select",
    "label": "Status",
    "options": "Waiting\nShipped"
+  },
+  {
+   "fetch_from": "dmc.job_no",
+   "fieldname": "job_no",
+   "fieldtype": "Data",
+   "label": "Job no"
+  },
+  {
+   "fetch_from": "dmc.client",
+   "fieldname": "client",
+   "fieldtype": "Data",
+   "label": "Client"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-24 11:52:43.679581",
+ "modified": "2026-06-25 14:42:16.757435",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Expedition",

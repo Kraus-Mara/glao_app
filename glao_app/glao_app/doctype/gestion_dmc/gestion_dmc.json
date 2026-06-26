@@ -21,7 +21,8 @@
   "client",
   "dmc_name",
   "delivery_address",
-  "delivery_date"
+  "delivery_date",
+  "job_no"
  ],
  "fields": [
   {
@@ -118,12 +119,18 @@
    "fieldname": "delivery_date",
    "fieldtype": "Date",
    "label": "Delivery date"
+  },
+  {
+   "fetch_from": "project.job_no",
+   "fieldname": "job_no",
+   "fieldtype": "Data",
+   "label": "Job no"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-24 15:08:14.971744",
+ "modified": "2026-06-25 14:24:34.973275",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC",

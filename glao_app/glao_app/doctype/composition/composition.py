@@ -17,6 +17,7 @@ class Composition(Document):
 		from glao_app.glao_app.doctype.composition_items.composition_items import CompositionItems
 
 		amended_from: DF.Link | None
+		by_dmc: DF.Link | None
 		items: DF.Table[CompositionItems]
 		nomenclature: DF.Link | None
 		not_available: DF.Check

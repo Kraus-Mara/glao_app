@@ -11,7 +11,8 @@
   "not_available",
   "project",
   "amended_from",
-  "reserved"
+  "reserved",
+  "by_dmc"
  ],
  "fields": [
   {
@@ -61,13 +62,19 @@
    "fieldname": "reserved",
    "fieldtype": "Check",
    "label": "reserved"
+  },
+  {
+   "fieldname": "by_dmc",
+   "fieldtype": "Link",
+   "label": "By DMC",
+   "options": "Gestion DMC"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-24 16:29:58.755662",
+ "modified": "2026-06-25 15:45:21.515215",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Composition",

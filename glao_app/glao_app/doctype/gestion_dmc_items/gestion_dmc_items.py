@@ -20,6 +20,7 @@ class GestionDMCItems(Document):
 		is_referenced: DF.Check
 		item_from_stock: DF.Link | None
 		moved_quantity: DF.Int
+		no_serving: DF.Check
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
