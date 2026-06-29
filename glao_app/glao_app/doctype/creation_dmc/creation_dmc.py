@@ -100,6 +100,7 @@ class CreationDMC(Document):
 				"delivery_address": self.delivery_address,
 				"delivery_date": self.delivery_date,
 				"creation_dmc": self.name,
+				"state": "Draft",
 				"status": "Draft",
 				"gestion_items": gestion_items,
 				"compositions_de_dmc": gestion_compo,

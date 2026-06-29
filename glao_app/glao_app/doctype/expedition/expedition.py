@@ -24,15 +24,6 @@ class Expedition(Document):
 
 	pass
 
-	# def _get_all_from_project(self):
-	#   all_dmc = frappe.get_all("Gestion DMC", filters=[["project", "=", self.project]])
-	#   items = []
-	#   compos = []
-	#   for d in all_dmc:
-	#       for r in frappe.get_all("Gestion DMC Items", filters=[["parent", "=", d]]):
-	#           items.append([r.item_from_stock, r.designation, r.true_quantity]) if r.reserved else None
-	#       for c in frappe.get_all("Gestion DMC Composition", filters=[["parent", "=", d]]):
-	#           compos.append(c.composition) if c.quantity > 0 else None
 	def validate(self):
 		if self.status == "Shipped":
 			self._send_dmc()
@@ -65,16 +56,3 @@ class Expedition(Document):
 					)
 					frappe.db.set_value("Composition", c.composition, "reserved", 0)
 		frappe.msgprint("Items and Compositions were send with success")
-
-	# def _expedier(self):
-	#   if self.status != "Draft":
-	#       items = []
-	#       compos = []
-	#       if self.gestion_items:
-	#           for row in self.gestion_items:
-	#               if row.reserved:
-	#                   items.append({row.item_from_stock, row.true_quantity, row.source_place})
-	#       if self.compositions_de_dmc:
-	#           for r in self.compositions_de_dmc:
-	#               if r.comp_saved:
-	#                   compos.append({r.composition, r.place_saved})

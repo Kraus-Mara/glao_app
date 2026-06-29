@@ -1,6 +1,8 @@
 # Copyright (c) 2026, Frappe Technologies and contributors
 # For license information, please see license.txt
 
+import unidecode
+
 # import frappe
 from frappe.model.document import Document
 
@@ -21,5 +23,8 @@ class Projects(Document):
 		project_name: DF.Data | None
 		starting_date: DF.Date | None
 	# end: auto-generated types
+
+	def validate(self):
+		self.job_no = unidecode.unidecode(str(self.job_no).upper())
 
 	pass

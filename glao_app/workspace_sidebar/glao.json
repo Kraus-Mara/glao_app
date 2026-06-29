@@ -213,13 +213,13 @@
    "indent": 0,
    "keep_closed": 0,
    "label": "Return and Inventory",
-   "link_to": "Retour DMC",
+   "link_to": "Retour et Inventaire",
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"
   }
  ],
- "modified": "2026-06-24 13:27:30.921089",
+ "modified": "2026-06-26 10:36:52.793481",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "GLAO",
