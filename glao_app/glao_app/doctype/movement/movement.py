@@ -47,7 +47,7 @@ class Movement(Document):
 		second: DF.Check
 		serial: DF.Data | None
 		short4: DF.Data | None
-		shortname_entry: DF.Data | None
+		shortname_entr: DF.Data | None
 		shortname_other: DF.Data | None
 		source_place: DF.Autocomplete | None
 		stock_entry_designation: DF.Data | None
