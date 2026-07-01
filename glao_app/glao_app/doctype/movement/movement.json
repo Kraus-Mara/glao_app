@@ -12,6 +12,10 @@
   "article_referenced",
   "article_to_register",
   "article_from_stock",
+  "shortname_entry",
+  "shortname_other",
+  "artfromstock",
+  "short4",
   "rebut_cause",
   "article_name",
   "serial",
@@ -224,12 +228,41 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "has_batch_no"
+  },
+  {
+   "depends_on": "eval:doc.article_referenced && doc.type==\"Stock Entry\"",
+   "fetch_from": "article_referenced.shortname",
+   "fieldname": "shortname_entry",
+   "fieldtype": "Data",
+   "label": "Shortname",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.article_to_register && doc.type==\"Register\"",
+   "fetch_from": "article_to_register.designation",
+   "fieldname": "shortname_other",
+   "fieldtype": "Data",
+   "label": "Shortname"
+  },
+  {
+   "depends_on": "eval:doc.article && doc.type==\"Add\"",
+   "fetch_from": "article.shortname",
+   "fieldname": "artfromstock",
+   "fieldtype": "Data",
+   "label": "Shortname"
+  },
+  {
+   "depends_on": "eval:doc.article_from_stock && (doc.type==\"Pull\" || doc.type == \"Transfert\")",
+   "fetch_from": "article_from_stock.designation",
+   "fieldname": "short4",
+   "fieldtype": "Data",
+   "label": "Shortname"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-01 12:01:50.870202",
+ "modified": "2026-07-01 14:25:11.050643",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Movement",

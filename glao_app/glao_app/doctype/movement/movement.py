@@ -26,6 +26,7 @@ class Movement(Document):
 		from glao_app.glao_app.doctype.reference_details.reference_details import ReferenceDetails
 
 		amended_from: DF.Link | None
+		artfromstock: DF.Data | None
 		article: DF.Link | None
 		article_from_stock: DF.Link | None
 		article_name: DF.Data | None
@@ -45,6 +46,9 @@ class Movement(Document):
 		reference_details: DF.Table[ReferenceDetails]
 		second: DF.Check
 		serial: DF.Data | None
+		short4: DF.Data | None
+		shortname_entry: DF.Data | None
+		shortname_other: DF.Data | None
 		source_place: DF.Autocomplete | None
 		stock_entry_designation: DF.Data | None
 		target_place: DF.Link | None
