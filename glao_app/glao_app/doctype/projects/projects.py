@@ -17,6 +17,7 @@ class Projects(Document):
 		from frappe.types import DF
 
 		company: DF.Link | None
+		completed: DF.Check
 		end_date: DF.Date | None
 		job_no: DF.Data | None
 		location: DF.Data | None

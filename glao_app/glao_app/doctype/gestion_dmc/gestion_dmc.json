@@ -13,6 +13,7 @@
   "column_break_omms",
   "gestion_items",
   "compositions_de_dmc",
+  "notes",
   "state",
   "status",
   "details_tab",
@@ -50,10 +51,11 @@
   {
    "fieldname": "status",
    "fieldtype": "Select",
+   "hidden": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Status",
-   "options": "Draft\nValidated\nPartially validated"
+   "options": "Draft\nValidated\nPartially validated\nShipped"
   },
   {
    "fieldname": "column_break_uabz",
@@ -125,12 +127,17 @@
    "fieldname": "job_no",
    "fieldtype": "Data",
    "label": "Job no"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-25 14:24:34.973275",
+ "modified": "2026-07-01 11:38:23.924858",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC",

@@ -1,0 +1,17 @@
+{
+ "__islocal": true,
+ "__unsaved": 1,
+ "creation": "2026-07-01 13:56:37.326834",
+ "docstatus": 0,
+ "doctype": "Web Template",
+ "fields": [],
+ "idx": 0,
+ "modified": "2026-07-01 13:56:37.326834",
+ "modified_by": "Administrator",
+ "module": "Glao App",
+ "name": "spie navbar",
+ "owner": "Administrator",
+ "standard": 1,
+ "template": "",
+ "type": "Navbar"
+}

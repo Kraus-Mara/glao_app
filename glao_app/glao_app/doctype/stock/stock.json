@@ -21,7 +21,7 @@
   "code_spie_tm",
   "place_table",
   "events",
-  "perime",
+  "rebut",
   "not_yet_registered",
   "composition",
   "place_saved",
@@ -113,15 +113,6 @@
    "options": "Places Stock"
   },
   {
-   "bold": 1,
-   "default": "0",
-   "fieldname": "perime",
-   "fieldtype": "Check",
-   "in_list_view": 1,
-   "label": "PERIME",
-   "placeholder": "PERIME"
-  },
-  {
    "fieldname": "carnet_de_maintenance",
    "fieldtype": "Table",
    "label": "Carnet de maintenance",
@@ -189,11 +180,20 @@
    "fieldtype": "Int",
    "in_list_view": 1,
    "label": "reserved_quantity"
+  },
+  {
+   "bold": 1,
+   "default": "0",
+   "fieldname": "rebut",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Rebut",
+   "placeholder": "PERIME"
   }
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-06-26 09:22:05.715807",
+ "modified": "2026-06-30 13:22:32.642318",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",

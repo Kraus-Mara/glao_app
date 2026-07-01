@@ -66,13 +66,15 @@
    "fieldtype": "Link",
    "label": "Target place",
    "link_filters": "[[\"Places\",\"is_group\",\"=\",0]]",
+   "mandatory_depends_on": "eval:doc.type==\"Register\"",
    "options": "Places"
   },
   {
    "depends_on": "eval:doc.type==\"Transfert\" || (doc.type==\"Pull\" && (doc.second==0 || doc.has_batch_no)) || doc.type==\"Register\";",
    "fieldname": "source_place",
    "fieldtype": "Autocomplete",
-   "label": "Source place"
+   "label": "Source place",
+   "mandatory_depends_on": "eval:doc.type==\"Register\""
   },
   {
    "depends_on": "eval:doc.type==\"Register\"",
@@ -227,7 +229,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-08 10:02:31.727294",
+ "modified": "2026-07-01 12:01:50.870202",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Movement",

@@ -21,6 +21,7 @@ class Places(Document):
 		is_active: DF.Check
 		is_group: DF.Check
 		lft: DF.Int
+		litige: DF.Check
 		location: DF.Data | None
 		old_parent: DF.Link | None
 		owner_id: DF.Link | None

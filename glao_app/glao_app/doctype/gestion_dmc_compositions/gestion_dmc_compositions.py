@@ -16,6 +16,7 @@ class GestionDMCCompositions(Document):
 
 		comp_saved: DF.Link | None
 		composition: DF.Link | None
+		no_serving: DF.Check
 		nomenclature: DF.Link | None
 		parent: DF.Data
 		parentfield: DF.Data

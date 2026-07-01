@@ -1,45 +1,45 @@
 {
  "actions": [],
+ "allow_bulk_edit": 1,
  "allow_rename": 1,
- "creation": "2026-06-26 13:15:33.760263",
+ "creation": "2026-06-29 15:11:19.216573",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "item",
-  "item_name",
+  "composition",
+  "article",
   "sent_quantity",
   "quantity",
   "which_are_issued",
   "reason",
-  "place_to_stock",
+  "place_for_litigation",
   "sold",
   "treated"
  ],
  "fields": [
   {
-   "fieldname": "item",
+   "fieldname": "composition",
    "fieldtype": "Link",
-   "in_filter": 1,
-   "in_standard_filter": 1,
-   "label": "Item",
+   "label": "Composition",
+   "options": "Composition"
+  },
+  {
+   "fieldname": "article",
+   "fieldtype": "Link",
+   "label": "Article",
    "options": "Stock"
-  },
-  {
-   "fetch_from": "item.designation",
-   "fieldname": "item_name",
-   "fieldtype": "Data",
-   "label": "Item name"
-  },
-  {
-   "fieldname": "sent_quantity",
-   "fieldtype": "Int",
-   "label": "Sent quantity "
   },
   {
    "fieldname": "quantity",
    "fieldtype": "Int",
-   "label": "Quantity "
+   "label": "Quantity"
+  },
+  {
+   "fieldname": "sent_quantity",
+   "fieldtype": "Int",
+   "label": "Sent quantity",
+   "read_only": 1
   },
   {
    "fieldname": "which_are_issued",
@@ -50,20 +50,24 @@
    "fieldname": "reason",
    "fieldtype": "Select",
    "label": "Reason",
-   "options": "\nDamaged\nBroken\nCDL Passed\nEnd of life"
-  },
-  {
-   "fieldname": "place_to_stock",
-   "fieldtype": "Link",
-   "label": "Place to stock",
-   "mandatory_depends_on": "eval:doc.item && doc.quantity>0",
-   "options": "Places"
+   "mandatory_depends_on": "eval:((doc.quantity<doc.sent_quantity) || doc.which_are_issued>0) && doc.sold",
+   "options": "\nNP\nDamaged\nBroken"
   },
   {
    "default": "0",
    "fieldname": "sold",
    "fieldtype": "Check",
    "label": "Sold"
+  },
+  {
+   "fieldname": "place_for_litigation",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Place for litigation",
+   "link_filters": "[[\"Places\", \"litige\", \"=\", 1]]",
+   "mandatory_depends_on": "eval:doc.reason==\"Damaged\"",
+   "options": "Places",
+   "read_only_depends_on": "eval:doc.reason!=\"Damaged\""
   },
   {
    "default": "0",
@@ -77,10 +81,10 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-01 12:02:35.235719",
+ "modified": "2026-06-30 12:52:31.481489",
  "modified_by": "Administrator",
  "module": "Glao App",
- "name": "Retour Items",
+ "name": "Retour Compos",
  "owner": "Administrator",
  "permissions": [],
  "row_format": "Dynamic",

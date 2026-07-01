@@ -7,12 +7,14 @@
  "field_order": [
   "nomenclature",
   "items",
+  "complete",
   "place",
-  "not_available",
   "project",
-  "amended_from",
+  "client",
+  "not_available",
   "reserved",
-  "by_dmc"
+  "by_dmc",
+  "saved"
  ],
  "fields": [
   {
@@ -30,9 +32,11 @@
   {
    "fieldname": "place",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Place",
    "link_filters": "[[\"Places\", \"is_group\",\"=\",0]]",
-   "options": "Places"
+   "options": "Places",
+   "reqd": 1
   },
   {
    "default": "0",
@@ -41,6 +45,7 @@
    "label": "not_available"
   },
   {
+   "fetch_from": "by_dmc.project",
    "fieldname": "project",
    "fieldtype": "Link",
    "label": "Project",
@@ -48,33 +53,42 @@
    "read_only": 1
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Composition",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
-  },
-  {
    "default": "0",
    "fieldname": "reserved",
    "fieldtype": "Check",
-   "label": "reserved"
+   "label": "Reserved"
   },
   {
    "fieldname": "by_dmc",
    "fieldtype": "Link",
    "label": "By DMC",
    "options": "Gestion DMC"
+  },
+  {
+   "default": "0",
+   "fieldname": "saved",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "saved"
+  },
+  {
+   "fetch_from": "by_dmc.client",
+   "fieldname": "client",
+   "fieldtype": "Data",
+   "label": "Project client"
+  },
+  {
+   "default": "0",
+   "fieldname": "complete",
+   "fieldtype": "Check",
+   "label": "Complete",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
- "is_submittable": 1,
  "links": [],
- "modified": "2026-06-25 15:45:21.515215",
+ "modified": "2026-07-01 10:00:10.594237",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Composition",

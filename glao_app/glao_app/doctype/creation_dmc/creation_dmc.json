@@ -13,7 +13,8 @@
   "delivery_date",
   "dmc_items",
   "compositions",
-  "amended_from"
+  "amended_from",
+  "notes"
  ],
  "fields": [
   {
@@ -36,11 +37,13 @@
    "fieldname": "project",
    "fieldtype": "Link",
    "label": "Project",
+   "link_filters": "[[\"Projects\",\"completed\",\"=\", 0]]",
    "options": "Projects"
   },
   {
    "fieldname": "dmc_name",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "DMC Name",
    "placeholder": "To easily find your DMC"
   },
@@ -53,6 +56,7 @@
   {
    "fieldname": "amended_from",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Amended From",
    "no_copy": 1,
    "options": "Creation DMC",
@@ -64,13 +68,18 @@
    "fieldname": "delivery_date",
    "fieldtype": "Date",
    "label": "Delivery date"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-24 11:35:18.608007",
+ "modified": "2026-07-01 11:37:49.503070",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Creation DMC",

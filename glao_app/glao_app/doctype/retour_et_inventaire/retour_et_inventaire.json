@@ -7,7 +7,9 @@
  "field_order": [
   "project",
   "sent_items",
-  "saved"
+  "sent_compositions",
+  "saved",
+  "place_for_compositions"
  ],
  "fields": [
   {
@@ -15,6 +17,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Project",
+   "link_filters": "[[\"Projects\",\"completed\",\"=\", 0]]",
    "options": "Projects"
   },
   {
@@ -30,12 +33,25 @@
    "fieldtype": "Check",
    "hidden": 1,
    "label": "saved"
+  },
+  {
+   "depends_on": "eval:doc.saved",
+   "fieldname": "sent_compositions",
+   "fieldtype": "Table",
+   "label": "Sent Compositions",
+   "options": "Retour Compos"
+  },
+  {
+   "fieldname": "place_for_compositions",
+   "fieldtype": "Link",
+   "label": "Place for compositions",
+   "options": "Places"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-26 13:50:58.776430",
+ "modified": "2026-07-01 11:27:06.053991",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retour et Inventaire",

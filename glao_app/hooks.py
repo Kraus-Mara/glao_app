@@ -2,8 +2,8 @@ app_name = "glao_app"
 app_title = "Glao App"
 app_publisher = "kr"
 app_description = "desc"
-app_email = "kr@gmail.com"
-app_license = "mit"
+app_email = "antoinep.kraus@gmail.com"
+app_license = "gpao-3.0"
 
 # Apps
 # ------------------
@@ -142,21 +142,19 @@ fixtures = [{"dt": "Workspace", "filters": [["module", "=", "Glao App"]]}]
 # ---------------
 
 scheduler_events = {
-  # "all": [
-  #     "glao_app.tasks.all"
-  # ],
-  "daily": [
-      "glao_app.tasks.check_ref_events"
-  ],
-  # "hourly": [
-  #     "glao_app.tasks.hourly"
-  # ],
-  # "weekly": [
-  #     "glao_app.tasks.weekly"
-  # ],
-  # "monthly": [
-  #     "glao_app.tasks.monthly"
-  # ],
+	# "all": [
+	#     "glao_app.tasks.all"
+	# ],
+	"daily": ["glao_app.tasks.check_ref_events"],
+	# "hourly": [
+	#     "glao_app.tasks.hourly"
+	# ],
+	# "weekly": [
+	#     "glao_app.tasks.weekly"
+	# ],
+	# "monthly": [
+	#     "glao_app.tasks.monthly"
+	# ],
 }
 
 # Testing

@@ -11,7 +11,9 @@
   "saved_place",
   "designation",
   "quantity",
-  "closest_event_date"
+  "closest_event_date",
+  "saved_item",
+  "saved_quantity"
  ],
  "fields": [
   {
@@ -50,13 +52,24 @@
    "fieldname": "closest_event_date",
    "fieldtype": "Date",
    "label": "Closest Event Date"
+  },
+  {
+   "fieldname": "saved_item",
+   "fieldtype": "Link",
+   "label": "saved_item",
+   "options": "Stock"
+  },
+  {
+   "fieldname": "saved_quantity",
+   "fieldtype": "Int",
+   "label": "saved_quantity"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-06-22 14:15:59.290881",
+ "modified": "2026-06-29 13:38:24.163072",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Composition Items",

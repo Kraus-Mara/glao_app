@@ -11,7 +11,8 @@
   "delivery_date",
   "status",
   "job_no",
-  "client"
+  "client",
+  "expedition_date"
  ],
  "fields": [
   {
@@ -50,12 +51,17 @@
    "fieldname": "client",
    "fieldtype": "Data",
    "label": "Client"
+  },
+  {
+   "fieldname": "expedition_date",
+   "fieldtype": "Datetime",
+   "label": "Expedition date"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-25 14:42:16.757435",
+ "modified": "2026-07-01 11:58:03.516114",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Expedition",

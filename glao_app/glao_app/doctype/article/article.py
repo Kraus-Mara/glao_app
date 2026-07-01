@@ -68,7 +68,6 @@ class Article(Document):
 				)
 
 	def validate(self):
-		# import unidecode
 		self.article_name = unidecode.unidecode(str(self.article_name).upper())
 		self.shortname = unidecode.unidecode(str(self.shortname).upper())
 		self.manufacturer_name = unidecode.unidecode(str(self.manufacturer_name).upper())

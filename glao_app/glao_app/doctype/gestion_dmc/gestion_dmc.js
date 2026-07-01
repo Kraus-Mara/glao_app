@@ -46,4 +46,13 @@ frappe.ui.form.on("Gestion DMC Compositions", {
         });
     },
 });
-
+frappe.ui.form.on('Gestion DMC', {
+    refresh: function(frm) {
+        frm.get_field('gestion_items').grid.cannot_delete = true;
+        frm.get_field('gestion_items').grid.cannot_sort = true;
+        frm.refresh_field('gestion_items');
+        frm.get_field('compositions_de_dmc').grid.cannot_delete = true;
+        frm.get_field('compositions_de_dmc').grid.cannot_sort = true;
+        frm.refresh_field('compositions_de_dmc');
+    }
+});

@@ -16,14 +16,15 @@ class RetourItems(Document):
 
 		item: DF.Link | None
 		item_name: DF.Data | None
-		lost: DF.Check
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
 		place_to_stock: DF.Link | None
 		quantity: DF.Int
-		reason: DF.Literal["", "Damaged", "DLU Passed", "End of life"]
+		reason: DF.Literal["", "Damaged", "Broken", "CDL Passed", "End of life"]
 		sent_quantity: DF.Int
+		sold: DF.Check
+		treated: DF.Check
 		which_are_issued: DF.Int
 	# end: auto-generated types
 

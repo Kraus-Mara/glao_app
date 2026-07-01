@@ -16,143 +16,119 @@ class Composition(Document):
 		from frappe.types import DF
 		from glao_app.glao_app.doctype.composition_items.composition_items import CompositionItems
 
-		amended_from: DF.Link | None
 		by_dmc: DF.Link | None
+		client: DF.Data | None
+		complete: DF.Check
 		items: DF.Table[CompositionItems]
 		nomenclature: DF.Link | None
 		not_available: DF.Check
-		place: DF.Link | None
+		place: DF.Link
 		project: DF.Link | None
 		reserved: DF.Check
+		saved: DF.Check
 	# end: auto-generated types
 
 	def autoname(self):
 		self.name = make_autoname(str(self.nomenclature) + "-.##.")
 
-	# def on_cancel(self):
-	#   frappe.msgprint("ouioui")
-
 	def validate(self):
-		if self.docstatus == 0:
+		if self.saved == 0:
 			self._link_stocks()
+			self.saved = 1
+		else:
+			self._check_all()
 
-	# def on_trash(self):
-	#   self._unlink_stocks()
+	def _check_all(self):
+		for row in self.items:
+			if row.saved_item and row.saved_item != row.item:
+				self._add_stock(row.saved_item, row.saved_place, row.saved_quantity)
+				row.saved_item = None
+				row.saved_quantity = 0
+
+			if not row.saved_item and row.item and row.quantity > 0:
+				if not row.saved_place:
+					stock = frappe.get_doc("Stock", row.item)
+					row.saved_place = stock.place_table[0].place if stock.place_table else self.place
+
+				self._substract_stock(row.item, row.saved_place, row.quantity)
+				row.saved_item = row.item
+				row.saved_quantity = row.quantity
+
+			elif row.saved_item and row.saved_quantity and row.saved_quantity != row.quantity:
+				diff = row.quantity - row.saved_quantity
+				if diff > 0:
+					self._substract_stock(row.saved_item, row.saved_place, diff)
+				else:
+					self._add_stock(row.saved_item, row.saved_place, abs(diff))
+				row.saved_quantity = row.quantity
+
+	def _substract_stock(self, item_code, place_name, qty_to_remove):
+		stock = frappe.get_doc("Stock", item_code, for_update=True)
+		ps_items = [d for d in stock.place_table if d.place == place_name]
+		if not ps_items:
+			frappe.throw(f"Emplacement {place_name} introuvable pour l'article {item_code}")
+		ps_row = ps_items[0]
+		if ps_row.quantity < qty_to_remove:
+			frappe.throw(
+				f"Stock insuffisant à l'emplacement {place_name} pour {item_code} : {ps_row.quantity} disponible, {qty_to_remove} requis"
+			)
+		if stock.is_referenced:
+			frappe.db.set_value("Stock", stock.name, "composition", self.name, update_modified=False)
+			stock.remove(ps_row)
+			stock.quantity = 0
+		else:
+			ps_row.quantity -= qty_to_remove
+			if ps_row.quantity <= 0:
+				stock.remove(ps_row)
+		stock.quantity = sum(d.quantity for d in stock.place_table)
+		stock.save(ignore_permissions=True)
+
+	def _add_stock(self, item_code, place_name, qty_to_add):
+		stock = frappe.get_doc("Stock", item_code, for_update=True)
+		if stock.is_referenced:
+			frappe.db.set_value("Stock", stock.name, "composition", None, update_modified=False)
+			stock.quantity = 1
+			stock.append(
+				"place_table",
+				{"doctype": "Places Stock", "place": place_name, "quantity": 1, "article": stock.article},
+			)
+		else:
+			ps_items = [d for d in stock.place_table if d.place == place_name]
+			if ps_items:
+				ps_items[0].quantity += qty_to_add
+			else:
+				stock.append(
+					"place_table",
+					{
+						"doctype": "Places Stock",
+						"place": place_name,
+						"quantity": qty_to_add,
+						"article": stock.article,
+					},
+				)
+		stock.quantity = sum(d.quantity for d in stock.place_table)
+		stock.save(ignore_permissions=True)
 
 	def _link_stocks(self):
 		for row in self.items:
-			stock = frappe.get_all("Stock", filters=[["name", "=", row.item]], limit=1)
-			doc = frappe.get_doc("Stock", str(stock[0].name), for_update=True)
-			# frappe.msgprint(str(row.item))
-			#
-			row.saved_place = doc.place_table[0].place
-			if stock:
-				doc = frappe.get_doc("Stock", str(stock[0].name), for_update=True)
-				ps = frappe.get_all(
-					"Places Stock",
-					filters=[["parent", "=", doc.name]],
-					fields=["name", "quantity"],
-					limit=1,
-				)
-				if not ps:
-					frappe.throw(f"Aucun Places Stock trouvé pour {doc.name} à {doc.place_saved}")
-				if ps[0].quantity < row.quantity:
-					frappe.throw(
-						f"Stock insuffisant pour {doc.name} : {ps[0].quantity} disponible, {row.quantity} requis"
-					)
-
-				if doc.is_referenced:
-					frappe.db.set_value(
-						"Stock", stock[0].name, "composition", self.name, update_modified=False
-					)
-					ps_doc = frappe.get_doc("Places Stock", ps[0].name, for_update=True)
-					ps_doc.delete()
-					frappe.db.set_value("Stock", stock[0].name, "quantity", 0, update_modified=False)
-					# doc.save(ignore_permissions=True)
-				else:
-					ps_doc = frappe.get_doc("Places Stock", ps[0].name, for_update=True)
-					row_qty = ps_doc.quantity - row.quantity
-					place_to_save = ps_doc.place
-					ps_doc.delete()
-					doc.append(
-						"place_table",
-						{
-							"doctype": "Places Stock",
-							"place": place_to_save,
-							"quantity": row_qty,
-							"article": doc.article,
-						},
-					)
-					doc.save(ignore_permissions=True)
-					doc = frappe.get_doc("Stock", str(stock[0].name), for_update=True)
-					end_qty = sum(row.quantity if row else 0 for row in doc.place_table)
-					doc.quantity = end_qty
-					doc.save(ignore_permissions=True)
-					# frappe.throw(str(doc.quantity))
-			else:
+			if not row.item:
+				continue
+			stock_list = frappe.get_all("Stock", filters=[["name", "=", row.item]], limit=1)
+			if not stock_list:
 				frappe.throw(f"Stock introuvable : {row.item}")
+			stock = frappe.get_doc("Stock", stock_list[0].name, for_update=True)
+			if not stock.place_table:
+				frappe.throw(f"Aucun Places Stock trouvé pour {stock.name}")
+			if not row.saved_place:
+				row.saved_place = stock.place_table[0].place
+			self._substract_stock(row.item, row.saved_place, row.quantity)
+			row.saved_item = row.item
+			row.saved_quantity = row.quantity
+
+	def on_trash(self):
+		self._unlink_stocks()
 
 	def _unlink_stocks(self):
 		for row in self.items:
-			# frappe.msgprint(str(row.item))
-			stock = frappe.get_all("Stock", filters=[["name", "=", row.item]], limit=1)
-			if stock:
-				doc = frappe.get_doc("Stock", str(stock[0].name), for_update=True)
-				frappe.msgprint(str(row.item))
-
-				if doc.is_referenced:
-					frappe.db.set_value("Stock", stock[0].name, "composition", None, update_modified=False)
-					frappe.db.set_value("Stock", stock[0].name, "quantity", 1, update_modified=False)
-					doc.append(
-						"place_table",
-						{
-							"doctype": "Places Stock",
-							"place": row.saved_place,
-							"quantity": 1,
-							"article": doc.article,
-						},
-					)
-					doc.save(ignore_permissions=True)
-
-				else:
-					frappe.msgprint("Doit n'apparaitre qu'une fois")
-					# if not row.saved_place:
-					# frappe.throw(f"Pas de saved_place défini sur le stock {doc.name}")
-					ps = frappe.get_all(
-						"Places Stock",
-						filters=[["parent", "=", doc.name], ["place", "=", row.saved_place]],
-						fields=["name", "quantity"],
-						limit=1,
-					)
-					if ps:
-						ps_doc = frappe.get_doc("Places Stock", ps[0].name, for_update=True)
-						row_qty = ps_doc.quantity + row.quantity
-						ps_doc.delete()
-						doc.append(
-							"place_table",
-							{
-								"doctype": "Places Stock",
-								"place": row.saved_place,
-								"quantity": row_qty,
-								"article": doc.article,
-							},
-						)
-						doc = frappe.get_doc("Stock", str(stock[0].name), for_update=True)
-					else:
-						doc.append(
-							"place_table",
-							{
-								"doctype": "Places Stock",
-								"place": doc.place_saved,
-								"quantity": row.quantity,
-								"article": doc.article,
-							},
-						)
-					doc = frappe.get_doc("Stock", str(stock[0].name), for_update=True)
-					doc.composition = None
-					doc.place_saved = None
-					end_qty = sum(row.quantity if row else 0 for row in doc.place_table)
-					doc.quantity = end_qty
-					doc.save(ignore_permissions=True)
-			else:
-				frappe.throw("ah bon")
+			if row.saved_item and row.saved_place and row.saved_quantity:
+				self._add_stock(row.saved_item, row.saved_place, row.saved_quantity)

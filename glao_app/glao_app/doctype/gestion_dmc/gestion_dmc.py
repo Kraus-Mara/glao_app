@@ -1,12 +1,12 @@
-# Copyright (c) 2026, Frappe Technologies and contributors
+# Copyright (c) 2026, kr and contributors
 # For license information, please see license.txt
 
-from re import IGNORECASE
 import frappe
 from frappe.model.document import Document
 from glao_app.glao_app.doctype.gestion_dmc_items.gestion_dmc_items import GestionDMCItems
 from glao_app.glao_app.doctype.movement import movement
 from frappe.model.naming import getseries, make_autoname
+from frappe.utils import getdate
 
 
 class GestionDMC(Document):
@@ -30,10 +30,11 @@ class GestionDMC(Document):
 		end_date: DF.Date | None
 		gestion_items: DF.Table[GestionDMCItems]
 		job_no: DF.Data | None
+		notes: DF.SmallText | None
 		project: DF.Link | None
 		starting_date: DF.Date | None
 		state: DF.Literal["Draft", "Validated"]
-		status: DF.Literal["Draft", "Validated", "Partially validated"]
+		status: DF.Literal["Draft", "Validated", "Partially validated", "Shipped"]
 	# end: auto-generated types
 
 	def autoname(self):
@@ -99,6 +100,17 @@ class GestionDMC(Document):
 		errors = []
 
 		self._check_places()
+
+		seen_sn_items = set()
+		for row in self.gestion_items:
+			if row.item_from_stock and "-SN-" in str(row.item_from_stock):
+				if row.item_from_stock in seen_sn_items:
+					frappe.throw(
+						f"L'article avec numéro de série {row.item_from_stock} est présent sur plusieurs lignes. "
+						f"Il est impossible de réserver deux fois le même article -SN-."
+					)
+				seen_sn_items.add(row.item_from_stock)
+
 		# items
 		for row in self.gestion_items:
 			if row.saved_item and row.saved_item != row.item_from_stock:
@@ -155,6 +167,12 @@ class GestionDMC(Document):
 				)
 			if row.true_quantity > 0:
 				stock = frappe.get_doc("Stock", row.item_from_stock, for_update=True)
+				if self.starting_date and stock.closest_event:
+					if getdate(stock.closest_event) < getdate(self.starting_date):
+						frappe.throw(
+							f"Impossible de réserver l'article {row.item_from_stock}. "
+							f"La date du prochain événement ({stock.closest_event}) est antérieure à la date de début de la DMC ({self.starting_date})."
+						)
 				stock.reserved_quantity += row.true_quantity
 				if stock.reserved_quantity > stock.quantity_in_spie_tm:
 					frappe.throw("No enough items in stock : " + str(row.item_from_stock))
@@ -171,6 +189,8 @@ class GestionDMC(Document):
 				comp_row.comp_saved = None
 			if not comp_row.composition or (comp_row.quantity <= 0):
 				continue
+			if comp_row.no_serving:
+				continue
 			if not comp_row.comp_saved:
 				# check if already reserved and validated :
 				cd = frappe.get_doc("Composition", comp_row.composition)
@@ -181,14 +201,13 @@ class GestionDMC(Document):
 							"This composition comes from a validated DMC, please use the dedicated tab to modify it"
 						)
 					else:
-						cs = frappe.get_all("Gestion DMC Composition", filters=[["parent", "=", cd.by_dmc]])
+						cs = frappe.get_all("Gestion DMC Compositions", filters=[["parent", "=", cd.by_dmc]])
 						for c in cs:
-							for r in c:
-								if r.composition == comp_row.composition:
-									r.composition = None
-									c.save()
-									break
-							break
+							d = frappe.get_doc("Gestion DMC Compositions", c.name, for_update=True)
+							if d.composition == comp_row.composition:
+								d.composition = None
+								c.save()
+								break
 				frappe.db.set_value("Composition", comp_row.composition, "reserved", 1)
 				frappe.db.set_value("Composition", comp_row.composition, "by_dmc", self.name)
 				comp_row.moved_quantity = comp_row.quantity
@@ -239,13 +258,14 @@ class GestionDMC(Document):
 						}
 					)
 		for comp_row in self.compositions_de_dmc:
-			if not comp_row.composition:
-				compos_to_add.append(
-					{
-						"doctype": "Gestion DMC Composition",
-						"nomenclature": comp_row.nomenclature,
-					}
-				)
+			if not comp_row.no_serving:
+				if not comp_row.composition:
+					compos_to_add.append(
+						{
+							"doctype": "Gestion DMC Composition",
+							"nomenclature": comp_row.nomenclature,
+						}
+					)
 		frappe.get_doc(
 			{
 				"doctype": "Gestion DMC",
@@ -258,6 +278,7 @@ class GestionDMC(Document):
 				"status": "Draft",
 				"gestion_items": items_to_add,
 				"compositions_de_dmc": compos_to_add,
+				"notes": self.notes,
 			}
 		).insert(ignore_permissions=True)
 
@@ -301,6 +322,10 @@ class GestionDMC(Document):
 			],
 			fields=["place", "quantity"],
 		)
+		litiges = frappe.get_all("Places", filters=[["litige", "=", 1]], fields=["name"])
+		for p in litiges:
+			if p.name in places:
+				places.remove(p.name)
 		return places
 
 	@frappe.whitelist()

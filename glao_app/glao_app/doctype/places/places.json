@@ -17,6 +17,7 @@
   "company",
   "external",
   "is_active",
+  "litige",
   "rules_tab",
   "rules_section",
   "place_rules",
@@ -146,13 +147,19 @@
    "fieldname": "external",
    "fieldtype": "Check",
    "label": "External"
+  },
+  {
+   "default": "0",
+   "fieldname": "litige",
+   "fieldtype": "Check",
+   "label": "Litige"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2026-06-15 10:52:58.083143",
+ "modified": "2026-06-30 10:57:56.036179",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Places",

@@ -1,11 +1,11 @@
 # Copyright (c) 2026, kr and contributors
 # For license information, please see license.txt
 
-import frappe
+# import frappe
 from frappe.model.document import Document
 
 
-class GestionDMCItems(Document):
+class RetourCompos(Document):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
 
@@ -15,24 +15,17 @@ class GestionDMCItems(Document):
 		from frappe.types import DF
 
 		article: DF.Link | None
-		closest_event: DF.Date | None
-		designation: DF.Data | None
-		is_referenced: DF.Check
-		item_from_stock: DF.Link | None
-		moved_quantity: DF.Int
-		no_serving: DF.Check
+		composition: DF.Link | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
+		place_for_litigation: DF.Link | None
 		quantity: DF.Int
-		reserved: DF.Check
-		saved_item: DF.Link | None
-		saved_place: DF.Link | None
-		source_place: DF.Autocomplete | None
-		true_quantity: DF.Int
+		reason: DF.Literal["", "NP", "Damaged", "Broken"]
+		sent_quantity: DF.Int
+		sold: DF.Check
+		treated: DF.Check
+		which_are_issued: DF.Int
 	# end: auto-generated types
-
-	def on_delete(self):
-		frappe.throw("non")
 
 	pass

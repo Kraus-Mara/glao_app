@@ -23,6 +23,7 @@ class CreationDMC(Document):
 		delivery_date: DF.Date | None
 		dmc_items: DF.Table[DMCItems]
 		dmc_name: DF.Data | None
+		notes: DF.SmallText | None
 		project: DF.Link | None
 	# end: auto-generated types
 

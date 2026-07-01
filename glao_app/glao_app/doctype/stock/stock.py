@@ -33,12 +33,12 @@ class Stock(Document):
 		events: DF.Table[RefEvents]
 		is_referenced: DF.Check
 		not_yet_registered: DF.Check
-		perime: DF.Check
 		place_saved: DF.Link | None
 		place_table: DF.Table[PlacesStock]
 		quantity: DF.Int
 		quantity_in_spie_tm: DF.Int
 		quantité_minimale_requise: DF.Int
+		rebut: DF.Check
 		ref_constructeur: DF.Data | None
 		reserved_quantity: DF.Int
 		serial_no: DF.Data | None
@@ -82,7 +82,7 @@ class Stock(Document):
 						},
 					).insert(ignore_permissions=True)
 				if row.event in ["DLU", "End of life"]:
-					self.perime = 1
+					self.rebut = 1
 			# keep the closest event date then put it in self.closest_event_date
 		for row in self.events:
 			if not row.passed and row.event_date:

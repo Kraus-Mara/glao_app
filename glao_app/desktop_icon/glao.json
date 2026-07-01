@@ -5,18 +5,18 @@
  "docstatus": 0,
  "doctype": "Desktop Icon",
  "hidden": 0,
- "icon_image": "/private/files/logo-spie-turbomachinery (1).png",
- "icon_type": "Link",
+ "icon_image": "/files/gemco_international_sa_logo.jpg",
+ "icon_type": "App",
  "idx": 0,
  "label": "GLAO",
  "link_to": "GLAO",
  "link_type": "Workspace Sidebar",
- "modified": "2026-03-31 10:00:53.243801",
+ "modified": "2026-07-01 13:29:51.690833",
  "modified_by": "Administrator",
  "name": "GLAO",
  "owner": "Administrator",
  "parent_icon": "",
- "restrict_removal": 0,
+ "restrict_removal": 1,
  "roles": [
   {
    "role": "All"
