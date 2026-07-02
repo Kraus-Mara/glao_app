@@ -24,6 +24,8 @@ class Article(Document):
 		from glao_app.glao_app.doctype.places_stock_rules.places_stock_rules import PlacesStockRules
 
 		article_name: DF.Data
+		char_name: DF.Data | None
+		char_value: DF.Data | None
 		chars: DF.Table[Characteristics]
 		group: DF.Link
 		is_active: DF.Check
@@ -34,6 +36,7 @@ class Article(Document):
 		manufacturer_name: DF.Data | None
 		notes: DF.Text | None
 		old_code: DF.Data | None
+		periodicity: DF.Data | None
 		providers: DF.Table[ArticleProviders]
 		rules: DF.Table[PlacesStockRules]
 		shortname: DF.Data | None
@@ -74,5 +77,32 @@ class Article(Document):
 		self.manufacturer = unidecode.unidecode(str(self.manufacturer).upper())
 		if contains(str(self.manufacturer), " "):
 			frappe.throw("A blank space is present in the manufacturer")
+		self._check_chars()
+
+	def _check_chars(self):
+		if self.chars:
+			fr = False
+			fp = False
+			for r in self.chars:
+				if r.periodicity and not fp:
+					self.periodicity = r.value
+					fp = True
+				elif r.periodicity and fp:
+					frappe.throw(frappe._("You can't have more than one periodicity"))
+				if r.retail and not fr:
+					self.char_name = r.characteristics_type
+					self.char_value = r.value
+					fr = True
+				elif r.retail and fr:
+					frappe.throw(frappe._("You can't have more than one retail easement"))
+
+	@frappe.whitelist()
+	def get_units(self, char_type):
+		units = frappe.get_all(
+			"Characteristics Unit Link",
+			filters=[["parent", "=", char_type]],
+			fields=["unit"],
+		)
+		return units
 
 	pass

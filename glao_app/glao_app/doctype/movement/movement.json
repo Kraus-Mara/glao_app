@@ -35,7 +35,11 @@
   "stock_entry_designation",
   "re_des",
   "designation_pull",
-  "designation"
+  "designation",
+  "section_break_nfti",
+  "char_name",
+  "column_break_iuke",
+  "char_value"
  ],
  "fields": [
   {
@@ -257,12 +261,34 @@
    "fieldtype": "Data",
    "label": "Shortname",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_nfti",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "article.char_name",
+   "fieldname": "char_name",
+   "fieldtype": "Data",
+   "label": "char_name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "article.char_value",
+   "fieldname": "char_value",
+   "fieldtype": "Data",
+   "label": "char_value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_iuke",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-01 14:41:42.092803",
+ "modified": "2026-07-02 10:37:03.769234",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Movement",

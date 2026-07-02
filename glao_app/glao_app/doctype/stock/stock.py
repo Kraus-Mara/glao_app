@@ -33,7 +33,7 @@ class Stock(Document):
 		events: DF.Table[RefEvents]
 		is_referenced: DF.Check
 		not_yet_registered: DF.Check
-		place_saved: DF.Link | None
+		periodicity: DF.Data | None
 		place_table: DF.Table[PlacesStock]
 		quantity: DF.Int
 		quantity_in_spie_tm: DF.Int
@@ -60,16 +60,9 @@ class Stock(Document):
 		for row in list(self.events):
 			if row.passed and not row.already_checked:
 				if row.event == "VGP":
-					item_doc = frappe.get_doc(
-						"Article",
-						str(
-							frappe.get_all(
-								"Article", filters=[["manufacturer", "like", self.ref_constructeur]]
-							)[0].name
-						),
-					)
-					family = item_doc.group
-					periodicity = frappe.get_doc("Articles Group", family).periodicity_in_days
+					if not self.periodicity:
+						frappe.throw(frappe._("The periodicity is not assigned in the article document"))
+					periodicity = int(str(self.periodicity))
 					row.already_checked = 1
 					self.append(
 						"events",

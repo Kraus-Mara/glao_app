@@ -1,11 +1,11 @@
-# Copyright (c) 2026, Frappe Technologies and contributors
+# Copyright (c) 2026, kr and contributors
 # For license information, please see license.txt
 
-import frappe
+# import frappe
 from frappe.model.document import Document
 
 
-class Characteristics(Document):
+class CharacteristicsUnitLink(Document):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
 
@@ -14,14 +14,10 @@ class Characteristics(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		characteristics_type: DF.Link | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
-		periodicity: DF.Check
-		retail: DF.Check
-		unit: DF.Autocomplete | None
-		value: DF.Data | None
+		unit: DF.Link | None
 	# end: auto-generated types
 
 	pass

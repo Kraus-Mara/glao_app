@@ -1,0 +1,83 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "field:characteristics_designation",
+ "creation": "2026-07-01 16:35:10.376379",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_wnst",
+  "retail",
+  "standard_periodicity",
+  "section_break_htaj",
+  "units",
+  "characteristics_designation"
+ ],
+ "fields": [
+  {
+   "fieldname": "characteristics_designation",
+   "fieldtype": "Data",
+   "label": "Characteristics designation",
+   "unique": 1
+  },
+  {
+   "fieldname": "units",
+   "fieldtype": "Table",
+   "label": "Units",
+   "options": "Characteristics Unit Link"
+  },
+  {
+   "default": "0",
+   "fieldname": "retail",
+   "fieldtype": "Check",
+   "label": " Retail easement",
+   "read_only_depends_on": "eval:doc.standard_periodicity"
+  },
+  {
+   "default": "0",
+   "fieldname": "standard_periodicity",
+   "fieldtype": "Check",
+   "label": "Standard Periodicity \ud83d\udd51",
+   "read_only_depends_on": "eval:doc.retail"
+  },
+  {
+   "fieldname": "section_break_wnst",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_htaj",
+   "fieldtype": "Section Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-07-02 10:09:06.029465",
+ "modified_by": "Administrator",
+ "module": "Glao App",
+ "name": "Characteristics types",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "characteristics_designation"
+}

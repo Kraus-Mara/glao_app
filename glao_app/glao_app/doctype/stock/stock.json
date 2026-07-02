@@ -9,27 +9,31 @@
  "field_order": [
   "general_tab",
   "section_break_g3op",
+  "column_break_czzb",
   "article",
   "designation",
-  "is_referenced",
   "ref_constructeur",
-  "section_break_tnxe",
+  "is_referenced",
+  "actif",
+  "column_break_kiek",
+  "code_spie_tm",
   "serial_no",
   "batch_no",
+  "section_break_dttr",
   "quantity",
+  "composition",
+  "column_break_vrys",
   "quantity_in_spie_tm",
-  "code_spie_tm",
+  "reserved_quantity",
+  "section_break_tnxe",
+  "quantit\u00e9_minimale_requise",
   "place_table",
   "events",
   "rebut",
-  "not_yet_registered",
-  "composition",
-  "place_saved",
   "carnet_de_maintenance",
-  "quantit\u00e9_minimale_requise",
-  "actif",
   "closest_event_date",
-  "reserved_quantity"
+  "periodicity",
+  "not_yet_registered"
  ],
  "fields": [
   {
@@ -76,7 +80,7 @@
    "fieldname": "quantity",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Quantity",
+   "label": "Total Quantity",
    "non_negative": 1,
    "read_only": 1
   },
@@ -147,16 +151,10 @@
    "options": "Composition"
   },
   {
-   "fieldname": "place_saved",
-   "fieldtype": "Link",
-   "label": "place_saved",
-   "options": "Places"
-  },
-  {
    "fieldname": "quantity_in_spie_tm",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "quantity in SPIE TM"
+   "label": "Quantity in SPIE TM"
   },
   {
    "fieldname": "quantit\u00e9_minimale_requise",
@@ -167,11 +165,13 @@
    "default": "0",
    "fieldname": "actif",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Actif"
   },
   {
    "fieldname": "closest_event_date",
    "fieldtype": "Date",
+   "hidden": 1,
    "label": "Closest event date",
    "read_only": 1
   },
@@ -179,7 +179,7 @@
    "fieldname": "reserved_quantity",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "reserved_quantity"
+   "label": "Reserved quantity"
   },
   {
    "bold": 1,
@@ -189,11 +189,34 @@
    "in_list_view": 1,
    "label": "Rebut",
    "placeholder": "PERIME"
+  },
+  {
+   "fetch_from": "article.periodicity",
+   "fieldname": "periodicity",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "periodicity"
+  },
+  {
+   "fieldname": "column_break_kiek",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_czzb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_dttr",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_vrys",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-06-30 13:22:32.642318",
+ "modified": "2026-07-02 10:54:57.333299",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",

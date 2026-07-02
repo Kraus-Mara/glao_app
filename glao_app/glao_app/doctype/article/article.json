@@ -18,6 +18,9 @@
   "is_referenced",
   "description_tab",
   "chars",
+  "periodicity",
+  "char_name",
+  "char_value",
   "tab_break_dcvv",
   "providers",
   "alternatives_tab",
@@ -170,12 +173,30 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Manufacturer"
+  },
+  {
+   "fieldname": "periodicity",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "periodicity"
+  },
+  {
+   "fieldname": "char_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "char_name"
+  },
+  {
+   "fieldname": "char_value",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "char_value"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-26 09:33:10.404447",
+ "modified": "2026-07-02 10:11:05.621315",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Article",

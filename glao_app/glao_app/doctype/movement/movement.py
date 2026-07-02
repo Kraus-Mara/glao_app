@@ -32,6 +32,8 @@ class Movement(Document):
 		article_name: DF.Data | None
 		article_referenced: DF.Link | None
 		article_to_register: DF.Link | None
+		char_name: DF.Data | None
+		char_value: DF.Data | None
 		designation: DF.Data | None
 		designation_add: DF.Data | None
 		designation_pull: DF.Data | None
@@ -198,7 +200,6 @@ class Movement(Document):
 				fields=["quantity"],
 			)
 			qty = sum(row.quantity for row in all_places)
-			# frappe.throw(str(qty))
 			frappe.db.set_value("Stock", str(self.article_from_stock), "quantity_in_spie_tm", qty)
 
 	def _creer_stock_entry(self):
@@ -246,12 +247,8 @@ class Movement(Document):
 				],
 			)
 			if ps:
-				# frappe.msgprint("ps trouvé")
 				ps_doc = frappe.get_doc("Places Stock", ps[0].name, for_update=True)
 				new_quantity = int(ps_doc.quantity) + self.quantity_stock_entry
-				# frappe.msgprint(
-				#   "debug : ancienne qty" + str(ps_doc.quantity) + " et nouvelle qty : " + str(new_quantity)
-				# )
 				ps_doc.update(
 					{
 						"quantity": int(new_quantity),
@@ -278,7 +275,7 @@ class Movement(Document):
 				to_save = frappe.get_doc("Stock", str(self.article_referenced), for_update=True)
 				to_save.update({"quantity": int(new_quantity)}).save()
 			else:
-				frappe.msgprint("Une erreur est survenue : ligne 183")
+				frappe.throw("Une erreur est survenue : M286")
 			frappe.msgprint("Stock Entry enregistrée")
 
 	def _creer_instances_referenced(self):
@@ -314,7 +311,6 @@ class Movement(Document):
 				if row.quantity <= 0:
 					tampon_doc.remove(row)
 			break
-		# frappe.msgprint(str(tampon_doc.place_table))
 		tampon_doc.quantity -= total_to_register
 		if tampon_doc.quantity <= 0:
 			tampon_doc.delete(force=True)
@@ -562,6 +558,8 @@ class Movement(Document):
 				frappe.throw("Quantity issue")
 		for doc in self.placetostock:
 			try:
+				if self.char_value:
+					doc.quantity *= self.char_value
 				# Getting all corresponding Places Stock, obviously there's only one
 				existing = frappe.get_all(
 					"Places Stock",

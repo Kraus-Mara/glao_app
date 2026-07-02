@@ -7,20 +7,16 @@
  "engine": "InnoDB",
  "field_order": [
   "section_break_e3oj",
-  "char_name",
+  "characteristics_type",
   "value",
-  "unit"
+  "unit",
+  "retail",
+  "periodicity"
  ],
  "fields": [
   {
    "fieldname": "section_break_e3oj",
    "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "char_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Name"
   },
   {
    "fieldname": "value",
@@ -30,18 +26,39 @@
   },
   {
    "allow_in_quick_entry": 1,
+   "fetch_if_empty": 1,
    "fieldname": "unit",
-   "fieldtype": "Link",
+   "fieldtype": "Autocomplete",
    "in_list_view": 1,
-   "label": "Unit",
-   "options": "Units"
+   "label": "Unit"
+  },
+  {
+   "fieldname": "characteristics_type",
+   "fieldtype": "Link",
+   "label": "Characteristics type",
+   "options": "Characteristics types"
+  },
+  {
+   "default": "0",
+   "fetch_from": "characteristics_type.retail",
+   "fieldname": "retail",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "retail"
+  },
+  {
+   "default": "0",
+   "fetch_from": "characteristics_type.standard_periodicity",
+   "fieldname": "periodicity",
+   "fieldtype": "Check",
+   "label": "periodicity"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-02 10:56:39.415847",
+ "modified": "2026-07-02 09:04:16.114383",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Characteristics",

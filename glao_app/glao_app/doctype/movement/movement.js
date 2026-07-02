@@ -34,4 +34,22 @@ frappe.ui.form.on("Movement", {
             })
         }
     }
+			//  article(frm) {
+			//      if (frm.doc.article) {
+			// frm.call("get_units").then(({message: units}) => {
+			// 	const data = units.map(unit => ({
+			// 		value: unit.name,
+			// 		label: unit.name
+			// 	}));
+			// 	frm.fields_dict.unit.
+			// })
+			//          frappe.db.get_value('Article', frm.doc.article, '', (r) => {
+			//              if (frm.doc.quantity > r.quantity) {
+			//                  frappe.msgprint(`Quantité maxi dépassée : ${r.quantity}`);
+			//                  frm.set_value(`quantity_to_manipulate`, r.quantity);
+			//              }
+			//          })
+			//      }
+			//  },
+
 });
