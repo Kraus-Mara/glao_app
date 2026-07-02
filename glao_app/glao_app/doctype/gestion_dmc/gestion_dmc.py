@@ -6,7 +6,6 @@ from frappe.model.document import Document
 from glao_app.glao_app.doctype.gestion_dmc_items.gestion_dmc_items import GestionDMCItems
 from glao_app.glao_app.doctype.movement import movement
 from frappe.model.naming import getseries, make_autoname
-from frappe.utils import getdate
 
 
 class GestionDMC(Document):
@@ -167,11 +166,11 @@ class GestionDMC(Document):
 				)
 			if row.true_quantity > 0:
 				stock = frappe.get_doc("Stock", row.item_from_stock, for_update=True)
-				if self.starting_date and stock.closest_event:
-					if getdate(stock.closest_event) < getdate(self.starting_date):
+				if self.starting_date and stock.closest_event_date:
+					if getdate(stock.closest_event_date) < getdate(self.starting_date):
 						frappe.throw(
 							f"Impossible de réserver l'article {row.item_from_stock}. "
-							f"La date du prochain événement ({stock.closest_event}) est antérieure à la date de début de la DMC ({self.starting_date})."
+							f"La date du prochain événement ({stock.closest_event_date}) est antérieure à la date de début de la DMC ({self.starting_date})."
 						)
 				stock.reserved_quantity += row.true_quantity
 				if stock.reserved_quantity > stock.quantity_in_spie_tm:
