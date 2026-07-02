@@ -54,7 +54,7 @@ class Expedition(Document):
 				).save()
 
 				sd = frappe.get_doc("Stock", str(r.item_from_stock), for_update=True)
-				sd.reserved_quantity -= true_quantity
+				sd.reserved_quantity -= r.true_quantity
 				sd.save(ignore_permissions=True)
 		dmc_compos = frappe.get_all("Gestion DMC Compositions", filters=[["parent", "=", self.dmc]])
 		for d in dmc_compos:
