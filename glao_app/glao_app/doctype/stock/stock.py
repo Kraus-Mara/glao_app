@@ -54,6 +54,20 @@ class Stock(Document):
 
 	def validate(self):
 		self._check_dates()
+		self._count_stock_in_spie()
+
+	def _count_stock_in_spie(self):
+		if self.article:
+			places_stock = frappe.get_all(
+				"Places Stock",
+				filters=[
+					["parent", "like", str(self.article)],
+					["external", "=", 0],
+				],
+				fields=["quantity", "external"],
+			)
+			qty = sum(row.quantity if row.external == 0 else 0 for row in places_stock)
+			self.quantity_in_spie_tm = qty
 
 	def _check_dates(self):
 		# list(self.events) prevents any issue from the modification of a self.events element during the process

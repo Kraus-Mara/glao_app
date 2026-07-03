@@ -9,11 +9,11 @@
  "engine": "InnoDB",
  "field_order": [
   "section_break_wnst",
+  "characteristics_designation",
   "retail",
   "standard_periodicity",
   "section_break_htaj",
-  "units",
-  "characteristics_designation"
+  "units"
  ],
  "fields": [
   {
@@ -54,7 +54,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-02 10:09:06.029465",
+ "modified": "2026-07-03 12:45:21.886750",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Characteristics types",
