@@ -16,6 +16,7 @@
   "group",
   "is_active",
   "is_referenced",
+  "is_assembly",
   "description_tab",
   "chars",
   "periodicity",
@@ -26,7 +27,6 @@
   "alternatives_tab",
   "table_fucy",
   "assembly_tab",
-  "is_assembly",
   "items",
   "stock_rules_tab",
   "rules",
@@ -125,7 +125,8 @@
    "fieldtype": "Check",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Is Assembly"
+   "label": "Is Assembly",
+   "read_only_depends_on": "eval:doc.is_referenced"
   },
   {
    "depends_on": "eval:doc.is_assembly==1;",
@@ -139,6 +140,7 @@
    "fieldname": "is_referenced",
    "fieldtype": "Check",
    "label": "Is Referenced",
+   "read_only_depends_on": "eval:doc.is_assembly",
    "set_only_once": 1
   },
   {
@@ -196,7 +198,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-02 10:11:05.621315",
+ "modified": "2026-07-06 12:14:14.766891",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Article",

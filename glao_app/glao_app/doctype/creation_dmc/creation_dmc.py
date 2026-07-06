@@ -105,6 +105,7 @@ class CreationDMC(Document):
 				"status": "Draft",
 				"gestion_items": gestion_items,
 				"compositions_de_dmc": gestion_compo,
+				"notes": self.notes,
 			}
 		).insert(ignore_permissions=True)
 
