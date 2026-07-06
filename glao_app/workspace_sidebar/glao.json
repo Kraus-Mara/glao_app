@@ -43,30 +43,6 @@
    "type": "Link"
   },
   {
-   "child": 1,
-   "collapsible": 1,
-   "icon": "group",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Article Families",
-   "link_to": "Articles Group",
-   "link_type": "DocType",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
-   "icon": "pencil-ruler",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Units",
-   "link_to": "Units",
-   "link_type": "DocType",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
    "child": 0,
    "collapsible": 1,
    "indent": 0,
@@ -217,9 +193,56 @@
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "settings",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Parameters",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "group",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Article Families",
+   "link_to": "Articles Group",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "pencil-ruler",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Units",
+   "link_to": "Units",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "settings-2",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Characteristics",
+   "link_to": "Characteristics types",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
   }
  ],
- "modified": "2026-06-26 10:36:52.793481",
+ "modified": "2026-07-06 15:22:55.926700",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "GLAO",
