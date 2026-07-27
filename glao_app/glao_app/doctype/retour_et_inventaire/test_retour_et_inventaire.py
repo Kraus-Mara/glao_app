@@ -12,7 +12,6 @@ EXTRA_TEST_RECORD_DEPENDENCIES = []  # eg. ["User"]
 IGNORE_TEST_RECORD_DEPENDENCIES = []  # eg. ["User"]
 
 
-
 class IntegrationTestRetouretInventaire(IntegrationTestCase):
 	"""
 	Integration tests for RetouretInventaire.

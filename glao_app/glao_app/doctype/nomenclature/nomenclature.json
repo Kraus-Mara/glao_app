@@ -1,7 +1,6 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:nomenclature_name",
  "creation": "2026-02-05 14:05:34.359425",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -38,11 +37,11 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-02-25 10:53:44.292630",
+ "modified": "2026-07-09 10:48:30.958555",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Nomenclature",
- "naming_rule": "By fieldname",
+ "naming_rule": "By script",
  "owner": "Administrator",
  "permissions": [
   {
@@ -62,6 +61,5 @@
  "rows_threshold_for_grid_search": 20,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": [],
- "title_field": "nomenclature_name"
+ "states": []
 }

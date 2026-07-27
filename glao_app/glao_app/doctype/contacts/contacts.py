@@ -30,4 +30,7 @@ class Contacts(Document):
 		surname: DF.Data
 	# end: auto-generated types
 
+	def autoname(self):
+		self.name = f"{self.surname} {self.lastname} - {self.fonction} - {self.phone}"
+
 	pass

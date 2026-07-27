@@ -92,5 +92,22 @@ frappe.ui.form.on("Composition", {
                 });
             });
         });
-    }
+	},
+	refresh : function(frm) {
+        frm.set_query('saved_place', 'items', function(doc, cdt, cdn) {
+            let row = locals[cdt][cdn];
+            if (!row.saved_place) {
+                return {
+                    filters: {
+						'parenttype': "Stock"
+                    },
+					label: "place"
+                };
+            }
+            return {};
+        });
+	}
 });
+
+
+

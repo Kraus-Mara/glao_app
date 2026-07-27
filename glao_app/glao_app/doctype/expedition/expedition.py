@@ -4,6 +4,7 @@
 import frappe
 from frappe.model.document import Document
 from frappe.utils import now
+from frappe.model.naming import make_autoname
 
 
 class Expedition(Document):
@@ -22,9 +23,13 @@ class Expedition(Document):
 		job_no: DF.Data | None
 		project: DF.Link | None
 		status: DF.Literal["Waiting", "Shipped"]
+		transporteur: DF.Data | None
 	# end: auto-generated types
 
 	pass
+
+	def autoname(self):
+		self.name = make_autoname(str(self.project) + "-" + str(self.client) + " expedition " + ".#")
 
 	def validate(self):
 		if self.status == "Shipped":
@@ -63,5 +68,7 @@ class Expedition(Document):
 				frappe.db.set_value("Composition", c.composition, "not_available", 1)
 				frappe.db.set_value("Composition", c.composition, "place", "CLIENTS/" + str(client) + "/SITE")
 				frappe.db.set_value("Composition", c.composition, "reserved", 0)
+				frappe.db.set_value("Composition", c.composition, "by_dmc", None)
+
 		frappe.db.set_value("Gestion DMC", dmc.name, "status", "Shipped")
 		frappe.msgprint("Items and Compositions were sent with success")

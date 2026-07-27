@@ -14,14 +14,15 @@ class RetourItems(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		is_sub_item: DF.Check
 		item: DF.Link | None
 		item_name: DF.Data | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
-		place_to_stock: DF.Link | None
+		place_to_stock: DF.Autocomplete | None
 		quantity: DF.Int
-		reason: DF.Literal["", "Damaged", "Broken", "CDL Passed", "End of life"]
+		reason: DF.Literal["", "R", "L", "Incomplete"]
 		sent_quantity: DF.Int
 		sold: DF.Check
 		treated: DF.Check

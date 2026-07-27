@@ -21,11 +21,10 @@ class Projects(Document):
 		end_date: DF.Date | None
 		job_no: DF.Data | None
 		location: DF.Data | None
-		project_name: DF.Data | None
 		starting_date: DF.Date | None
 	# end: auto-generated types
 
-	def validate(self):
-		self.job_no = unidecode.unidecode(str(self.job_no).upper())
+	def autoname(self):
+		self.name = unidecode.unidecode(str(self.job_no).upper())
 
 	pass

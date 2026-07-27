@@ -3,6 +3,7 @@
 
 # import frappe
 from frappe.model.document import Document
+import unidecode
 
 
 class Characteristicstypes(Document):
@@ -20,5 +21,8 @@ class Characteristicstypes(Document):
 		standard_periodicity: DF.Check
 		units: DF.Table[CharacteristicsUnitLink]
 	# end: auto-generated types
+
+	def autoname(self):
+		self.name = unidecode.unidecode(str(self.characteristics_designation).upper())
 
 	pass

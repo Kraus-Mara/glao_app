@@ -38,20 +38,24 @@
    "label": "Batch No"
   },
   {
-   "depends_on": "eval:!doc.serial_no;",
-   "description": "Consommation Date Limit",
+   "depends_on": "eval:doc.batch_no;",
    "fieldname": "cdl",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "CDL"
+   "label": "CDL",
+   "mandatory_depends_on": "eval:doc.batch_no;",
+   "placeholder": "Consommation Date Limit",
+   "read_only_depends_on": "eval:doc.serial_no && !doc.batch_no;"
   },
   {
-   "depends_on": "eval:!doc.cdl;",
-   "description": "RV : Revision Date",
+   "depends_on": "eval:doc.serial_no;",
    "fieldname": "next_rv",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Next RV"
+   "label": "Next RV",
+   "mandatory_depends_on": "eval:doc.serial_no;",
+   "placeholder": "RV : Revision Date",
+   "read_only_depends_on": "eval:(doc.batch_no || !doc.serial_no);"
   },
   {
    "fieldname": "article",
@@ -65,7 +69,9 @@
    "fieldname": "quantity_for_batch",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Quantity"
+   "label": "Quantity",
+   "mandatory_depends_on": "eval:doc.batch_no;",
+   "read_only_depends_on": "eval:!doc.batch_no;"
   },
   {
    "allow_in_quick_entry": 1,
@@ -76,11 +82,10 @@
   },
   {
    "allow_in_quick_entry": 1,
-   "description": "Incr\u00e9ment en ann\u00e9e pour la garantie constructeur depuis la date de fabrication ",
    "fieldname": "incr_years",
    "fieldtype": "Select",
    "in_list_view": 1,
-   "label": "Incr\u00e9ment en ann\u00e9e",
+   "label": "Insurance duration ",
    "options": "0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10"
   },
   {
@@ -93,7 +98,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-15 09:13:35.026169",
+ "modified": "2026-07-09 10:40:14.285639",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Reference Details",

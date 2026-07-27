@@ -24,12 +24,14 @@
   {
    "fieldname": "article",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Article souhait\u00e9",
    "options": "Article"
   },
   {
    "fieldname": "quantity",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "Quantity asked"
   },
   {
@@ -43,6 +45,7 @@
   {
    "fieldname": "source_place",
    "fieldtype": "Autocomplete",
+   "in_list_view": 1,
    "label": "Source place",
    "mandatory_depends_on": "eval:doc.item_from_stock"
   },
@@ -50,14 +53,19 @@
    "fetch_from": "article.shortname",
    "fieldname": "designation",
    "fieldtype": "Data",
-   "label": "Designation"
+   "in_list_view": 1,
+   "label": "Designation",
+   "read_only": 1
   },
   {
-   "default": "0",
+   "bold": 1,
+   "default": "1",
    "fieldname": "true_quantity",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "True quantity"
+   "label": "True quantity",
+   "mandatory_depends_on": "eval:doc.source_place",
+   "placeholder": "qty"
   },
   {
    "default": "0",
@@ -72,7 +80,9 @@
    "fetch_from": "item_from_stock.closest_event_date",
    "fieldname": "closest_event",
    "fieldtype": "Date",
-   "label": "Closest Event"
+   "in_list_view": 1,
+   "label": "Closest Event",
+   "read_only": 1
   },
   {
    "default": "0",
@@ -113,7 +123,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-01 12:10:43.523351",
+ "modified": "2026-07-09 11:07:54.837175",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC Items",

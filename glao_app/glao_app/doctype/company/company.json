@@ -1,7 +1,6 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:shortname",
  "creation": "2026-02-04 10:24:05.580121",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -61,11 +60,11 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-17 10:31:38.058833",
- "modified_by": "antoine.kraus@spie.com",
+ "modified": "2026-07-09 11:21:53.874540",
+ "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Company",
- "naming_rule": "By fieldname",
+ "naming_rule": "By script",
  "owner": "Administrator",
  "permissions": [
   {

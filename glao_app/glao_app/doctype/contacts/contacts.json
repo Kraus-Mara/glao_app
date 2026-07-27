@@ -1,9 +1,9 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:lastname",
  "creation": "2026-02-04 10:08:42.520187",
  "doctype": "DocType",
+ "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "section_break_un5m",
@@ -30,8 +30,7 @@
    "in_list_view": 1,
    "in_preview": 1,
    "label": "Lastname",
-   "reqd": 1,
-   "unique": 1
+   "reqd": 1
   },
   {
    "fieldname": "surname",
@@ -97,11 +96,11 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-05-21 10:28:09.693891",
+ "modified": "2026-07-08 16:28:54.867051",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Contacts",
- "naming_rule": "By fieldname",
+ "naming_rule": "By script",
  "owner": "Administrator",
  "permissions": [],
  "row_format": "Dynamic",

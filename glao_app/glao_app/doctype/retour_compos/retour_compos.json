@@ -9,13 +9,16 @@
  "field_order": [
   "composition",
   "article",
+  "designation",
   "sent_quantity",
   "quantity",
   "which_are_issued",
   "reason",
   "place_for_litigation",
   "sold",
-  "treated"
+  "treated",
+  "is_sub_item",
+  "compo_row_name"
  ],
  "fields": [
   {
@@ -50,8 +53,8 @@
    "fieldname": "reason",
    "fieldtype": "Select",
    "label": "Reason",
-   "mandatory_depends_on": "eval:((doc.quantity<doc.sent_quantity) || doc.which_are_issued>0) && doc.sold",
-   "options": "\nNP\nDamaged\nBroken"
+   "mandatory_depends_on": "eval:doc.which_are_issued>0 && doc.sold",
+   "options": "\nR\nL\nIncomplete"
   },
   {
    "default": "0",
@@ -65,9 +68,9 @@
    "in_list_view": 1,
    "label": "Place for litigation",
    "link_filters": "[[\"Places\", \"litige\", \"=\", 1]]",
-   "mandatory_depends_on": "eval:doc.reason==\"Damaged\"",
+   "mandatory_depends_on": "eval:doc.reason==\"L\"",
    "options": "Places",
-   "read_only_depends_on": "eval:doc.reason!=\"Damaged\""
+   "read_only_depends_on": "eval:doc.reason!=\"L\""
   },
   {
    "default": "0",
@@ -75,13 +78,33 @@
    "fieldtype": "Check",
    "hidden": 1,
    "label": "Treated"
+  },
+  {
+   "fetch_from": "article.designation",
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Designation"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_sub_item",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "is_sub_item"
+  },
+  {
+   "fieldname": "compo_row_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "compo_row_name"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-06 13:23:04.937053",
+ "modified": "2026-07-13 08:31:24.592481",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retour Compos",

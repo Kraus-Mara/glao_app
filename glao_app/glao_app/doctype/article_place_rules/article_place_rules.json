@@ -1,0 +1,64 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-07-24 11:44:14.659734",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "hidden_place_rules",
+  "place",
+  "minimum_quantity",
+  "expected_quantity",
+  "maximum_quantity"
+ ],
+ "fields": [
+  {
+   "fieldname": "place",
+   "fieldtype": "Link",
+   "label": "Place",
+   "options": "Places"
+  },
+  {
+   "fetch_from": "hidden_place_rules.minimum_quantity",
+   "fieldname": "minimum_quantity",
+   "fieldtype": "Int",
+   "label": "Minimum quantity"
+  },
+  {
+   "fetch_from": "hidden_place_rules.expected_quantity",
+   "fieldname": "expected_quantity",
+   "fieldtype": "Int",
+   "label": "Expected quantity"
+  },
+  {
+   "fetch_from": "hidden_place_rules.maximum_quantity",
+   "fieldname": "maximum_quantity",
+   "fieldtype": "Int",
+   "label": "Maximum quantity"
+  },
+  {
+   "fieldname": "hidden_place_rules",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "hidden_place_rules",
+   "options": "Place Rules"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-07-24 13:43:01.372875",
+ "modified_by": "Administrator",
+ "module": "Glao App",
+ "name": "Article Place Rules",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

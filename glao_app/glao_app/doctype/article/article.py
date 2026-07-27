@@ -8,6 +8,8 @@ from frappe.model.document import Document
 from frappe.model.naming import make_autoname
 import unidecode
 
+from glao_app.glao_app.doctype.assembly_items import assembly_items
+
 
 class Article(Document):
 	# begin: auto-generated types
@@ -18,10 +20,10 @@ class Article(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 		from glao_app.glao_app.doctype.alternatives.alternatives import Alternatives
+		from glao_app.glao_app.doctype.article_place_rules.article_place_rules import ArticlePlaceRules
 		from glao_app.glao_app.doctype.article_providers.article_providers import ArticleProviders
 		from glao_app.glao_app.doctype.assembly_items.assembly_items import AssemblyItems
 		from glao_app.glao_app.doctype.characteristics.characteristics import Characteristics
-		from glao_app.glao_app.doctype.places_stock_rules.places_stock_rules import PlacesStockRules
 
 		article_name: DF.Data
 		char_name: DF.Data | None
@@ -37,10 +39,14 @@ class Article(Document):
 		notes: DF.Text | None
 		old_code: DF.Data | None
 		periodicity: DF.Data | None
+		place_rules: DF.Table[ArticlePlaceRules]
 		providers: DF.Table[ArticleProviders]
-		rules: DF.Table[PlacesStockRules]
+		retail_target: DF.Link | None
 		shortname: DF.Data | None
 		table_fucy: DF.Table[Alternatives]
+		total_expected: DF.Int
+		total_maximum: DF.Int
+		total_minimum: DF.Int
 	# end: auto-generated types
 
 	def autoname(self):
@@ -78,6 +84,15 @@ class Article(Document):
 		if contains(str(self.manufacturer), " "):
 			frappe.throw("A blank space is present in the manufacturer")
 		self._check_chars()
+		self._check_assembly_items()
+		# TODO : check if minimum quantity is not greater than expected quantity
+		# self._check
+
+	def _check_assembly_items(self):
+		if self.is_assembly:
+			for r in self.items:
+				if r.item == self.name:
+					frappe.throw(frappe._("An assembly cannot contain itself"))
 
 	def _check_chars(self):
 		if self.chars:
@@ -104,5 +119,14 @@ class Article(Document):
 			fields=["unit"],
 		)
 		return units
+
+	@frappe.whitelist()
+	def _fetch_place_rules(self):
+		pr = frappe.get_all(
+			"Place Rules",
+			filters=[["article", "=", self.name], ["parenttype", "=", "Places"]],
+			fields=["name", "parent", "minimum_quantity", "expected_quantity", "maximum_quantity"],
+		)
+		return pr
 
 	pass

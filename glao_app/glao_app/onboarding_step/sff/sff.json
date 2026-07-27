@@ -1,0 +1,22 @@
+{
+ "action": "Create Entry",
+ "action_label": "Create an Article",
+ "creation": "2026-07-15 13:26:09.091837",
+ "description": "Let's add an article in base, and add it to the stock",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "intro_video_url": "https://www.youtube.com/watch?v=JRDgihVDEko",
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2026-07-15 13:28:29.513972",
+ "modified_by": "Administrator",
+ "name": "sff",
+ "owner": "Administrator",
+ "reference_document": "Article",
+ "show_form_tour": 0,
+ "show_full_form": 0,
+ "title": "dsqdq",
+ "validate_action": 1
+}

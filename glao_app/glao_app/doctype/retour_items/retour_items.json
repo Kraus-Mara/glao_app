@@ -14,7 +14,8 @@
   "reason",
   "place_to_stock",
   "sold",
-  "treated"
+  "treated",
+  "is_sub_item"
  ],
  "fields": [
   {
@@ -22,14 +23,14 @@
    "fieldtype": "Link",
    "in_filter": 1,
    "in_standard_filter": 1,
-   "label": "Item",
+   "label": "Article",
    "options": "Stock"
   },
   {
    "fetch_from": "item.designation",
    "fieldname": "item_name",
    "fieldtype": "Data",
-   "label": "Item name"
+   "label": "Designation"
   },
   {
    "fieldname": "sent_quantity",
@@ -50,14 +51,13 @@
    "fieldname": "reason",
    "fieldtype": "Select",
    "label": "Reason",
-   "options": "\nDamaged\nBroken\nCDL Passed\nEnd of life"
+   "options": "\nR\nL\nIncomplete"
   },
   {
    "fieldname": "place_to_stock",
-   "fieldtype": "Link",
+   "fieldtype": "Autocomplete",
    "label": "Place to stock",
-   "mandatory_depends_on": "eval:doc.item && doc.quantity>0",
-   "options": "Places"
+   "mandatory_depends_on": "eval:doc.item && doc.quantity>0"
   },
   {
    "default": "0",
@@ -71,13 +71,20 @@
    "fieldtype": "Check",
    "hidden": 1,
    "label": "Treated"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_sub_item",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "is_sub_item"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-01 12:02:35.235719",
+ "modified": "2026-07-23 09:08:52.678734",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retour Items",

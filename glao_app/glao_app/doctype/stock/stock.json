@@ -26,14 +26,23 @@
   "quantity_in_spie_tm",
   "reserved_quantity",
   "section_break_tnxe",
-  "quantit\u00e9_minimale_requise",
   "place_table",
   "events",
   "rebut",
   "carnet_de_maintenance",
   "closest_event_date",
   "periodicity",
-  "not_yet_registered"
+  "not_yet_registered",
+  "stock_rules_tab",
+  "section_break_jfqt",
+  "total_minimum",
+  "column_break_izjv",
+  "total_expected",
+  "column_break_csfg",
+  "total_maximum",
+  "section_break_axge",
+  "refresh_table",
+  "place_rules"
  ],
  "fields": [
   {
@@ -157,11 +166,6 @@
    "label": "Quantity in SPIE TM"
   },
   {
-   "fieldname": "quantit\u00e9_minimale_requise",
-   "fieldtype": "Int",
-   "label": "Quantit\u00e9 minimale requise"
-  },
-  {
    "default": "0",
    "fieldname": "actif",
    "fieldtype": "Check",
@@ -173,7 +177,8 @@
    "fieldtype": "Date",
    "hidden": 1,
    "label": "Closest event date",
-   "read_only": 1
+   "read_only": 1,
+   "show_on_timeline": 1
   },
   {
    "fieldname": "reserved_quantity",
@@ -207,16 +212,66 @@
   },
   {
    "fieldname": "section_break_dttr",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Quantities"
   },
   {
    "fieldname": "column_break_vrys",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_axge",
+   "fieldtype": "Section Break",
+   "label": "Stock rules"
+  },
+  {
+   "fieldname": "refresh_table",
+   "fieldtype": "Button",
+   "label": "Refresh table"
+  },
+  {
+   "fieldname": "place_rules",
+   "fieldtype": "Table",
+   "label": "Rules",
+   "options": "Article Place Rules"
+  },
+  {
+   "fieldname": "section_break_jfqt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_minimum",
+   "fieldtype": "Int",
+   "label": "Total minimum"
+  },
+  {
+   "fieldname": "column_break_izjv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_expected",
+   "fieldtype": "Int",
+   "label": "Total expected"
+  },
+  {
+   "fieldname": "column_break_csfg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_maximum",
+   "fieldtype": "Int",
+   "label": "Total maximum"
+  },
+  {
+   "depends_on": "eval:!(doc.serial_no || doc.batch_no)",
+   "fieldname": "stock_rules_tab",
+   "fieldtype": "Tab Break",
+   "label": "Stock rules"
   }
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-07-02 10:54:57.333299",
+ "modified": "2026-07-27 14:44:40.660519",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",
@@ -238,7 +293,7 @@
  "route": "Stock",
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
- "search_fields": "serial_no, article, designation, batch_no, quantity, closest_event_date",
+ "search_fields": "serial_no, designation, batch_no, quantity, closest_event_date",
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": []

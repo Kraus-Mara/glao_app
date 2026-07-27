@@ -2,7 +2,6 @@
  "actions": [],
  "allow_bulk_edit": 1,
  "allow_rename": 1,
- "autoname": "field:characteristics_designation",
  "creation": "2026-07-01 16:35:10.376379",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -54,7 +53,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-03 12:45:21.886750",
+ "modified": "2026-07-09 10:56:00.815940",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Characteristics types",
@@ -78,6 +77,5 @@
  "rows_threshold_for_grid_search": 20,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": [],
- "title_field": "characteristics_designation"
+ "states": []
 }

@@ -12,6 +12,7 @@ from frappe.utils import now
 from frappe.model.naming import make_autoname
 from frappe.utils import add_to_date
 from frappe.utils.data import today
+import unidecode
 
 
 class Movement(Document):
@@ -44,7 +45,7 @@ class Movement(Document):
 		quantity_stock_entry: DF.Int
 		quantity_to_manipulate: DF.Int
 		re_des: DF.Data | None
-		rebut_cause: DF.Literal["Sur site", "NP", "Rebut", "Conclusion d'inventaire", "Manipulation"]
+		reason: DF.Literal["R", "SS", "P", "L", "ES", "IC", "RA"]
 		reference_details: DF.Table[ReferenceDetails]
 		second: DF.Check
 		serial: DF.Data | None
@@ -95,7 +96,11 @@ class Movement(Document):
 			else:
 				self._transfert_normal()
 		# self._sort_events_by_closing_date()
+		# TODO : When we register two different batches of the same article
+		# The quantities of theses stock are not updated correctly
+
 		self._count_stock_in_spie()
+
 		self.designation = (
 			self.designation_add or self.stock_entry_designation or self.designation_pull or self.re_des
 		)
@@ -148,7 +153,10 @@ class Movement(Document):
 				fields=["quantity", "external"],
 			)
 			qty = sum(row.quantity if row.external == 0 else 0 for row in places_stock)
-			frappe.db.set_value("Stock", str(self.article_referenced), "quantity_in_spie_tm", qty)
+			s = frappe.get_doc("Stock", str(self.article_referenced), for_update=True)
+			s.quantity_in_spie_tm = qty
+			s.save(ignore_permissions=True)
+
 		elif self.article_to_register:
 			# we suppose we're about to modify the not yet registered item AND the registered items
 			# first we count the items thats are not yet registered
@@ -229,7 +237,7 @@ class Movement(Document):
 					"not_yet_registered": 1,
 				}
 			).insert(ignore_permissions=True)
-			frappe.msgprint("Stock Entry enregistrée")
+			frappe.msgprint(frappe._("Stock Entry saved"))
 		else:
 			existing = frappe.get_all(
 				"Stock",
@@ -275,10 +283,12 @@ class Movement(Document):
 				to_save = frappe.get_doc("Stock", str(self.article_referenced), for_update=True)
 				to_save.update({"quantity": int(new_quantity)}).save()
 			else:
-				frappe.throw("Une erreur est survenue : M286")
-			frappe.msgprint("Stock Entry enregistrée")
+				frappe.throw(frappe._("An error occured: M286"))
+			frappe.msgprint(frappe._("Stock Entry saved"))
 
 	def _creer_instances_referenced(self):
+		if not self.reference_details or len(self.reference_details) == 0:
+			frappe.throw(frappe._("You need to add reference details in the table"))
 		self.article = self.article_to_register
 		tampon = frappe.get_all(
 			"Stock",
@@ -289,7 +299,7 @@ class Movement(Document):
 			],
 		)
 		if not tampon:
-			frappe.throw("Aucun Stock Entry trouvé pour cet article. Faites d'abord un 'Stock Entry'.")
+			frappe.throw(frappe._("No stock entry for this article, first add an item in 'Stock Entry"))
 		tampon_doc = frappe.get_doc("Stock", tampon[0].name, for_update=True)
 		tampon_place_tables = frappe.get_all(
 			"Places Stock",
@@ -325,7 +335,8 @@ class Movement(Document):
 			# to regroup inside the Places Stock by batches, and so it would appear on multiple
 			# lines, for each batch : a quantity and a place.
 			# As for serials it's already handled
-			if detail.cdl:
+			if detail.batch_no:
+				detail.batch_no = unidecode.unidecode(str(detail.batch_no).upper())
 				event_date = detail.cdl
 				event = "DLU"
 				try:
@@ -376,7 +387,8 @@ class Movement(Document):
 							row.quantity += detail.quantity_for_batch
 					doc.save()
 
-			elif detail.next_rv:
+			elif detail.serial_no:
+				detail.serial_no = unidecode.unidecode(str(detail.serial_no).upper())
 				event_date = detail.next_rv
 				event = "VGP"
 				# Here should be the frappe.get_doc(...) for serials
@@ -437,7 +449,7 @@ class Movement(Document):
 							years=int(detail.incr_years),
 						)
 						frappe.log_error(
-							f"EOL DATE: {end_of_life_date}, doc events avant: {doc.events}",
+							f"EOL DATE: {end_of_life_date}, doc events before : {doc.events}",
 							"DEBUG END OF LIFE",
 						)
 						doc.append(
@@ -496,12 +508,12 @@ class Movement(Document):
 						ps_doc.quantity += detail.quantity_for_batch
 						ps_doc.insert(ignore_if_duplicate=True, ignore_permissions=True)
 
-		frappe.msgprint("Articles suivis ajoutés avec succès")
+		frappe.msgprint(frappe._("Referenced article added to stock"))
 
 	def quantities_manipulation(self, doc: Document, operand: str):
 		"""doc is supposed to be extracted by doing a for doc in placetostock"""
 		if operand not in ["sub", "add"]:
-			frappe.msgprint("sub or add")
+			frappe.throw("sub or add")
 		existing = frappe.get_all("Places Stock", filters={"article": self.article, "place": doc.place})
 		if existing:
 			ps = frappe.get_doc("Places Stock", existing[0].name)
@@ -541,6 +553,8 @@ class Movement(Document):
 			frappe.throw("An error occured : 444")
 
 	def _creer_instances(self):
+		if not self.placetostock or len(self.placetostock) == 0:
+			frappe.throw(frappe._("You need to add some places in the table"))
 		throw_msg = []
 		doc_for_assembly = frappe.get_doc("Article", str(self.article))
 		if doc_for_assembly.is_assembly:
@@ -548,9 +562,10 @@ class Movement(Document):
 				exists = frappe.get_all("Stock", filters=[["article", "like", str(row.item)]])
 				if len(exists) == 0:
 					throw_msg.append(
-						"Item jamais instancié : " + str(row.shortname) + " (" + str(row.item) + ")"
+						frappe._("Never added article : " + str(row.shortname) + " (" + str(row.item) + ")")
 					)
 		if len(throw_msg) > 0:
+			throw_msg.append(frappe._("Try to add in null quantity theses articles"))
 			frappe.throw(throw_msg, as_list=True)
 
 		for row in self.placetostock:
@@ -559,7 +574,7 @@ class Movement(Document):
 		for doc in self.placetostock:
 			try:
 				if self.char_value:
-					doc.quantity *= self.char_value
+					doc.quantity *= int(self.char_value)
 				# Getting all corresponding Places Stock, obviously there's only one
 				existing = frappe.get_all(
 					"Places Stock",
@@ -591,7 +606,7 @@ class Movement(Document):
 						}
 					).insert(ignore_if_duplicate=True)
 				self.quantity_calculus()  # Updating the quantities of the self.article Stock
-				frappe.msgprint("Articles ajoutés")
+				frappe.msgprint("Articles added with success")
 			except frappe.exceptions.UniqueValidationError:
 				frappe.msgprint("An error occured")
 
@@ -721,9 +736,9 @@ class Movement(Document):
 						frappe.throw("How did you manage to get a negative new_quantity ?")
 				else:
 					to_save.update({"quantity": int(new_quantity)}).save()
-			frappe.msgprint("Articles retirés avec succès")
+			frappe.msgprint(frappe._("Articles retirés avec succès"))
 		else:
-			frappe.msgprint("Les articles n'ont pas été trouvés", indicator="red")
+			frappe.msgprint(frappe._("Les articles n'ont pas été trouvés"), indicator="red")
 
 	def _transfert_referenced(self):
 		existing = frappe.get_all("Places Stock", filters=[["parent", "=", self.article_from_stock]])
@@ -733,7 +748,7 @@ class Movement(Document):
 		for doc in existing:
 			temp = frappe.get_doc("Places Stock", doc.name)
 			if temp.quantity == 0:
-				frappe.msgprint("The article has no quantity, add some before doing this")
+				frappe.msgprint(frappe._("The article has no quantity, add some before doing this"))
 			else:
 				temp.delete()  # Delete the old place
 				to_save = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
@@ -802,7 +817,6 @@ class Movement(Document):
 
 				else:
 					to_insert = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
-					# frappe.throw(str(to_insert))
 					to_insert.append(
 						"place_table",
 						{
@@ -821,7 +835,7 @@ class Movement(Document):
 				)
 				tot_row = sum(row.quantity for row in places_stock)
 				frappe.db.set_value("Stock", str(self.article_from_stock), "quantity", tot_row)
-			frappe.msgprint("articles déplacés")
+			frappe.msgprint(frappe._("articles déplacés"))
 
 
 pass

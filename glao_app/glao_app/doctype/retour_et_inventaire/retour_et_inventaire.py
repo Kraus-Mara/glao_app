@@ -3,6 +3,8 @@
 
 import frappe
 from frappe.model.document import Document
+import unidecode
+from frappe.model.naming import make_autoname
 
 
 class RetouretInventaire(Document):
@@ -23,7 +25,13 @@ class RetouretInventaire(Document):
 		sent_items: DF.Table[RetourItems]
 	# end: auto-generated types
 
+	def autoname(self):
+		self.name = make_autoname(str(self.project) + " RETOUR-" + ".#")
+
 	def validate(self):
+		self.place_for_compositions = str(
+			frappe.db.get_single_value("Warehouse settings", "hangar_logistique")
+		)
 		first_save = not self.saved
 		if first_save:
 			self._fetch_all_stuff()
@@ -46,11 +54,12 @@ class RetouretInventaire(Document):
 		if remaining_items == 0 and remaining_compos == 0:
 			if frappe.db.exists("Projects", self.project):
 				project_doc = frappe.get_doc("Projects", self.project, for_update=True)
-				project_doc.completed = 1
-				project_doc.save(ignore_permissions=True)
-				frappe.msgprint(
-					f"Le chantier étant vide, le projet {self.project} a été marqué comme complété."
-				)
+				if not project_doc.completed:
+					project_doc.completed = 1
+					project_doc.save(ignore_permissions=True)
+					frappe.msgprint(
+						f"Le chantier étant vide, le projet {self.project} a été marqué comme complété."
+					)
 
 	def _fetch_all_stuff(self):
 		self.set("sent_items", [])
@@ -62,53 +71,120 @@ class RetouretInventaire(Document):
 
 		target_site_place = f"CLIENTS/{client}/SITE"
 
+		# 1. Récupération des articles en stock (Items et Assemblies incluses)
 		stock_items = frappe.get_all(
 			"Places Stock",
-			filters=[["place", "=", target_site_place], ["quantity", ">", 0]],
+			filters=[["place", "=", target_site_place], ["quantity", ">", 0], ["parenttype", "=", "Stock"]],
 			fields=["parent", "quantity"],
 		)
 
 		for stock in stock_items:
-			designation = frappe.db.get_value("Stock", stock.parent, "designation") or stock.parent
+			if str(stock.parent).startswith("STM-C") and frappe.db.exists("Article", stock.parent):
+				article_doc = frappe.get_doc("Article", stock.parent)
 
-			self.append(
-				"sent_items",
-				{
-					"item": stock.parent,
-					"item_name": designation,
-					"sent_quantity": stock.quantity,
-				},
-			)
+				for _ in range(int(stock.quantity)):
+					designation = frappe.db.get_value("Stock", stock.parent, "designation") or stock.parent
+					self.append(
+						"sent_items",
+						{
+							"item": stock.parent,
+							"item_name": designation,
+							"sent_quantity": 1,
+							"is_sub_item": 0,
+						},
+					)
 
-		# 3. Récupération des Compositions présentes sur ce lieu
+					if getattr(article_doc, "items", None):
+						for sub_item in article_doc.items:
+							sub_designation = (
+								frappe.db.get_value("Stock", sub_item.item, "designation") or sub_item.item
+							)
+							self.append(
+								"sent_items",
+								{
+									"item": sub_item.item,
+									"item_name": sub_designation,
+									"sent_quantity": sub_item.item_quantity,
+									"is_sub_item": 1,
+								},
+							)
+			else:
+				designation = frappe.db.get_value("Stock", stock.parent, "designation") or stock.parent
+				self.append(
+					"sent_items",
+					{
+						"item": stock.parent,
+						"item_name": designation,
+						"sent_quantity": stock.quantity,
+						"is_sub_item": 0,
+					},
+				)
+
+		# 2. Récupération des Compositions présentes
 		current_compos = frappe.get_all(
 			"Composition", filters=[["place", "=", target_site_place]], fields=["name"]
 		)
 
 		for compo in current_compos:
-			# Chargement du document complet pour accéder à sa table enfant (.items)
 			compo_doc = frappe.get_doc("Composition", compo.name)
 
 			for sub_item in compo_doc.items:
 				if sub_item.quantity <= 0:
 					continue
 
-				self.append(
-					"sent_compositions",
-					{
-						"composition": compo.name,
-						"article": sub_item.item,
-						"sent_quantity": sub_item.quantity,
-					},
-				)
+				if str(sub_item.item).startswith("STM-C") and frappe.db.exists("Article", sub_item.item):
+					assembly_doc = frappe.get_doc("Article", sub_item.item)
 
-	# ------------------------------------------------------------------
-	# Traitement des retours (sold -> mouvements de stock)
-	# ------------------------------------------------------------------
+					for _ in range(int(sub_item.quantity)):
+						designation = (
+							frappe.db.get_value("Stock", sub_item.item, "designation") or sub_item.item
+						)
+						self.append(
+							"sent_compositions",
+							{
+								"composition": compo.name,
+								"compo_row_name": sub_item.name,
+								"article": sub_item.item,
+								"designation": designation,
+								"sent_quantity": 1,
+								"is_sub_item": 0,
+							},
+						)
+
+						if getattr(assembly_doc, "items", None):
+							for ass_item in assembly_doc.items:
+								sub_designation = (
+									frappe.db.get_value("Stock", ass_item.item, "designation")
+									or ass_item.item
+								)
+								self.append(
+									"sent_compositions",
+									{
+										"composition": compo.name,
+										"compo_row_name": sub_item.name,
+										"article": ass_item.item,
+										"designation": sub_designation,
+										"sent_quantity": ass_item.item_quantity,
+										"is_sub_item": 1,
+									},
+								)
+				else:
+					self.append(
+						"sent_compositions",
+						{
+							"composition": compo.name,
+							"compo_row_name": sub_item.name,
+							"article": sub_item.item,
+							"designation": frappe.db.get_value("Stock", sub_item.item, "designation")
+							or sub_item.item,
+							"sent_quantity": sub_item.quantity,
+							"is_sub_item": 0,
+						},
+					)
 
 	def _get_source_place(self):
 		client = frappe.db.get_value("Projects", self.project, "company")
-		place = "CLIENTS/" + str(client) + "/SITE"
+		place = f"CLIENTS/{client}/SITE"
 		if not place:
 			frappe.throw(f"Aucun lieu chantier défini pour le projet {self.project}")
 		return place
@@ -119,19 +195,76 @@ class RetouretInventaire(Document):
 
 	def _process_returned_items(self):
 		source_place = None
-		for row in self.sent_items:
+		for i, row in enumerate(self.sent_items):
+			if str(row.item).startswith("STM-C") and row.is_sub_item == 0 and row.sold:
+				j = i + 1
+				all_subs_valid = True
+				while j < len(self.sent_items) and self.sent_items[j].is_sub_item == 1:
+					sub_row = self.sent_items[j]
+					if row.quantity > 0 and sub_row.quantity != sub_row.sent_quantity:
+						all_subs_valid = False
+						break
+					if row.quantity == 0 and sub_row.quantity != 0:
+						all_subs_valid = False
+						break
+					j += 1
+
+				if not all_subs_valid:
+					if not row.reason == "Incomplete":
+						frappe.throw(
+							f"Impossible de solder l'ensemble {row.item} ({row.item_name}) : "
+							f"les quantités de ses sous-articles ne sont pas cohérentes avec la quantité du package principal."
+						)
+
+		for i, row in enumerate(self.sent_items):
 			if not row.sold or row.treated:
 				continue
 			if source_place is None:
 				source_place = self._get_source_place()
-			self._process_one_item_row(row, source_place)
+
+			if str(row.item).startswith("STM-C") and row.is_sub_item == 0:
+				if row.quantity > 0 and row.which_are_issued == 0:
+					self._create_movement(
+						type="Transfert",
+						article_from_stock=row.item,
+						source_place=source_place,
+						target_place=row.place_to_stock,
+						quantity_to_manipulate=row.quantity,
+					)
+				else:
+					self._create_movement(
+						type="Pull",
+						article_from_stock=row.item,
+						source_place=source_place,
+						quantity_to_manipulate=row.sent_quantity,
+					)
+
+				row.treated = 1
+
+				# On marque les sous-composants comme traités
+				j = i + 1
+				while j < len(self.sent_items) and self.sent_items[j].is_sub_item == 1:
+					self.sent_items[j].treated = 1
+					j += 1
+				continue
+
+			# CAS STANDARD (Hors STM-C)
+			if row.is_sub_item == 0:
+				if row.quantity > 0:
+					self._process_one_item_row(row, source_place)
+				else:
+					self._create_movement(
+						type="Pull",
+						article_from_stock=row.item,
+						source_place=source_place,
+						quantity_to_manipulate=row.sent_quantity,
+					)
+					row.treated = 1
+			else:
+				row.treated = 1
 
 	def _process_one_item_row(self, row, source_place):
-		if row.quantity == row.sent_quantity and not row.which_are_issued:
-			# Si l'article entier est retourné mais marqué comme cassé (géré globalement via reason par exemple)
-			if row.reason == "Broken" and "-SN-" in (row.item or ""):
-				self._flag_stock_as_rebut(row.item)
-
+		if row.quantity <= row.sent_quantity and not row.which_are_issued:
 			self._create_movement(
 				type="Transfert",
 				article_from_stock=row.item,
@@ -139,48 +272,53 @@ class RetouretInventaire(Document):
 				target_place=row.place_to_stock,
 				quantity_to_manipulate=row.quantity,
 			)
-
-		elif row.which_are_issued and row.reason in ("Broken", "CDL Passed", "End of life"):
-			# Cas où une partie spécifique est issue/rebutée
-			if row.reason == "Broken" and "-SN-" in (row.item or ""):
+		elif row.which_are_issued:
+			if row.reason == "R" and "-SN-" in (row.item or ""):
 				self._flag_stock_as_rebut(row.item)
-
-			self._create_movement(
-				type="Pull",
-				article_from_stock=row.item,
-				source_place=source_place,
-				quantity_to_manipulate=row.which_are_issued,
-			)
-			remaining = row.quantity - row.which_are_issued
-			if remaining > 0:
 				self._create_movement(
-					type="Transfert",
+					type="Pull",
 					article_from_stock=row.item,
 					source_place=source_place,
-					target_place=row.place_to_stock,
-					quantity_to_manipulate=remaining,
+					quantity_to_manipulate=1,
 				)
-
-		elif row.reason == "Damaged":
-			place = frappe.get_doc("Places", str(row.place_to_stock))
-			if not place.litige:
-				frappe.throw(
-					f"Le lieu {row.place_to_stock} n'est pas catégorisé 'litige' (article {row.item})"
-				)
-			self._create_movement(
-				type="Transfert",
-				article_from_stock=row.item,
-				source_place=source_place,
-				target_place=row.place_to_stock,
-				quantity_to_manipulate=row.quantity,
-			)
-
-		else:
-			frappe.throw(
-				f"État incohérent pour {row.item} : quantity={row.quantity}, "
-				f"sent_quantity={row.sent_quantity}, which_are_issued={row.which_are_issued}, "
-				f"reason={row.reason}"
-			)
+			elif row.reason == "R":
+				if row.quantity > row.which_are_issued:
+					self._create_movement(
+						type="Transfert",
+						article_from_stock=row.item,
+						source_place=source_place,
+						target_place=row.place_to_stock,
+						quantity_to_manipulate=row.quantity - row.which_are_issued,
+					)
+					self._create_movement(
+						type="Pull",
+						article_from_stock=row.item,
+						source_place=source_place,
+						quantity_to_manipulate=row.which_are_issued,
+					)
+				elif row.quantity == row.which_are_issued:
+					self._create_movement(
+						type="Pull",
+						article_from_stock=row.item,
+						source_place=source_place,
+						quantity_to_manipulate=row.which_are_issued,
+					)
+			elif row.reason == "L":
+				if row.quantity > row.which_are_issued:
+					frappe.throw(
+						frappe._(
+							f"Please separate the quantities for litigation and stock transfer for item: {0}"
+						).format(row.item)
+					)
+				elif row.quantity == row.which_are_issued:
+					self._create_movement(
+						type="Transfert",
+						article_from_stock=row.item,
+						reason=row.reason,
+						source_place=source_place,
+						target_place=row.place_to_stock,
+						quantity_to_manipulate=row.which_are_issued,
+					)
 
 		row.treated = 1
 
@@ -188,134 +326,223 @@ class RetouretInventaire(Document):
 		groups = {}
 		for row in self.sent_compositions:
 			groups.setdefault(row.composition, []).append(row)
+
 		source_place = None
 		for composition, rows in groups.items():
-			if not all(r.sold for r in rows):
+			if not all(r.sold for r in rows) or any(r.treated for r in rows):
 				continue
-			if all(r.treated for r in rows):
-				continue
+
 			if source_place is None:
 				source_place = self._get_source_place()
-			for row in rows:
-				if row.treated:
+
+			has_incomplete_stmc = False
+			has_missing_standard_item = False
+
+			for i, row in enumerate(rows):
+				if str(row.article).startswith("STM-C") and row.is_sub_item == 0:
+					if not getattr(row, "reason", None) and row.quantity == 0:
+						has_incomplete_stmc = True
+					if getattr(row, "reason", None) == "Incomplete":
+						has_incomplete_stmc = True
+					else:
+						# Validation des sous-articles associés à ce package
+						j = i + 1
+						all_subs_valid = True
+						while j < len(rows) and rows[j].is_sub_item == 1:
+							if row.quantity > 0 and rows[j].quantity != rows[j].sent_quantity:
+								all_subs_valid = False
+								break
+							if row.quantity == 0 and rows[j].quantity != 0:
+								all_subs_valid = False
+								break
+							j += 1
+
+						if not all_subs_valid:
+							frappe.throw(
+								f"Dans la composition {composition}, l'ensemble {row.article} ne peut être traité car ses sous-articles ne sont pas cohérents. "
+								f"Sélectionnez 'Incomplete' en cas de manquant."
+							)
+				elif row.is_sub_item == 0:
+					if row.quantity < row.sent_quantity or getattr(row, "reason", None) == "R":
+						has_missing_standard_item = True
+
+			compo_doc = frappe.get_doc("Composition", composition, for_update=True)
+
+			for i, row in enumerate(rows):
+				if row.is_sub_item == 1:
+					row.treated = 1
 					continue
-				self._process_one_composition_row(row, source_place)
-			all_rows_for_this_compo = [r for r in self.sent_compositions if r.composition == composition]
-			if all(r.treated for r in all_rows_for_this_compo):
-				compo_doc = frappe.get_doc("Composition", composition, for_update=True)
-				compo_doc.place = self.place_for_compositions
-				compo_doc.not_available = 0
-				compo_doc.client = None
-				compo_doc.project = None
+
+				target_row_name = getattr(row, "compo_row_name", None)
+
+				# ================= CAS ENSEMBLE STM-C =================
+				if str(row.article).startswith("STM-C"):
+					if row.reason in ["Incomplete", "R"]:
+						for item_row in compo_doc.items:
+							if (target_row_name and item_row.name == target_row_name) or (
+								not target_row_name and item_row.item == row.article
+							):
+								item_row.quantity = max(0, item_row.quantity - 1)
+								compo_doc.save(ignore_permissions=True)
+								self._create_movement(
+									type="Pull",
+									article_from_stock=row.article,
+									source_place=item_row.saved_place,
+									quantity_to_manipulate=1,
+								)
+								break
+
+					elif row.reason == "L":
+						for item_row in compo_doc.items:
+							if (target_row_name and item_row.name == target_row_name) or (
+								not target_row_name and item_row.item == row.article
+							):
+								item_row.quantity = max(0, item_row.quantity - 1)
+								compo_doc.save(ignore_permissions=True)
+								self._create_movement(
+									type="Transfert",
+									article_from_stock=row.article,
+									source_place=item_row.saved_place,
+									target_place=row.place_for_litigation,
+									quantity_to_manipulate=row.which_are_issued,
+								)
+								break
+
+					elif not row.reason:
+						for item_row in compo_doc.items:
+							if (target_row_name and item_row.name == target_row_name) or (
+								not target_row_name and item_row.item == row.article
+							):
+								item_row.quantity = max(0, item_row.quantity - 1)
+								compo_doc.save(ignore_permissions=True)
+								self._create_movement(
+									type="Pull",
+									article_from_stock=row.article,
+									source_place=item_row.saved_place,
+									quantity_to_manipulate=1,
+								)
+								break
+
+					row.treated = 1
+					# Valider les sous-articles rattachés
+					j = i + 1
+					while j < len(rows) and rows[j].is_sub_item == 1:
+						rows[j].treated = 1
+						j += 1
+
+				# ================= CAS ARTICLE STANDARD =================
+				else:
+					for item_row in compo_doc.items:
+						if (target_row_name and item_row.name == target_row_name) or (
+							not target_row_name and item_row.item == row.article
+						):
+							missing = max(0, row.sent_quantity - row.quantity)
+
+							if row.which_are_issued:
+								if row.reason == "R":
+									new_qty = item_row.quantity - row.which_are_issued - missing
+									item_row.quantity = max(0, new_qty)
+								elif row.reason == "L":
+									if not row.place_for_litigation:
+										frappe.throw(
+											frappe._(
+												"Place for litigation not specified for : " + row.article
+											)
+										)
+									new_qty = item_row.quantity - row.which_are_issued - missing
+									item_row.quantity = max(0, new_qty)
+									compo_doc.save(ignore_permissions=True)
+
+									# Litigation movement
+									self._create_movement(
+										type="Transfert",
+										article_from_stock=row.article,
+										source_place=item_row.saved_place,
+										target_place=row.place_for_litigation,
+										quantity_to_manipulate=row.which_are_issued,
+									)
+									# Stock fixing
+									self._create_movement(
+										type="Pull",
+										article_from_stock=row.article,
+										source_place=item_row.saved_place,
+										quantity_to_manipulate=row.which_are_issued,
+									)
+								if "-SN-" in (row.article or ""):
+									self._flag_stock_as_rebut(row.article)
+							else:
+								# missing or nothing
+								new_qty = row.quantity - missing
+								item_row.quantity = max(0, new_qty)
+								# Stock fixing
+								self._create_movement(
+									type="Pull",
+									article_from_stock=row.article,
+									source_place=item_row.saved_place,
+									quantity_to_manipulate=missing,
+								)
+							break
+					row.treated = 1
+
+			compo_doc.place = self.place_for_compositions or frappe.db.get_single_value("Hangar log", "place")
+			compo_doc.not_available = 0
+			compo_doc.client = None
+			compo_doc.project = None
+			compo_doc.project_client = None
+			if hasattr(compo_doc, "by_dmc"):
 				compo_doc.by_dmc = None
-				if any(r.which_are_issued for r in all_rows_for_this_compo):
-					compo_doc.complete = 0
-					frappe.msgprint(
-						msg=f"La composition {compo_doc.name} est maintenant incomplète", title="Attention"
-					)
-				compo_doc.save(ignore_permissions=True)
-			else:
-				frappe.get_doc("Composition", composition, for_update=True).save()
+
+			compo_doc.complete = 0 if (has_incomplete_stmc or has_missing_standard_item) else 1
+			compo_doc.save(ignore_permissions=True)
 
 	def _process_one_composition_row(self, row, source_place):
-		if "-SN-" in (row.article or "") and row.quantity > 1:
-			frappe.throw(f"{row.article} est un article série (-SN-), quantité > 1 impossible")
+		compo_doc = frappe.get_doc("Composition", row.composition, for_update=True)
 
-		if row.which_are_issued:
-			ct = frappe.get_all(
-				"Composition Items",
-				filters=[["parent", "=", row.composition], ["item", "=", row.article]],
-				fields=["name", "quantity"],
-			)
-			if not ct:
-				frappe.throw(f"Composition Items introuvable : {row.article} dans {row.composition}")
+		target_row_name = getattr(row, "compo_row_name", None)
 
-			ct_doc = frappe.get_doc("Composition Items", ct[0].name, for_update=True)
-			new_qty = ct_doc.quantity - row.which_are_issued
-			if new_qty < 0:
-				frappe.throw(
-					f"which_are_issued ({row.which_are_issued}) > quantité disponible "
-					f"({ct_doc.quantity}) pour {row.article} ({row.composition})"
-				)
+		for item_row in compo_doc.items:
+			if (target_row_name and item_row.name == target_row_name) or (
+				not target_row_name and item_row.item == row.article
+			):
+				if row.quantity == 0:
+					new_qty = item_row.quantity - row.sent_quantity
+					item_row.quantity = max(0, new_qty)
+				elif row.which_are_issued:
+					new_qty = item_row.quantity - row.which_are_issued
+					item_row.quantity = max(0, new_qty)
+				break
 
-			ct_doc.quantity = new_qty
-
-			if new_qty == 0:
-				ct_doc.saved_item = None
-				ct_doc.saved_quantity = 0
-				ct_doc.saved_place = None
-			else:
-				ct_doc.saved_quantity = new_qty
-
-			ct_doc.save(ignore_permissions=True)
-
-			if row.reason in ("Broken", "NP"):
-				if row.reason == "Broken" and "-SN-" in (row.article or ""):
-					self._flag_stock_as_rebut(row.article)
-
-				self._create_movement(
-					type="Pull",
-					article_from_stock=row.article,
-					source_place=source_place,
-					quantity_to_manipulate=row.which_are_issued,
-				)
-			elif row.reason == "Damaged":
-				self._create_movement(
-					type="Transfert",
-					article_from_stock=row.article,
-					source_place=source_place,
-					target_place=row.place_for_litigation,
-					quantity_to_manipulate=row.which_are_issued,
-				)
-			else:
-				frappe.throw(
-					f"which_are_issued défini sans reason valide pour {row.article} ({row.composition})"
-				)
-
+		compo_doc.save(ignore_permissions=True)
 		row.treated = 1
 
 	def _flag_stock_as_rebut(self, article_name):
-		"""Passe le flag rebut à 1 sur le document Stock correspondant à l'article -SN-."""
 		if frappe.db.exists("Stock", article_name):
 			st = frappe.get_doc("Stock", article_name, for_update=True)
 			st.rebut = 1
 			st.save(ignore_permissions=True)
-		else:
-			frappe.msgprint(f"Attention : Le document Stock pour l'article {article_name} n'existe pas.")
 
 	@frappe.whitelist()
-	def get_target_places(self, item):
-		valid_places_data = frappe.get_all(
-			"Places", filters=[["litige", "=", 0], ["external", "=", 0]], fields=["name"]
-		)
-		valid_places = [p.name for p in valid_places_data]
+	def get_target_places(self, item, reason=None):
+		ist = frappe.get_doc("Stock", item)
+		places = []
+		if reason == "L":
+			litigious_places = frappe.get_all(
+				"Places",
+				filters=[["external", "=", 0], ["litige", "=", 1]],
+			)
+			for r in ist.place_table:
+				if r.place in [p.name for p in litigious_places]:
+					places.append(r.place)
+			if not places:
+				for p in litigious_places:
+					places.append(p.name)
+			return places
 
-		if not valid_places:
-			return []
-
-		item_base = item.split("-SN-")[0].split("-BN-")[0] if item else ""
-
-		matching_stock = frappe.get_all(
-			"Places Stock",
-			filters=[
-				["parent", "like", f"{item_base}%"],
-				["quantity", ">", 0],
-				["place", "in", valid_places],
-			],
-			fields=["place"],
-			order_by="quantity desc",
-		)
-
-		priority_places = []
-		for s in matching_stock:
-			if s.place not in priority_places:
-				priority_places.append(s.place)
-
-		final_places = list(priority_places)
-		for place in valid_places:
-			if place not in final_places:
-				final_places.append(place)
-
-		return final_places
-
-	pass
+		for r in ist.place_table:
+			if not r.external:
+				places.append(r.place)
+		if not places:
+			pla = frappe.get_all("Places", filters=[["external", "=", 0]], fields=["name"])
+			for p in pla:
+				places.append(p.name)
+		return places

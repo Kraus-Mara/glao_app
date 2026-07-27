@@ -23,4 +23,7 @@ class ArticleProviders(Document):
 		providers: DF.Link | None
 	# end: auto-generated types
 
+	def autoname(self):
+		self.name = str(self.providers) + "-" + str(self.part_number)
+
 	pass

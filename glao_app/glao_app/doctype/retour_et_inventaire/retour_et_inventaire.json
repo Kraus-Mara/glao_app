@@ -42,8 +42,10 @@
    "options": "Retour Compos"
   },
   {
+   "depends_on": "eval:doc.saved",
    "fieldname": "place_for_compositions",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Place for compositions",
    "options": "Places"
   }
@@ -51,10 +53,11 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-01 11:27:06.053991",
+ "modified": "2026-07-13 11:24:11.680711",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retour et Inventaire",
+ "naming_rule": "By script",
  "owner": "Administrator",
  "permissions": [
   {

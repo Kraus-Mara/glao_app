@@ -1,16 +1,17 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "NDMC-.#####",
  "creation": "2026-02-11 09:16:12.414063",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_vqha",
   "project",
-  "dmc_name",
+  "contact",
+  "column_break_kdei",
   "delivery_address",
   "delivery_date",
+  "section_break_vqha",
+  "dmc_name",
   "dmc_items",
   "compositions",
   "amended_from",
@@ -73,17 +74,26 @@
    "fieldname": "notes",
    "fieldtype": "Small Text",
    "label": "Notes"
+  },
+  {
+   "fieldname": "column_break_kdei",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "contact",
+   "fieldtype": "Autocomplete",
+   "label": "Contact"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-07-01 11:37:49.503070",
+ "modified": "2026-07-09 09:51:53.015198",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Creation DMC",
- "naming_rule": "Expression",
+ "naming_rule": "By script",
  "owner": "Administrator",
  "permissions": [
   {
@@ -104,6 +114,5 @@
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],
- "title_field": "dmc_name",
  "track_changes": 1
 }

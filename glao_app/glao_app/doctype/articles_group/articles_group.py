@@ -3,6 +3,7 @@
 
 # import frappe
 from frappe.model.document import Document
+import unidecode
 
 
 class ArticlesGroup(Document):
@@ -23,5 +24,8 @@ class ArticlesGroup(Document):
 		periodicity_in_days: DF.Int
 		rgt: DF.Int
 	# end: auto-generated types
+
+	def autoname(self):
+		self.name = unidecode.unidecode(str(self.group_name).upper())
 
 	pass

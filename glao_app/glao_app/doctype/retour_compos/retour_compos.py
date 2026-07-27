@@ -15,13 +15,16 @@ class RetourCompos(Document):
 		from frappe.types import DF
 
 		article: DF.Link | None
+		compo_row_name: DF.Data | None
 		composition: DF.Link | None
+		designation: DF.Data | None
+		is_sub_item: DF.Check
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
 		place_for_litigation: DF.Link | None
 		quantity: DF.Int
-		reason: DF.Literal["", "NP", "Damaged", "Broken"]
+		reason: DF.Literal["", "R", "L", "Incomplete"]
 		sent_quantity: DF.Int
 		sold: DF.Check
 		treated: DF.Check

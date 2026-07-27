@@ -5,7 +5,7 @@ import frappe
 from frappe.model.document import Document
 from glao_app.glao_app.doctype.gestion_dmc_items.gestion_dmc_items import GestionDMCItems
 from glao_app.glao_app.doctype.movement import movement
-from frappe.model.naming import getseries, make_autoname
+from frappe.model.naming import make_autoname
 
 
 class GestionDMC(Document):
@@ -33,15 +33,11 @@ class GestionDMC(Document):
 		project: DF.Link | None
 		starting_date: DF.Date | None
 		state: DF.Literal["Draft", "Validated"]
-		status: DF.Literal["Draft", "Validated", "Partially validated", "Shipped"]
+		status: DF.Literal["Draft", "Validated", "Partially validated", "Not served", "Shipped"]
 	# end: auto-generated types
 
 	def autoname(self):
-		if not self.dmc_name:
-			self.name = make_autoname("DMC-.#")
-		else:
-			series = getseries(str(self.dmc_name), 1)
-			self.name = str(self.dmc_name) + "-" + series
+		self.name = make_autoname(str(self.project) + "  DMC-" + ".#")
 
 	def recup_compo(self):
 		compos = frappe.get_all("Composition")[0].name
@@ -56,7 +52,7 @@ class GestionDMC(Document):
 			self._save_dmc()
 
 		else:
-			self._validation_verif()
+			r = self._validation_verif()
 			self._save_dmc()
 
 	def _validation_verif(self):
@@ -93,7 +89,17 @@ class GestionDMC(Document):
 		elif (has_items_part or has_compos_part) or contains_partial_item:
 			self.status = "Partially validated"
 		else:
-			frappe.throw("Impossible de valider")
+			flag_no_serving = False
+			for r in self.gestion_items:
+				if bool(r.no_serving == 1):
+					flag_no_serving = True
+			for r in self.compositions_de_dmc:
+				if bool(r.no_serving == 1):
+					flag_no_serving = True
+			if flag_no_serving:
+				self.status = "Not served"
+				return 1
+			frappe.throw("Impossible to validate this DMC, please check the items and compositions")
 
 	def _save_dmc(self):
 		errors = []
@@ -105,8 +111,9 @@ class GestionDMC(Document):
 			if row.item_from_stock and "-SN-" in str(row.item_from_stock):
 				if row.item_from_stock in seen_sn_items:
 					frappe.throw(
-						f"L'article avec numéro de série {row.item_from_stock} est présent sur plusieurs lignes. "
-						f"Il est impossible de réserver deux fois le même article -SN-."
+						frappe._(
+							f"The item with the serial no {row.item_from_stock} is on multiple lines, please remove the duplicates"
+						)
 					)
 				seen_sn_items.add(row.item_from_stock)
 
@@ -126,19 +133,25 @@ class GestionDMC(Document):
 			if row.saved_item and (row.moved_quantity != row.true_quantity):
 				is_ref = "-SN-" in str(row.saved_item) or "-BN-" in str(row.saved_item)
 				if "-SN-" in str(row.saved_item) and row.true_quantity > 1:
-					frappe.throw("Il faut ajouter une ligne pour les articles suivis en serial no")
+					frappe.throw(
+						frappe._(
+							"You need to add multiple lines for each serial number, you can't reserve more than one of the same serial number"
+						)
+					)
 				stock = frappe.get_doc("Stock", row.saved_item, for_update=True)
 				stock.reserved_quantity += row.true_quantity - row.moved_quantity
 				if stock.reserved_quantity > stock.quantity_in_spie_tm:
 					frappe.throw(
-						"No enough items available in stock : "
-						+ str(row.item_from_stock)
-						+ " (Maybe too much reserved)"
-						+ "quantity on spie tm site : "
-						+ str(stock.quantity_in_spie_tm)
-						+ " of which "
-						+ str(stock.reserved_quantity)
-						+ " are reserved"
+						frappe._(
+							"No enough items available in stock : "
+							+ str(row.item_from_stock)
+							+ " (Maybe too much reserved)"
+							+ "quantity on spie tm site : "
+							+ str(stock.quantity_in_spie_tm)
+							+ " of which "
+							+ str(stock.reserved_quantity)
+							+ " are reserved"
+						)
 					)
 				stock.save()
 				row.moved_quantity = row.true_quantity
@@ -155,26 +168,29 @@ class GestionDMC(Document):
 
 			if place.quantity < row.true_quantity:
 				frappe.throw(
-					"Not enough "
-					+ str(row.item_from_stock)
-					+ ", either add a line with a different source, either add some in the source place."
-					+ " Currently, "
-					+ str(place.quantity)
-					+ " is available in the selected place "
-					+ str(row.source_place),
-					title="Error",
+					frappe._(
+						"Not enough "
+						+ str(row.item_from_stock)
+						+ ", either add a line with a different source, either add some in the source place."
+						+ " Currently, "
+						+ str(place.quantity)
+						+ " is available in the selected place "
+						+ str(row.source_place),
+						title="Error",
+					)
 				)
 			if row.true_quantity > 0:
 				stock = frappe.get_doc("Stock", row.item_from_stock, for_update=True)
 				if self.starting_date and stock.closest_event_date:
 					if stock.closest_event_date < self.starting_date:
 						frappe.throw(
-							f"Impossible de réserver l'article {row.item_from_stock}. "
-							f"La date du prochain événement ({stock.closest_event_date}) est antérieure à la date de début de la DMC ({self.starting_date})."
+							frappe._(
+								f"Impossible to book the item {row.item_from_stock}. The date of next ({stock.closest_event_date}) is behind the starting date of the DMC ({self.starting_date})."
+							)
 						)
 				stock.reserved_quantity += row.true_quantity
 				if stock.reserved_quantity > stock.quantity_in_spie_tm:
-					frappe.throw("No enough items in stock : " + str(row.item_from_stock))
+					frappe.throw(frappe._("No enough items in stock : " + str(row.item_from_stock)))
 				stock.save()
 				row.moved_quantity = row.true_quantity
 				row.saved_item = row.item_from_stock
@@ -197,7 +213,9 @@ class GestionDMC(Document):
 					is_validated = frappe.get_doc("Gestion DMC", cd.by_dmc).status != "Draft"
 					if is_validated:
 						frappe.throw(
-							"This composition comes from a validated DMC, please use the dedicated tab to modify it"
+							frappe._(
+								"This composition comes from a validated DMC, please use the dedicated tab to modify it"
+							)
 						)
 					else:
 						cs = frappe.get_all("Gestion DMC Compositions", filters=[["parent", "=", cd.by_dmc]])
@@ -209,20 +227,25 @@ class GestionDMC(Document):
 								break
 				frappe.db.set_value("Composition", comp_row.composition, "reserved", 1)
 				frappe.db.set_value("Composition", comp_row.composition, "by_dmc", self.name)
-				comp_row.moved_quantity = comp_row.quantity
+				# comp_row.moved_quantity = comp_row.quantity
 				comp_row.comp_saved = comp_row.composition
-		# if warnings:
-		#   frappe.msgprint(warnings, title="Attention", as_list=True)
+				# compo_to_update = frappe.get_doc("Composition", comp_row.composition, for_update=True)
+				# compo_to_update.save(ignore_permissions=True, update_modified=False)
 
 		if errors:
-			frappe.throw("\n".join(errors), title="Erreurs lors du Pull")
+			frappe.throw("\n".join(errors), title="Pull error")
 
-		# self.status = "Draft"
-		frappe.msgprint("DMC enregistrée, articles réservés", title="Confirmation")
 		# Passed through all without throwing an error
 		if self.status != "Draft":
 			if self.status == "Partially validated":
+				frappe.msgprint(frappe._("DMC partially validated"), title="Confirmation")
 				self.create_next_dmc()
+			elif self.status == "Validated":
+				frappe.msgprint(frappe._("DMC validated"), title="Confirmation")
+			elif self.status == "Draft":
+				frappe.msgprint(frappe._("DMC saved in draft, items reserved"), title="Confirmation")
+			elif self.status == "Not served":
+				frappe.msgprint(frappe._("DMC not validated, closed"), title="Confirmation")
 			frappe.get_doc(
 				{
 					"doctype": "Expedition",
@@ -268,7 +291,6 @@ class GestionDMC(Document):
 		frappe.get_doc(
 			{
 				"doctype": "Gestion DMC",
-				"dmc_name": self.name,
 				"project": self.project,
 				"delivery_address": self.delivery_address,
 				"delivery_date": self.delivery_date,
@@ -298,7 +320,7 @@ class GestionDMC(Document):
 		# Children places
 		# self.new_place(place_name="BOOK", parent_place="CLIENTS/" + str(self.client), external=False)
 		self.new_place(place_name="SITE", parent_place="CLIENTS/" + str(self.client))
-		self.new_place(place_name="WAIT", parent_place="CLIENTS/" + str(self.client), external=False)
+		# self.new_place(place_name="WAIT", parent_place="CLIENTS/" + str(self.client), external=False)
 
 	def _check_places(self):
 		# First we check if the place client already exists

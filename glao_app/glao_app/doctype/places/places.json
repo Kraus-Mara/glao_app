@@ -20,7 +20,7 @@
   "litige",
   "rules_tab",
   "rules_section",
-  "place_rules",
+  "rules",
   "owner_id",
   "lft",
   "rgt",
@@ -50,13 +50,6 @@
    "in_list_view": 1,
    "label": "Place Name",
    "reqd": 1
-  },
-  {
-   "fieldname": "place_rules",
-   "fieldtype": "Table",
-   "label": "Place Rules",
-   "options": "Places Stock Rules",
-   "placeholder": "Add a stock rule"
   },
   {
    "fieldname": "place_id",
@@ -153,13 +146,19 @@
    "fieldname": "litige",
    "fieldtype": "Check",
    "label": "Litige"
+  },
+  {
+   "fieldname": "rules",
+   "fieldtype": "Table",
+   "label": "Rules",
+   "options": "Place Rules"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2026-06-30 10:57:56.036179",
+ "modified": "2026-07-23 15:56:04.294912",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Places",

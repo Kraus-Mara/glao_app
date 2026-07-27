@@ -13,7 +13,7 @@ class Places(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
-		from glao_app.glao_app.doctype.places_stock_rules.places_stock_rules import PlacesStockRules
+		from glao_app.glao_app.doctype.place_rules.place_rules import PlaceRules
 
 		address: DF.Check
 		company: DF.Link | None
@@ -28,8 +28,8 @@ class Places(Document):
 		parent_places: DF.Link | None
 		place_id: DF.Data
 		place_name: DF.Data
-		place_rules: DF.Table[PlacesStockRules]
 		rgt: DF.Int
+		rules: DF.Table[PlaceRules]
 	# end: auto-generated types
 
 	def autoname(self):

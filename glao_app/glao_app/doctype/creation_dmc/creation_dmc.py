@@ -4,6 +4,7 @@
 import frappe
 from frappe.model.document import Document
 from pydantic_core.core_schema import field_after_validator_function
+from frappe.model.naming import make_autoname
 
 
 class CreationDMC(Document):
@@ -19,6 +20,7 @@ class CreationDMC(Document):
 
 		amended_from: DF.Link | None
 		compositions: DF.Table[DMCCompositions]
+		contact: DF.Autocomplete | None
 		delivery_address: DF.Data | None
 		delivery_date: DF.Date | None
 		dmc_items: DF.Table[DMCItems]
@@ -26,6 +28,9 @@ class CreationDMC(Document):
 		notes: DF.SmallText | None
 		project: DF.Link | None
 	# end: auto-generated types
+
+	def autoname(self):
+		self.name = make_autoname(str(self.project) + " DMC-" + ".#")
 
 	def on_submit(self):
 		self._create_gestion_dmc()
@@ -70,11 +75,11 @@ class CreationDMC(Document):
 			if frappe.get_doc("Article", str(row.article)).is_referenced:
 				# Absolutely not bug-proof
 				list_article_from_stock = frappe.get_all(
-					"Stock", filters=[["article", "like", str(row.article)]]
+					"Stock", filters=[["article", "=", str(row.article)]], fields=["name"]
 				)
-				article_example = frappe.get_doc("Stock", str(list_article_from_stock[0].name))
-				if article_example.serial_no:
-					flag_serial = True
+				for i in list_article_from_stock:
+					if "-SN-" in i.name:
+						flag_serial = True
 				self._gen_item(
 					gestion_items,
 					"Gestion DMC Items",
@@ -108,5 +113,12 @@ class CreationDMC(Document):
 				"notes": self.notes,
 			}
 		).insert(ignore_permissions=True)
+		frappe.msgprint(frappe._("DMC created with success"), title="Confirmation")
 
-		frappe.msgprint("DMC créée avec succès", title="Confirmation")
+	@frappe.whitelist()
+	def _get_contact_from_project(self):
+		company = frappe.get_doc("Projects", str(self.project)).company
+		c = frappe.get_all("Contacts", filters=[["parent", "=", company]], fields=["name"])
+		return c
+
+	pass

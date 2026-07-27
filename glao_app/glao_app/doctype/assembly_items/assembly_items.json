@@ -22,7 +22,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Item",
-   "link_filters": "[[\"Article\", \"is_refrenced\", \"=\", 0]]",
+   "link_filters": "[[\"Article\", \"is_referenced\", \"=\", 0]]",
    "options": "Article"
   },
   {
@@ -51,7 +51,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-06 15:18:20.298585",
+ "modified": "2026-07-08 09:06:35.811028",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Assembly Items",

@@ -3,6 +3,7 @@
 
 # import frappe
 from frappe.model.document import Document
+import unidecode
 
 
 class Units(Document):
@@ -19,5 +20,8 @@ class Units(Document):
 		to: DF.Link | None
 		unit_name: DF.Data | None
 	# end: auto-generated types
+
+	def autoname(self):
+		self.name = unidecode.unidecode(self.unit_name).upper()
 
 	pass

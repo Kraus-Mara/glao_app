@@ -1,4 +1,4 @@
-# Copyright (c) 2026, Frappe Technologies and Contributors
+# Copyright (c) 2026, kr and Contributors
 # See license.txt
 
 # import frappe
@@ -13,9 +13,9 @@ IGNORE_TEST_RECORD_DEPENDENCIES = []  # eg. ["User"]
 
 
 
-class IntegrationTestReferencedArticle(IntegrationTestCase):
+class IntegrationTestWarehousesettings(IntegrationTestCase):
 	"""
-	Integration tests for ReferencedArticle.
+	Integration tests for Warehousesettings.
 	Use this class for testing interactions between multiple components.
 	"""
 

@@ -1,0 +1,23 @@
+{
+ "allow_roles": [
+  {
+   "role": "Administrator"
+  }
+ ],
+ "creation": "2026-07-15 13:27:23.204723",
+ "docstatus": 0,
+ "doctype": "Module Onboarding",
+ "idx": 0,
+ "is_complete": 0,
+ "modified": "2026-07-15 13:29:02.682503",
+ "modified_by": "Administrator",
+ "module": "Glao App",
+ "name": "test",
+ "owner": "Administrator",
+ "steps": [
+  {
+   "step": "sff"
+  }
+ ],
+ "title": "test"
+}

@@ -12,7 +12,9 @@
   "status",
   "job_no",
   "client",
-  "expedition_date"
+  "expedition_date",
+  "transporteur",
+  "print_pof"
  ],
  "fields": [
   {
@@ -56,12 +58,22 @@
    "fieldname": "expedition_date",
    "fieldtype": "Datetime",
    "label": "Expedition date"
+  },
+  {
+   "fieldname": "transporteur",
+   "fieldtype": "Data",
+   "label": "Transporter"
+  },
+  {
+   "fieldname": "print_pof",
+   "fieldtype": "Button",
+   "label": "Print PoF"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-01 11:58:03.516114",
+ "modified": "2026-07-23 14:32:40.173279",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Expedition",

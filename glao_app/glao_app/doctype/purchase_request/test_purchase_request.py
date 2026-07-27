@@ -1,4 +1,4 @@
-# Copyright (c) 2026, Frappe Technologies and Contributors
+# Copyright (c) 2026, kr and Contributors
 # See license.txt
 
 # import frappe
@@ -13,9 +13,9 @@ IGNORE_TEST_RECORD_DEPENDENCIES = []  # eg. ["User"]
 
 
 
-class IntegrationTestPlacesStockRules(IntegrationTestCase):
+class IntegrationTestPurchaseRequest(IntegrationTestCase):
 	"""
-	Integration tests for PlacesStockRules.
+	Integration tests for PurchaseRequest.
 	Use this class for testing interactions between multiple components.
 	"""
 

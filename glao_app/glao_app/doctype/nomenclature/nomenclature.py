@@ -3,6 +3,8 @@
 
 # import frappe
 from frappe.model.document import Document
+from glao_app.glao_app.doctype.nomenclature_items import nomenclature_items
+import unidecode
 
 
 class Nomenclature(Document):
@@ -19,5 +21,9 @@ class Nomenclature(Document):
 		items: DF.Table[NomenclatureItems]
 		nomenclature_name: DF.Data | None
 	# end: auto-generated types
+
+	def autoname(self):
+		self.nomenclature_name = unidecode.unidecode(str(self.nomenclature_name).upper())
+		self.name = self.nomenclature_name
 
 	pass
