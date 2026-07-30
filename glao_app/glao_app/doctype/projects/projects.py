@@ -21,6 +21,7 @@ class Projects(Document):
 		end_date: DF.Date | None
 		job_no: DF.Data | None
 		location: DF.Data | None
+		project_title: DF.Data | None
 		starting_date: DF.Date | None
 	# end: auto-generated types
 

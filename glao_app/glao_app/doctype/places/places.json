@@ -48,14 +48,14 @@
    "fieldname": "place_name",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Place Name",
+   "label": "Location Name",
    "reqd": 1
   },
   {
    "fieldname": "place_id",
    "fieldtype": "Data",
    "hidden": 1,
-   "label": "Place ID",
+   "label": "Location ID",
    "not_nullable": 1,
    "search_index": 1
   },
@@ -79,7 +79,7 @@
    "default": "0",
    "fieldname": "is_group",
    "fieldtype": "Check",
-   "label": "Is Group"
+   "label": "Is Parent"
   },
   {
    "fieldname": "old_parent",
@@ -93,7 +93,7 @@
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
    "in_list_view": 1,
-   "label": "Parent Places",
+   "label": "Parent Location",
    "link_filters": "[[\"Places\",\"is_group\",\"=\",1]]",
    "options": "Places",
    "set_only_once": 1
@@ -136,7 +136,7 @@
   },
   {
    "default": "0",
-   "description": "Movements statistics inside this place won't be fetched",
+   "description": "Disables movements statistics",
    "fieldname": "external",
    "fieldtype": "Check",
    "label": "External"
@@ -145,7 +145,7 @@
    "default": "0",
    "fieldname": "litige",
    "fieldtype": "Check",
-   "label": "Litige"
+   "label": "Unavailable"
   },
   {
    "fieldname": "rules",
@@ -158,7 +158,7 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2026-07-23 15:56:04.294912",
+ "modified": "2026-07-29 16:06:35.834688",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Places",

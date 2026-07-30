@@ -21,8 +21,8 @@ class CompositionItems(Document):
 		parentfield: DF.Data
 		parenttype: DF.Data
 		quantity: DF.Int
-		saved_item: DF.Link | None
-		saved_place: DF.Link | None
+		saved_item: DF.Autocomplete | None
+		saved_place: DF.Autocomplete | None
 		saved_quantity: DF.Int
 	# end: auto-generated types
 

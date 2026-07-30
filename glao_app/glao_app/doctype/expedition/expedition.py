@@ -5,6 +5,7 @@ import frappe
 from frappe.model.document import Document
 from frappe.utils import now
 from frappe.model.naming import make_autoname
+from frappe.utils.xlsxutils import make_xlsx
 
 
 class Expedition(Document):
@@ -16,6 +17,7 @@ class Expedition(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		carrier: DF.Data | None
 		client: DF.Data | None
 		delivery_date: DF.Date | None
 		dmc: DF.Link | None
@@ -23,7 +25,6 @@ class Expedition(Document):
 		job_no: DF.Data | None
 		project: DF.Link | None
 		status: DF.Literal["Waiting", "Shipped"]
-		transporteur: DF.Data | None
 	# end: auto-generated types
 
 	pass
@@ -72,3 +73,55 @@ class Expedition(Document):
 
 		frappe.db.set_value("Gestion DMC", dmc.name, "status", "Shipped")
 		frappe.msgprint("Items and Compositions were sent with success")
+
+	pass
+
+
+@frappe.whitelist()
+def export_expedition_excel(name):
+	expedition = frappe.get_doc("Expedition", name)
+	dmc = frappe.get_doc("Gestion DMC", expedition.dmc)
+	alldata = []
+	items_data = []
+	bom_data = []
+	if dmc.gestion_items:
+		fields = ["item_from_stock", "designation", "true_quantity", "closest_event"]
+		head = [frappe._("Item"), frappe._("Designation"), frappe._("Quantity"), frappe._("Closest Event")]
+		items_data = [head]
+		all_item_rows = frappe.get_all(
+			"Gestion DMC Items",
+			filters=[
+				["parent", "=", expedition.dmc],
+				["parenttype", "=", "Gestion DMC"],
+				["no_serving", "=", 0],
+			],
+			fields=fields,
+		)
+		items_data += [[row[f] for f in fields] for row in all_item_rows]
+		if items_data == [head]:
+			items_data = []
+	if dmc.compositions_de_dmc:
+		fields = ["composition", "quantity"]
+		head = [frappe._("BoM"), frappe._("Quantity")]
+		bom_data = [head]
+		all_bom_rows = frappe.get_all(
+			"Gestion DMC Compositions",
+			filters=[
+				["parent", "=", expedition.dmc],
+				["parenttype", "=", "Gestion DMC"],
+				["no_serving", "=", 0],
+				["composition", "is", "Set"],
+			],
+			fields=fields,
+		)
+		bom_data += [[row[f] for f in fields] for row in all_bom_rows]
+		if bom_data == [head]:
+			bom_data = []
+	alldata = items_data + bom_data
+	all = make_xlsx(
+		data=alldata,
+		sheet_name="BL",
+	)
+	frappe.local.response.filename = f"{name}_export.xlsx"
+	frappe.local.response.filecontent = all.getvalue()
+	frappe.local.response.type = "download"

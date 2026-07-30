@@ -13,6 +13,7 @@
  ],
  "fields": [
   {
+   "allow_bulk_edit": 1,
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
@@ -39,7 +40,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-22 14:35:32.201171",
+ "modified": "2026-07-30 10:03:59.978615",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Purchase Command",

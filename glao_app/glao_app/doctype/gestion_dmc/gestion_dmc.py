@@ -16,9 +16,7 @@ class GestionDMC(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
-		from glao_app.glao_app.doctype.gestion_dmc_compositions.gestion_dmc_compositions import (
-			GestionDMCCompositions,
-		)
+		from glao_app.glao_app.doctype.gestion_dmc_compositions.gestion_dmc_compositions import GestionDMCCompositions
 		from glao_app.glao_app.doctype.gestion_dmc_items.gestion_dmc_items import GestionDMCItems
 
 		client: DF.Data | None
@@ -303,7 +301,7 @@ class GestionDMC(Document):
 			}
 		).insert(ignore_permissions=True)
 
-	def new_place(self, place_name: str, parent_place: str, is_group=0, external=True):
+	def new_place(self, place_name: str, parent_place=None, is_group=0, external=True):
 		frappe.new_doc(
 			"Places",
 			place_name=place_name,
@@ -316,6 +314,7 @@ class GestionDMC(Document):
 
 	def _create_client_place(self):
 		# Parent place
+		self.new_place(place_name="CLIENTS", is_group=1)
 		self.new_place(place_name=str(self.client), parent_place="CLIENTS", is_group=1)
 		# Children places
 		# self.new_place(place_name="BOOK", parent_place="CLIENTS/" + str(self.client), external=False)

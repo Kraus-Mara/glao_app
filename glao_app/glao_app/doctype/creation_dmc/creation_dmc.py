@@ -27,6 +27,7 @@ class CreationDMC(Document):
 		dmc_name: DF.Data | None
 		notes: DF.SmallText | None
 		project: DF.Link | None
+		project_title: DF.Data | None
 	# end: auto-generated types
 
 	def autoname(self):

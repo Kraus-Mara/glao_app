@@ -43,9 +43,9 @@
   },
   {
    "fieldname": "saved_place",
-   "fieldtype": "Link",
-   "label": "Source Place",
-   "options": "Places Stock"
+   "fieldtype": "Autocomplete",
+   "label": "Source place",
+   "read_only_depends_on": "eval:doc.saved_quantity>0"
   },
   {
    "fetch_from": "item.closest_event_date",
@@ -55,9 +55,8 @@
   },
   {
    "fieldname": "saved_item",
-   "fieldtype": "Link",
-   "label": "saved_item",
-   "options": "Stock"
+   "fieldtype": "Autocomplete",
+   "label": "saved_item"
   },
   {
    "fieldname": "saved_quantity",
@@ -69,7 +68,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-27 15:17:39.475569",
+ "modified": "2026-07-29 10:29:41.909253",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Composition Items",

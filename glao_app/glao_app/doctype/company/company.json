@@ -23,12 +23,12 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Company Name"
+   "label": "Full Name"
   },
   {
    "fieldname": "shortname",
    "fieldtype": "Data",
-   "label": "Shortname",
+   "label": "Short Name",
    "unique": 1
   },
   {
@@ -48,7 +48,7 @@
   {
    "fieldname": "location",
    "fieldtype": "Data",
-   "label": "Location",
+   "label": "Address",
    "placeholder": "2 Rue du Chemin Vert, 95100 Argenteuil"
   },
   {
@@ -60,7 +60,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-09 11:21:53.874540",
+ "modified": "2026-07-29 16:07:13.019873",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Company",

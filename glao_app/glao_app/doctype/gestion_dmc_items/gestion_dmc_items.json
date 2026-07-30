@@ -25,14 +25,14 @@
    "fieldname": "article",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Article souhait\u00e9",
+   "label": "Requested Article",
    "options": "Article"
   },
   {
    "fieldname": "quantity",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Quantity asked"
+   "label": "Quantity Requested"
   },
   {
    "fieldname": "item_from_stock",
@@ -46,7 +46,7 @@
    "fieldname": "source_place",
    "fieldtype": "Autocomplete",
    "in_list_view": 1,
-   "label": "Source place",
+   "label": "Source Location",
    "mandatory_depends_on": "eval:doc.item_from_stock"
   },
   {
@@ -63,7 +63,7 @@
    "fieldname": "true_quantity",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "True quantity",
+   "label": "Actual Quantity",
    "mandatory_depends_on": "eval:doc.source_place",
    "placeholder": "qty"
   },
@@ -116,14 +116,14 @@
    "fieldname": "no_serving",
    "fieldtype": "Check",
    "in_list_view": 1,
-   "label": "Ne pas servir"
+   "label": "Not Provided"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-09 11:07:54.837175",
+ "modified": "2026-07-29 16:29:20.058183",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC Items",

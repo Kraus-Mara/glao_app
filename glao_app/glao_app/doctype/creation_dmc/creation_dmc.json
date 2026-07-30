@@ -6,6 +6,9 @@
  "engine": "InnoDB",
  "field_order": [
   "project",
+  "column_break_akwt",
+  "project_title",
+  "section_break_bryp",
   "contact",
   "column_break_kdei",
   "delivery_address",
@@ -26,7 +29,7 @@
    "fetch_from": "project.location",
    "fieldname": "delivery_address",
    "fieldtype": "Data",
-   "label": "Delivery address"
+   "label": "Delivery Address"
   },
   {
    "fieldname": "dmc_items",
@@ -37,7 +40,7 @@
   {
    "fieldname": "project",
    "fieldtype": "Link",
-   "label": "Project",
+   "label": "Job No",
    "link_filters": "[[\"Projects\",\"completed\",\"=\", 0]]",
    "options": "Projects"
   },
@@ -45,13 +48,13 @@
    "fieldname": "dmc_name",
    "fieldtype": "Data",
    "hidden": 1,
-   "label": "DMC Name",
+   "label": "MR Name",
    "placeholder": "To easily find your DMC"
   },
   {
    "fieldname": "compositions",
    "fieldtype": "Table",
-   "label": "Nomenclature",
+   "label": "BoM",
    "options": "DMC Compositions"
   },
   {
@@ -68,7 +71,7 @@
   {
    "fieldname": "delivery_date",
    "fieldtype": "Date",
-   "label": "Delivery date"
+   "label": "Expected Date on Site"
   },
   {
    "fieldname": "notes",
@@ -83,13 +86,28 @@
    "fieldname": "contact",
    "fieldtype": "Autocomplete",
    "label": "Contact"
+  },
+  {
+   "fieldname": "column_break_akwt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "project.project_title",
+   "fieldname": "project_title",
+   "fieldtype": "Data",
+   "label": "Project Title",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_bryp",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-07-09 09:51:53.015198",
+ "modified": "2026-07-29 16:26:09.321312",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Creation DMC",

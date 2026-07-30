@@ -163,7 +163,7 @@
    "fieldname": "quantity_in_spie_tm",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Quantity in SPIE TM"
+   "label": "Internal Quantity"
   },
   {
    "default": "0",
@@ -184,7 +184,7 @@
    "fieldname": "reserved_quantity",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Reserved quantity"
+   "label": "Currently Booked"
   },
   {
    "bold": 1,
@@ -192,7 +192,7 @@
    "fieldname": "rebut",
    "fieldtype": "Check",
    "in_list_view": 1,
-   "label": "Rebut",
+   "label": "Retired",
    "placeholder": "PERIME"
   },
   {
@@ -271,7 +271,7 @@
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-07-27 14:44:40.660519",
+ "modified": "2026-07-29 16:16:21.783415",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",

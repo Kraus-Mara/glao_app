@@ -6,6 +6,8 @@
  "engine": "InnoDB",
  "field_order": [
   "dmc_tab",
+  "state",
+  "section_break_haez",
   "starting_date",
   "column_break_ryhu",
   "end_date",
@@ -14,7 +16,6 @@
   "gestion_items",
   "compositions_de_dmc",
   "notes",
-  "state",
   "status",
   "details_tab",
   "column_break_uabz",
@@ -77,15 +78,16 @@
    "label": "Details"
   },
   {
+   "allow_bulk_edit": 1,
    "fieldname": "gestion_items",
    "fieldtype": "Table",
-   "label": "Items de DMC",
+   "label": "MR Items",
    "options": "Gestion DMC Items"
   },
   {
    "fieldname": "compositions_de_dmc",
    "fieldtype": "Table",
-   "label": "Compositions de DMC",
+   "label": "MR BoM",
    "options": "Gestion DMC Compositions"
   },
   {
@@ -98,23 +100,23 @@
    "fetch_from": "project.starting_date",
    "fieldname": "starting_date",
    "fieldtype": "Date",
-   "label": "Starting date"
+   "label": "Starting Date"
   },
   {
    "fetch_from": "project.end_date",
    "fieldname": "end_date",
    "fieldtype": "Date",
-   "label": "End date"
+   "label": "End Date"
   },
   {
    "fieldname": "column_break_ryhu",
    "fieldtype": "Column Break"
   },
   {
-   "description": "Toute modification du document doit \u00eatre confirm\u00e9 en enregistrant sous \"Draft\" (m\u00eame avant une validation)",
+   "description": "Any modification of the document must be confirmed by saving in \"Draft\".",
    "fieldname": "state",
    "fieldtype": "Select",
-   "label": "State",
+   "label": "Progress",
    "options": "Draft\nValidated"
   },
   {
@@ -132,12 +134,16 @@
    "fieldname": "notes",
    "fieldtype": "Small Text",
    "label": "Notes"
+  },
+  {
+   "fieldname": "section_break_haez",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-08 17:02:42.550489",
+ "modified": "2026-07-30 09:56:31.050617",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC",

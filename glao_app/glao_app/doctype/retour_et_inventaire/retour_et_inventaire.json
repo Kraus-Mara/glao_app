@@ -38,7 +38,7 @@
    "depends_on": "eval:doc.saved",
    "fieldname": "sent_compositions",
    "fieldtype": "Table",
-   "label": "Sent Compositions",
+   "label": "Sent BoM",
    "options": "Retour Compos"
   },
   {
@@ -46,14 +46,14 @@
    "fieldname": "place_for_compositions",
    "fieldtype": "Link",
    "hidden": 1,
-   "label": "Place for compositions",
+   "label": "Locations for BoM",
    "options": "Places"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-13 11:24:11.680711",
+ "modified": "2026-07-29 16:35:09.404585",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retour et Inventaire",

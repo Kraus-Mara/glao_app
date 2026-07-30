@@ -173,7 +173,19 @@ class Composition(Document):
 				self._add_stock(row.saved_item, row.saved_place, row.saved_quantity)
 
 	@frappe.whitelist()
-	def get_places_from_stock():
-		return 0
+	def get_source_places(self, item_from_stock):
+		places = frappe.get_all(
+			"Places Stock",
+			filters=[
+				["parent", "=", item_from_stock],
+				["quantity", ">", 0],
+			],
+			fields=["place", "quantity"],
+		)
+		litiges = frappe.get_all("Places", filters=[["litige", "=", 1]], fields=["name"])
+		for p in litiges:
+			if p.name in places:
+				places.remove(p.name)
+		return places
 
 	pass

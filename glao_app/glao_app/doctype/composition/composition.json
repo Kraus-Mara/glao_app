@@ -26,7 +26,7 @@
   {
    "fieldname": "nomenclature",
    "fieldtype": "Link",
-   "label": "Nomenclature",
+   "label": "BoM Definition",
    "options": "Nomenclature"
   },
   {
@@ -39,7 +39,7 @@
    "fieldname": "place",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Place",
+   "label": "Location",
    "link_filters": "[[\"Places\", \"is_group\",\"=\",0]]",
    "options": "Places",
    "reqd": 1
@@ -63,13 +63,13 @@
    "default": "0",
    "fieldname": "reserved",
    "fieldtype": "Check",
-   "label": "Reserved",
+   "label": "Booked",
    "read_only": 1
   },
   {
    "fieldname": "by_dmc",
    "fieldtype": "Link",
-   "label": "By DMC",
+   "label": "By MR",
    "options": "Gestion DMC",
    "read_only": 1
   },
@@ -91,7 +91,7 @@
    "default": "0",
    "fieldname": "complete",
    "fieldtype": "Check",
-   "label": "Complete"
+   "label": "Released"
   },
   {
    "fieldname": "column_break_mwtp",
@@ -121,7 +121,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-10 09:56:48.464008",
+ "modified": "2026-07-29 16:22:20.969111",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Composition",

@@ -73,7 +73,7 @@
    "depends_on": "eval:doc.type==\"Transfert\" || doc.type==\"Stock Entry\" || doc.type==\"Register\";",
    "fieldname": "target_place",
    "fieldtype": "Link",
-   "label": "Target place",
+   "label": "Target Location",
    "link_filters": "[[\"Places\",\"is_group\",\"=\",0],[\"Places\",\"name\",\"not like\",\"%CLIENTS%\"]]",
    "mandatory_depends_on": "eval:doc.type==\"Transfert\" || doc.type==\"Stock Entry\" || doc.type==\"Register\";",
    "options": "Places"
@@ -82,14 +82,14 @@
    "depends_on": "eval:doc.type==\"Transfert\" || (doc.type==\"Pull\" && (doc.second==0 || doc.has_batch_no)) || doc.type==\"Register\";",
    "fieldname": "source_place",
    "fieldtype": "Autocomplete",
-   "label": "Source place",
+   "label": "Source Location",
    "mandatory_depends_on": "eval:doc.type==\"Transfert\" || (doc.type==\"Pull\" && (doc.second==0 || doc.has_batch_no)) || doc.type==\"Register\";"
   },
   {
    "depends_on": "eval:doc.type==\"Register\"",
    "fieldname": "reference_details",
    "fieldtype": "Table",
-   "label": "Reference details",
+   "label": "Reference Details",
    "options": "Reference Details"
   },
   {
@@ -147,7 +147,7 @@
    "depends_on": "eval:(doc.type==\"Pull\" || doc.type ==\"Transfert\") && (doc.second == 0 || doc.has_batch_no);",
    "fieldname": "quantity_to_manipulate",
    "fieldtype": "Int",
-   "label": "Quantity to manipulate",
+   "label": "Quantity to Move",
    "mandatory_depends_on": "eval:(doc.type==\"Pull\" || doc.type ==\"Transfert\") && (doc.second == 0 || doc.has_batch_no);"
   },
   {
@@ -294,7 +294,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-23 09:22:42.463721",
+ "modified": "2026-07-29 16:15:36.710172",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Movement",

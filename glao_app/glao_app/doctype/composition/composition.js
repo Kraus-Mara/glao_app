@@ -65,14 +65,15 @@ frappe.ui.form.on("Composition", {
 
                         if (required_qty > 0) {
                             missing_items_messages.push(
-                                __(`Article {0} ({1}) : quantité requise manquante de {2}`, [nom_item.designation, nom_item.item, required_qty])
+                                __("Insufficient Stock available"),
+								__(`Article {0} ({1}) : missing quantity is {2}`, [nom_item.designation, nom_item.item, required_qty])
                             );
                         }
                     }
 
                     if (missing_items_messages.length > 0) {
                         frappe.msgprint({
-                            title: __("Stock insuffisant (hors litiges)"),
+                            title: __("Insufficient Stock available"),
                             message: missing_items_messages,
                             indicator: "red",
                             as_list: true
@@ -93,21 +94,28 @@ frappe.ui.form.on("Composition", {
             });
         });
 	},
-	refresh : function(frm) {
+    refresh: function(frm) {
         frm.set_query('saved_place', 'items', function(doc, cdt, cdn) {
             let row = locals[cdt][cdn];
-            if (!row.saved_place) {
-                return {
-                    filters: {
-						'parenttype': "Stock"
-                    },
-					label: "place"
-                };
-            }
+			if (row.saved_place) return;
+			frm.call({
+				method: "get_source_places",
+				doc: frm.doc,
+				args: { item_from_stock: row.item },
+				callback(r) {
+					if (!r.message) return;
+					const data = r.message.map((s) => ({
+						value: s.place,
+						label: __(`${s.place} (${s.quantity} available)`),
+					}));
+					const grid_row = frm.fields_dict["items"].grid.grid_rows_by_docname[cdn];
+					if (grid_row) {
+						grid_row.get_field("saved_place").set_data(data);
+					}
+				},
+			});
             return {};
         });
-	}
+    }
 });
-
-
 

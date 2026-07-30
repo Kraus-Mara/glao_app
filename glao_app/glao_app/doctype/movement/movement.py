@@ -76,7 +76,7 @@ class Movement(Document):
 				str(hour) + " " + str(self.article_to_register) + " " + str(self.type) + "-.#"
 			)
 		else:
-			frappe.msgprint("Une erreur est survenue : probleme sur les autonames")
+			frappe.msgprint(frappe._("Une erreur est survenue : probleme sur les autonames"))
 
 	def validate(self):
 		if self.type == "Add":
@@ -283,7 +283,7 @@ class Movement(Document):
 				to_save = frappe.get_doc("Stock", str(self.article_referenced), for_update=True)
 				to_save.update({"quantity": int(new_quantity)}).save()
 			else:
-				frappe.throw(frappe._("An error occured: M286"))
+				frappe.throw(frappe._("[ ERROR ] : M286"))
 			frappe.msgprint(frappe._("Stock Entry saved"))
 
 	def _creer_instances_referenced(self):
@@ -419,7 +419,7 @@ class Movement(Document):
 						],
 					).insert(ignore_if_duplicate=True, ignore_permissions=True)
 				except frappe.exceptions.UniqueValidationError:
-					frappe.msgprint("un des numéros de série existe dans le Stock")
+					frappe.msgprint(frappe._("One of the serial numbers already exists in Current Stock"))
 				finally:  # Quantity == 0
 					docname = frappe.get_all(
 						"Stock",
@@ -606,9 +606,9 @@ class Movement(Document):
 						}
 					).insert(ignore_if_duplicate=True)
 				self.quantity_calculus()  # Updating the quantities of the self.article Stock
-				frappe.msgprint("Articles added with success")
+				frappe.msgprint(frappe._("Article(s) added with success"))
 			except frappe.exceptions.UniqueValidationError:
-				frappe.msgprint("An error occured")
+				frappe.msgprint(frappe._("An error occured"))
 
 	@frappe.whitelist()
 	def scrap_sources(self):
@@ -736,14 +736,14 @@ class Movement(Document):
 						frappe.throw("How did you manage to get a negative new_quantity ?")
 				else:
 					to_save.update({"quantity": int(new_quantity)}).save()
-			frappe.msgprint(frappe._("Articles retirés avec succès"))
+			frappe.msgprint(frappe._("Article(s) pulled-out with success"))
 		else:
-			frappe.msgprint(frappe._("Les articles n'ont pas été trouvés"), indicator="red")
+			frappe.msgprint(frappe._("[ ERROR ] : Article(s) not found"), indicator="red")
 
 	def _transfert_referenced(self):
 		existing = frappe.get_all("Places Stock", filters=[["parent", "=", self.article_from_stock]])
 		if not existing:
-			frappe.msgprint("Places Stock introuvable pour " + str(self.article_from_stock))
+			frappe.msgprint(frappe._("Places Stock not found for " + str(self.article_from_stock)))
 			return
 		for doc in existing:
 			temp = frappe.get_doc("Places Stock", doc.name)
@@ -765,7 +765,7 @@ class Movement(Document):
 				)
 				to_save.quantity = 1
 				to_save.save()  # No need to insert, because I already know that there's only one child
-			frappe.msgprint("Article suivi transféré avec succès", title="Confirmation")
+			frappe.msgprint(frappe._("Tracked article transfered with success"), title="Confirmation")
 
 	def _transfert_normal(self):
 		source = frappe.get_all(
@@ -835,7 +835,7 @@ class Movement(Document):
 				)
 				tot_row = sum(row.quantity for row in places_stock)
 				frappe.db.set_value("Stock", str(self.article_from_stock), "quantity", tot_row)
-			frappe.msgprint(frappe._("articles déplacés"))
+			frappe.msgprint(frappe._("Articl(s) moved with sucess"))
 
 
 pass

@@ -14,9 +14,7 @@ class PurchaseCommand(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
-		from glao_app.glao_app.doctype.purchase_command_items.purchase_command_items import (
-			PurchaseCommandItems,
-		)
+		from glao_app.glao_app.doctype.purchase_command_items.purchase_command_items import PurchaseCommandItems
 
 		exported: DF.Check
 		items: DF.Table[PurchaseCommandItems]

@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "section_break_6r89",
+  "project_title",
   "job_no",
   "company",
   "location",
@@ -22,7 +23,7 @@
   {
    "fieldname": "company",
    "fieldtype": "Link",
-   "label": "Company",
+   "label": "Client",
    "link_filters": "[[\"Company\",\"company_type\",\"=\",\"Client\"]]",
    "options": "Company"
   },
@@ -30,18 +31,18 @@
    "fetch_from": "company.location",
    "fieldname": "location",
    "fieldtype": "Data",
-   "label": "Location"
+   "label": "Address"
   },
   {
    "fieldname": "starting_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Starting date"
+   "label": "Starting Date"
   },
   {
    "fieldname": "end_date",
    "fieldtype": "Date",
-   "label": "End date"
+   "label": "End Date"
   },
   {
    "fieldname": "job_no",
@@ -53,14 +54,19 @@
    "default": "0",
    "fieldname": "completed",
    "fieldtype": "Check",
-   "label": "Completed"
+   "label": "Terminated"
+  },
+  {
+   "fieldname": "project_title",
+   "fieldtype": "Data",
+   "label": "Project Title"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_calendar_and_gantt": 1,
  "links": [],
- "modified": "2026-07-15 13:11:35.220907",
+ "modified": "2026-07-29 16:23:25.818907",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Projects",
@@ -86,5 +92,6 @@
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],
+ "title_field": "project_title",
  "track_changes": 1
 }

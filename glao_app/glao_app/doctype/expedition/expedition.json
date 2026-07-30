@@ -7,34 +7,39 @@
  "engine": "InnoDB",
  "field_order": [
   "dmc",
+  "section_break_wtke",
   "project",
-  "delivery_date",
-  "status",
+  "column_break_ioif",
   "job_no",
+  "section_break_clxm",
+  "delivery_date",
   "client",
   "expedition_date",
-  "transporteur",
-  "print_pof"
+  "print_lof",
+  "section_break_aajt",
+  "carrier",
+  "column_break_uals",
+  "status"
  ],
  "fields": [
   {
    "fieldname": "dmc",
    "fieldtype": "Link",
-   "label": "DMC",
+   "label": "MR",
    "options": "Gestion DMC"
   },
   {
    "fetch_from": "dmc.project",
    "fieldname": "project",
    "fieldtype": "Link",
-   "label": "Project",
+   "label": "Job No",
    "options": "Projects"
   },
   {
    "fetch_from": "dmc.delivery_date",
    "fieldname": "delivery_date",
    "fieldtype": "Date",
-   "label": "Delivery date"
+   "label": "Delivery Date"
   },
   {
    "fieldname": "status",
@@ -43,10 +48,10 @@
    "options": "Waiting\nShipped"
   },
   {
-   "fetch_from": "dmc.job_no",
+   "fetch_from": "project.project_title",
    "fieldname": "job_no",
    "fieldtype": "Data",
-   "label": "Job no"
+   "label": "Project Title"
   },
   {
    "fetch_from": "dmc.client",
@@ -57,23 +62,43 @@
   {
    "fieldname": "expedition_date",
    "fieldtype": "Datetime",
-   "label": "Expedition date"
+   "label": "Shipping Date"
   },
   {
-   "fieldname": "transporteur",
-   "fieldtype": "Data",
-   "label": "Transporter"
-  },
-  {
-   "fieldname": "print_pof",
+   "fieldname": "print_lof",
    "fieldtype": "Button",
-   "label": "Print PoF"
+   "label": "Print LoF"
+  },
+  {
+   "fieldname": "section_break_aajt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_uals",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_wtke",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_ioif",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_clxm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "carrier",
+   "fieldtype": "Data",
+   "label": "Carrier"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-23 14:32:40.173279",
+ "modified": "2026-07-29 16:33:57.046254",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Expedition",

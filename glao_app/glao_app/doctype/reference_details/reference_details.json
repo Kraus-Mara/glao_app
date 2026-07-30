@@ -42,7 +42,7 @@
    "fieldname": "cdl",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "CDL",
+   "label": "Expiry Date",
    "mandatory_depends_on": "eval:doc.batch_no;",
    "placeholder": "Consommation Date Limit",
    "read_only_depends_on": "eval:doc.serial_no && !doc.batch_no;"
@@ -52,7 +52,7 @@
    "fieldname": "next_rv",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Next RV",
+   "label": "Revision Date",
    "mandatory_depends_on": "eval:doc.serial_no;",
    "placeholder": "RV : Revision Date",
    "read_only_depends_on": "eval:(doc.batch_no || !doc.serial_no);"
@@ -78,14 +78,14 @@
    "fieldname": "fabrication_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Fabrication date"
+   "label": "Manufacturing Date"
   },
   {
    "allow_in_quick_entry": 1,
    "fieldname": "incr_years",
    "fieldtype": "Select",
    "in_list_view": 1,
-   "label": "Insurance duration ",
+   "label": "Warranty Term",
    "options": "0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10"
   },
   {
@@ -98,7 +98,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-09 10:40:14.285639",
+ "modified": "2026-07-29 16:15:08.570245",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Reference Details",
