@@ -21,6 +21,7 @@
   {
    "fieldname": "article",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Article",
    "options": "Article"
   },
@@ -28,6 +29,7 @@
    "fetch_from": "article.shortname",
    "fieldname": "designation",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Designation"
   },
   {
@@ -40,33 +42,39 @@
   {
    "fieldname": "asked_quantity",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "Asked quantity"
   },
   {
    "fieldname": "quantity",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "Quantity"
   },
   {
    "fieldname": "pr_reference",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "PR Reference",
    "options": "Purchase Request"
   },
   {
    "fieldname": "project",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Project",
    "options": "Projects"
   },
   {
    "fieldname": "notes",
    "fieldtype": "Small Text",
+   "in_list_view": 1,
    "label": "Notes"
   },
   {
    "fieldname": "needs_date",
    "fieldtype": "Date",
+   "in_list_view": 1,
    "label": "Needs date"
   }
  ],
@@ -74,7 +82,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-23 10:14:12.634414",
+ "modified": "2026-07-30 13:48:13.135858",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Purchase Command Items",

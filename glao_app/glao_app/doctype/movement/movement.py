@@ -835,7 +835,7 @@ class Movement(Document):
 				)
 				tot_row = sum(row.quantity for row in places_stock)
 				frappe.db.set_value("Stock", str(self.article_from_stock), "quantity", tot_row)
-			frappe.msgprint(frappe._("Articl(s) moved with sucess"))
+			frappe.msgprint(frappe._("Article(s) moved with success"))
 
 
 pass

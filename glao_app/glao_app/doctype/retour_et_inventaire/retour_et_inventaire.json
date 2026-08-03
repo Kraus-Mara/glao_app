@@ -51,9 +51,10 @@
   }
  ],
  "grid_page_length": 50,
+ "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-29 16:35:09.404585",
+ "modified": "2026-07-31 11:56:34.988364",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retour et Inventaire",

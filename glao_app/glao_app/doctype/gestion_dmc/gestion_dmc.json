@@ -141,9 +141,10 @@
   }
  ],
  "grid_page_length": 50,
+ "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-30 09:56:31.050617",
+ "modified": "2026-07-31 11:55:57.140213",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC",

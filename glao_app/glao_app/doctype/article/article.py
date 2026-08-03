@@ -94,10 +94,10 @@ class Article(Document):
 				if r.item == self.name:
 					frappe.throw(frappe._("An assembly cannot contain itself"))
 
-	def _check_chars(self):
-		if self.chars:
-			fr = False
-			fp = False
+	def _check_chars(self):  # Fonction de vérification des charactéristiques
+		if self.chars:  # Si la table des charactéristiques possède au moins une valeur
+			fr = False  # Savoir si on peut décomposer l'objet (ex : Lot de 12)
+			fp = False  # Savoir si l'objet possède une potentielle prolongation de validité
 			for r in self.chars:
 				if r.periodicity and not fp:
 					self.periodicity = r.value
@@ -111,8 +111,10 @@ class Article(Document):
 				elif r.retail and fr:
 					frappe.throw(frappe._("You can't have more than one retail easement"))
 
-	@frappe.whitelist()
+	@frappe.whitelist()  # Préfixe permettant l'appel de cette fonction depuis le côté client
 	def get_units(self, char_type):
+		"""Si l'utilisateur selectionne un characteristics_type,
+		la fonction lui propose automatiquement les bonnes unités"""
 		units = frappe.get_all(
 			"Characteristics Unit Link",
 			filters=[["parent", "=", char_type]],

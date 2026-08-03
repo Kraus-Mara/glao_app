@@ -33,11 +33,11 @@
   {
    "child": 1,
    "collapsible": 1,
-   "icon": "combine",
+   "icon": "cuboid",
    "indent": 0,
    "keep_closed": 0,
-   "label": "Bills of Materials",
-   "link_to": "Composition",
+   "label": "BoM Definition",
+   "link_to": "Nomenclature",
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"
@@ -73,6 +73,18 @@
    "keep_closed": 0,
    "label": "Movements",
    "link_to": "Movement",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "combine",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Bills of Materials",
+   "link_to": "Composition",
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"
@@ -245,18 +257,6 @@
   {
    "child": 1,
    "collapsible": 1,
-   "icon": "cuboid",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "BoM Definition",
-   "link_to": "Nomenclature",
-   "link_type": "DocType",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
    "icon": "pencil-ruler",
    "indent": 0,
    "keep_closed": 0,
@@ -291,7 +291,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-07-30 08:59:20.429969",
+ "modified": "2026-07-30 13:51:54.155705",
  "modified_by": "Administrator",
  "module": "Glao App",
  "module_onboarding": "",

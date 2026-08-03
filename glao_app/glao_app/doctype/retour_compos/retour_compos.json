@@ -24,34 +24,40 @@
   {
    "fieldname": "composition",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Composition",
    "options": "Composition"
   },
   {
    "fieldname": "article",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Article",
    "options": "Stock"
   },
   {
    "fieldname": "quantity",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "Quantity"
   },
   {
    "fieldname": "sent_quantity",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "Sent quantity",
    "read_only": 1
   },
   {
    "fieldname": "which_are_issued",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "Which are issued"
   },
   {
    "fieldname": "reason",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Reason",
    "mandatory_depends_on": "eval:doc.which_are_issued>0 && doc.sold",
    "options": "\nR\nL\nIncomplete"
@@ -60,6 +66,7 @@
    "default": "0",
    "fieldname": "sold",
    "fieldtype": "Check",
+   "in_list_view": 1,
    "label": "Sold"
   },
   {
@@ -104,7 +111,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-13 08:31:24.592481",
+ "modified": "2026-07-30 13:48:45.320101",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retour Compos",
