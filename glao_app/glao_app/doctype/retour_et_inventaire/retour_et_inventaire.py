@@ -23,6 +23,7 @@ class RetouretInventaire(Document):
 		saved: DF.Check
 		sent_compositions: DF.Table[RetourCompos]
 		sent_items: DF.Table[RetourItems]
+		status: DF.Literal["", "Fictif (LD)"]
 	# end: auto-generated types
 
 	def autoname(self):

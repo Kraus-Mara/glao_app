@@ -16,10 +16,13 @@
   "is_referenced",
   "actif",
   "column_break_kiek",
+  "has_code",
   "code_spie_tm",
+  "gessica_code",
   "serial_no",
   "batch_no",
   "fabricant_hidden",
+  "spie_tm_code_id",
   "section_break_dttr",
   "quantity",
   "composition",
@@ -142,6 +145,8 @@
   {
    "fieldname": "code_spie_tm",
    "fieldtype": "Data",
+   "in_filter": 1,
+   "in_standard_filter": 1,
    "label": "Code SPIE TM"
   },
   {
@@ -287,11 +292,29 @@
    "fieldname": "section_break_ahlm",
    "fieldtype": "Section Break",
    "width": "600"
+  },
+  {
+   "fieldname": "spie_tm_code_id",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "SPIE_TM_CODE_ID",
+   "unique": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "has_code",
+   "fieldtype": "Check",
+   "label": "A un code SPIE TM"
+  },
+  {
+   "fieldname": "gessica_code",
+   "fieldtype": "Data",
+   "label": "Gessica_code"
   }
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-08-06 16:02:08.521823",
+ "modified": "2026-08-07 13:35:41.148675",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",

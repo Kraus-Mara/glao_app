@@ -6,6 +6,7 @@
  "engine": "InnoDB",
  "field_order": [
   "nomenclature",
+  "reference",
   "column_break_mwtp",
   "complete",
   "section_break_zaha",
@@ -116,12 +117,17 @@
   {
    "fieldname": "column_break_jehe",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reference",
+   "fieldtype": "Data",
+   "label": "R\u00e9f\u00e9rence"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-08-06 15:42:23.372600",
+ "modified": "2026-08-07 13:59:40.308081",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Composition",

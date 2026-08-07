@@ -33,6 +33,8 @@ class Stock(Document):
 		designation: DF.Data | None
 		events: DF.Table[RefEvents]
 		fabricant_hidden: DF.Data | None
+		gessica_code: DF.Data | None
+		has_code: DF.Check
 		is_referenced: DF.Check
 		not_yet_registered: DF.Check
 		periodicity: DF.Data | None
@@ -44,6 +46,7 @@ class Stock(Document):
 		ref_constructeur: DF.Data | None
 		reserved_quantity: DF.Int
 		serial_no: DF.Data | None
+		spie_tm_code_id: DF.Data | None
 		total_expected: DF.Int
 		total_maximum: DF.Int
 		total_minimum: DF.Int
@@ -60,6 +63,22 @@ class Stock(Document):
 	def validate(self):
 		self._check_dates()
 		self._count_stock_in_spie()
+		self._check_code_spie()
+
+	def _check_code_spie(self):
+		if self.has_code:
+			if not self.spie_tm_code_id and not self.code_spie_tm:
+				self.spie_tm_code_id = make_autoname(
+					str(self.article)
+					+ " "
+					+ str(str(self.designation).split(" ")[0][0])
+					+ str(str(self.designation).split(" ")[0][1])
+					+ ".####"
+				)
+				self.code_spie_tm = str(str(self.spie_tm_code_id).split(" ")[1])
+			if self.spie_tm_code_id and self.code_spie_tm:
+				if not self.code_spie_tm == str(str(self.spie_tm_code_id).split(" ")[1]):
+					self.spie_tm_code_id = str(self.article) + " " + str(self.code_spie_tm)
 
 	def _count_stock_in_spie(self):
 		if self.article:

@@ -41,6 +41,7 @@ class Movement(Document):
 		designation_pull: DF.Data | None
 		explication: DF.SmallText | None
 		has_batch_no: DF.Data | None
+		has_code: DF.Check
 		is_referenced: DF.Check
 		movement_date: DF.Datetime | None
 		placetostock: DF.Table[PlacesStock]
@@ -429,6 +430,7 @@ class Movement(Document):
 						article=self.article,
 						is_referenced=self.is_referenced,
 						quantity=1,
+						has_code=1 if self.has_code else 0,
 						place_table=[
 							{
 								"doctype": "Places Stock",

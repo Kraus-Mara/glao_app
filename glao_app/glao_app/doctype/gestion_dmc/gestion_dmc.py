@@ -16,7 +16,9 @@ class GestionDMC(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
-		from glao_app.glao_app.doctype.gestion_dmc_compositions.gestion_dmc_compositions import GestionDMCCompositions
+		from glao_app.glao_app.doctype.gestion_dmc_compositions.gestion_dmc_compositions import (
+			GestionDMCCompositions,
+		)
 		from glao_app.glao_app.doctype.gestion_dmc_items.gestion_dmc_items import GestionDMCItems
 
 		client: DF.Data | None
@@ -186,6 +188,15 @@ class GestionDMC(Document):
 							frappe._(
 								f"Impossible to book the item {art.article_name} - {art.manufacturer_name} - {art.manufacturer} at line {row.idx}. The date of next ({stock.closest_event_date}) is behind the starting date of the DMC ({self.starting_date})."
 							)
+						)
+					if self.starting_date < stock.closest_event_date < self.end_date:
+						frappe.msgprint(
+							title="WARNING",
+							msg=f"{art.article_name} - {art.manufacturer_name} - {art.manufacturer}, ligne {row.idx}",
+						)
+						frappe.msgprint(
+							title="WARNING",
+							msg=f"La date du prochain évènement ({stock.closest_event_date}) se trouve pendant le chantier ({self.starting_date} - {self.end_date}).",
 						)
 				stock.reserved_quantity += row.true_quantity
 				if stock.reserved_quantity > stock.quantity_in_spie_tm:

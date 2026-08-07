@@ -6,6 +6,7 @@ from frappe.model.document import Document
 from frappe.utils import now
 from frappe.model.naming import make_autoname
 from frappe.utils.xlsxutils import make_xlsx
+from frappe.utils.pdf import get_pdf
 
 
 class Expedition(Document):
@@ -80,31 +81,26 @@ class Expedition(Document):
 @frappe.whitelist()
 def export_expedition_excel(name):
 	expedition = frappe.get_doc("Expedition", name)
+	carrier = getattr(expedition, "carrier", None)
+
 	dmc = frappe.get_doc("Gestion DMC", expedition.dmc)
-	alldata = []
-	items_data = []
-	bom_data = []
+
+	items_rows = []
+	bom_rows = []
+
 	if dmc.gestion_items:
-		fields = ["item_from_stock", "designation", "true_quantity", "closest_event"]
-		head = [frappe._("Item"), frappe._("Designation"), frappe._("Quantity"), frappe._("Closest Event")]
-		items_data = [head]
-		all_item_rows = frappe.get_all(
+		items_rows = frappe.get_all(
 			"Gestion DMC Items",
 			filters=[
 				["parent", "=", expedition.dmc],
 				["parenttype", "=", "Gestion DMC"],
 				["no_serving", "=", 0],
 			],
-			fields=fields,
+			fields=["item_from_stock", "designation", "true_quantity", "closest_event"],
 		)
-		items_data += [[row[f] for f in fields] for row in all_item_rows]
-		if items_data == [head]:
-			items_data = []
+
 	if dmc.compositions_de_dmc:
-		fields = ["composition", "quantity"]
-		head = [frappe._("BoM"), frappe._("Quantity")]
-		bom_data = [head]
-		all_bom_rows = frappe.get_all(
+		bom_rows = frappe.get_all(
 			"Gestion DMC Compositions",
 			filters=[
 				["parent", "=", expedition.dmc],
@@ -112,16 +108,72 @@ def export_expedition_excel(name):
 				["no_serving", "=", 0],
 				["composition", "is", "Set"],
 			],
-			fields=fields,
+			fields=["composition", "quantity"],
 		)
-		bom_data += [[row[f] for f in fields] for row in all_bom_rows]
-		if bom_data == [head]:
-			bom_data = []
-	alldata = items_data + bom_data
-	all = make_xlsx(
-		data=alldata,
-		sheet_name="BL",
+
+	html_content = frappe.render_template(
+		"""
+		<div style="font-family: sans-serif; padding: 20px;">
+			<h2>Bon de Livraison : {{ expedition.name }}</h2>
+			<p><strong>Transporteur :</strong> {{ carrier or 'N/A' }}</p>
+			<p><strong>Gestion DMC :</strong> {{ dmc.name }}</p>
+			<hr>
+
+			{% if items_rows %}
+			<h3>Articles</h3>
+			<table style="width: 100%; border-collapse: collapse;" border="1" cellpadding="5">
+				<thead>
+					<tr style="background-color: #f2f2f2;">
+						<th>Item</th>
+						<th>Designation</th>
+						<th>Quantity</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for row in items_rows %}
+					<tr>
+						<td>{{ row.item_from_stock or '' }}</td>
+						<td>{{ row.designation or '' }}</td>
+						<td>{{ row.true_quantity or 0 }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			{% endif %}
+
+			{% if bom_rows %}
+			<h3 style="margin-top: 20px;">Compositions (BoM)</h3>
+			<table style="width: 100%; border-collapse: collapse;" border="1" cellpadding="5">
+				<thead>
+					<tr style="background-color: #f2f2f2;">
+						<th>BoM</th>
+						<th>Quantity</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for row in bom_rows %}
+					<tr>
+						<td>{{ row.composition or '' }}</td>
+						<td>{{ row.quantity or 0 }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			{% endif %}
+		</div>
+	""",
+		{
+			"expedition": expedition,
+			"dmc": dmc,
+			"carrier": carrier,
+			"items_rows": items_rows,
+			"bom_rows": bom_rows,
+		},
 	)
-	frappe.local.response.filename = f"{name}_export.xlsx"
-	frappe.local.response.filecontent = all.getvalue()
-	frappe.local.response.type = "download"
+
+	# Génération du flux PDF
+	pdf_file = get_pdf(html_content)
+
+	frappe.local.response.filename = "BL.pdf"
+	frappe.local.response.filecontent = pdf_file
+	frappe.local.response.type = "pdf"

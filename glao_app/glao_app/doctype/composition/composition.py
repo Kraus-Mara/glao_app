@@ -24,6 +24,7 @@ class Composition(Document):
 		not_available: DF.Check
 		place: DF.Link
 		project: DF.Link | None
+		reference: DF.Data | None
 		reserved: DF.Check
 		saved: DF.Check
 	# end: auto-generated types
