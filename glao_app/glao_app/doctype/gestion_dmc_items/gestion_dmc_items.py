@@ -17,6 +17,7 @@ class GestionDMCItems(Document):
 		article: DF.Link | None
 		closest_event: DF.Date | None
 		designation: DF.Data | None
+		fabricant: DF.Data | None
 		is_referenced: DF.Check
 		item_from_stock: DF.Link | None
 		moved_quantity: DF.Int
@@ -26,6 +27,7 @@ class GestionDMCItems(Document):
 		parenttype: DF.Data
 		quantity: DF.Int
 		reserved: DF.Check
+		référence_fabricant: DF.Data | None
 		saved_item: DF.Link | None
 		saved_place: DF.Link | None
 		source_place: DF.Autocomplete | None

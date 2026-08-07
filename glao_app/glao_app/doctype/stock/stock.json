@@ -19,6 +19,7 @@
   "code_spie_tm",
   "serial_no",
   "batch_no",
+  "fabricant_hidden",
   "section_break_dttr",
   "quantity",
   "composition",
@@ -34,6 +35,8 @@
   "periodicity",
   "not_yet_registered",
   "stock_rules_tab",
+  "section_break_ahlm",
+  "refresh_table",
   "section_break_jfqt",
   "total_minimum",
   "column_break_izjv",
@@ -41,7 +44,6 @@
   "column_break_csfg",
   "total_maximum",
   "section_break_axge",
-  "refresh_table",
   "place_rules"
  ],
  "fields": [
@@ -115,7 +117,7 @@
    "fieldname": "designation",
    "fieldtype": "Data",
    "in_filter": 1,
-   "in_list_view": 1,
+   "in_global_search": 1,
    "in_standard_filter": 1,
    "label": "Designation"
   },
@@ -163,7 +165,8 @@
    "fieldname": "quantity_in_spie_tm",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Internal Quantity"
+   "label": "Internal Quantity",
+   "non_negative": 1
   },
   {
    "default": "0",
@@ -184,7 +187,8 @@
    "fieldname": "reserved_quantity",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Currently Booked"
+   "label": "Currently Booked",
+   "non_negative": 1
   },
   {
    "bold": 1,
@@ -221,8 +225,7 @@
   },
   {
    "fieldname": "section_break_axge",
-   "fieldtype": "Section Break",
-   "label": "Stock rules"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "refresh_table",
@@ -233,16 +236,19 @@
    "fieldname": "place_rules",
    "fieldtype": "Table",
    "label": "Rules",
-   "options": "Article Place Rules"
+   "options": "Article Place Rules",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_jfqt",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "read_only": 1
   },
   {
    "fieldname": "total_minimum",
    "fieldtype": "Int",
-   "label": "Total minimum"
+   "label": "Total minimum",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_izjv",
@@ -251,7 +257,8 @@
   {
    "fieldname": "total_expected",
    "fieldtype": "Int",
-   "label": "Total expected"
+   "label": "Total expected",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_csfg",
@@ -260,18 +267,31 @@
   {
    "fieldname": "total_maximum",
    "fieldtype": "Int",
-   "label": "Total maximum"
+   "label": "Total maximum",
+   "read_only": 1
   },
   {
    "depends_on": "eval:!(doc.serial_no || doc.batch_no)",
    "fieldname": "stock_rules_tab",
    "fieldtype": "Tab Break",
    "label": "Stock rules"
+  },
+  {
+   "fetch_from": "article.manufacturer_name",
+   "fieldname": "fabricant_hidden",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "fabricant_hidden"
+  },
+  {
+   "fieldname": "section_break_ahlm",
+   "fieldtype": "Section Break",
+   "width": "600"
   }
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-07-29 16:16:21.783415",
+ "modified": "2026-08-06 16:02:08.521823",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",
@@ -293,8 +313,11 @@
  "route": "Stock",
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
- "search_fields": "serial_no, designation, batch_no, quantity, closest_event_date",
+ "search_fields": "article, serial_no, designation, batch_no, quantity, closest_event_date",
+ "show_name_in_global_search": 1,
+ "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "designation"
 }

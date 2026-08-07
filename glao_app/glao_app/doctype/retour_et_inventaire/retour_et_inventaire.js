@@ -43,7 +43,6 @@ function suggest_places_to_stock(frm, cdt, cdn) {
             const grid_row = frm.fields_dict["sent_items"].grid.grid_rows_by_docname[cdn];
             if (grid_row) {
                 grid_row.get_field("place_to_stock").set_data(data);
-                // Force le rafraîchissement du champ spécifique de la ligne
                 grid_row.refresh_field("place_to_stock");
             }
         }
@@ -51,7 +50,6 @@ function suggest_places_to_stock(frm, cdt, cdn) {
 }
 
 function apply_bold_styles(frm) {
-    // 1. Application du gras dans la table sent_items
     if (frm.fields_dict.sent_items && frm.fields_dict.sent_items.grid) {
         frm.fields_dict.sent_items.grid.wrapper.find('.grid-row[data-name]').each(function() {
             let docname = $(this).attr('data-name');

@@ -7,6 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "article",
+  "fabricant",
+  "r\u00e9f\u00e9rence_fabricant",
   "designation",
   "quantity",
   "item_from_stock",
@@ -25,8 +27,10 @@
    "fieldname": "article",
    "fieldtype": "Link",
    "in_list_view": 1,
+   "in_preview": 1,
    "label": "Requested Article",
-   "options": "Article"
+   "options": "Article",
+   "width": "30"
   },
   {
    "fieldname": "quantity",
@@ -37,8 +41,10 @@
   {
    "fieldname": "item_from_stock",
    "fieldtype": "Link",
+   "in_filter": 1,
    "in_list_view": 1,
-   "label": "Article",
+   "in_standard_filter": 1,
+   "label": "Article Servi",
    "link_filters": "[\n[\"Stock\", \"quantity\", \">\", 0],[\"Stock\",\"not_yet_registered\", \"=\", 0],\n[\"Stock\", \"rebut\", \"=\",0]\n]",
    "options": "Stock"
   },
@@ -50,10 +56,12 @@
    "mandatory_depends_on": "eval:doc.item_from_stock"
   },
   {
-   "fetch_from": "article.shortname",
+   "fetch_from": "item_from_stock.designation",
    "fieldname": "designation",
    "fieldtype": "Data",
+   "in_filter": 1,
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Designation",
    "read_only": 1
   },
@@ -116,14 +124,28 @@
    "fieldname": "no_serving",
    "fieldtype": "Check",
    "in_list_view": 1,
-   "label": "Not Provided"
+   "label": "Not Provided",
+   "read_only_depends_on": "eval:doc.true_quantity>0"
+  },
+  {
+   "fetch_from": "article.manufacturer_name",
+   "fieldname": "fabricant",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Fabricant"
+  },
+  {
+   "fetch_from": "article.manufacturer",
+   "fieldname": "r\u00e9f\u00e9rence_fabricant",
+   "fieldtype": "Data",
+   "label": "R\u00e9f\u00e9rence fabricant"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-29 16:29:20.058183",
+ "modified": "2026-08-06 15:56:55.006545",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC Items",

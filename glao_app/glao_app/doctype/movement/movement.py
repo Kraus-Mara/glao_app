@@ -35,9 +35,11 @@ class Movement(Document):
 		article_to_register: DF.Link | None
 		char_name: DF.Data | None
 		char_value: DF.Data | None
+		denom: DF.Literal["Achat", "Inventaire"]
 		designation: DF.Data | None
 		designation_add: DF.Data | None
 		designation_pull: DF.Data | None
+		explication: DF.SmallText | None
 		has_batch_no: DF.Data | None
 		is_referenced: DF.Check
 		movement_date: DF.Datetime | None
@@ -62,11 +64,40 @@ class Movement(Document):
 	def autoname(self):
 		hour = now().split(".")[0].replace(":", "").replace("-", "")
 		if self.article:
-			self.name = make_autoname(str(hour) + " " + str(self.article) + " " + str(self.type) + "-.#")
+			if self.denom == "Achat":
+				self.name = make_autoname(str(hour) + " " + str(self.article) + " " + str(self.type) + "-.#")
+			else:
+				self.name = make_autoname(
+					str(hour)
+					+ " "
+					+ str(self.article)
+					+ " "
+					+ str(self.type)
+					+ " "
+					+ str(self.denom)
+					+ " "
+					+ str(self.explication)
+					+ "-.#"
+				)
+
 		elif self.article_from_stock:
-			self.name = make_autoname(
-				str(hour) + " " + str(self.article_from_stock) + " " + str(self.type) + "-.#"
-			)
+			if self.denom == "Achat":
+				self.name = make_autoname(
+					str(hour) + " " + str(self.article_from_stock) + " " + str(self.type) + "-.#"
+				)
+			else:
+				self.name = make_autoname(
+					str(hour)
+					+ " "
+					+ str(self.article_from_stock)
+					+ " "
+					+ str(self.type)
+					+ " "
+					+ str(self.denom)
+					+ " "
+					+ str(self.explication)
+					+ "-.#"
+				)
 		elif self.article_referenced:
 			self.name = make_autoname(
 				str(hour) + " " + str(self.article_referenced) + " " + str(self.type) + "-.#"

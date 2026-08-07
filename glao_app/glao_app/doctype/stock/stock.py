@@ -32,6 +32,7 @@ class Stock(Document):
 		composition: DF.Link | None
 		designation: DF.Data | None
 		events: DF.Table[RefEvents]
+		fabricant_hidden: DF.Data | None
 		is_referenced: DF.Check
 		not_yet_registered: DF.Check
 		periodicity: DF.Data | None

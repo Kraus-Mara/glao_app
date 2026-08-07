@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_bulk_edit": 1,
  "allow_rename": 1,
  "creation": "2026-06-26 13:15:33.760263",
  "doctype": "DocType",
@@ -15,7 +16,10 @@
   "place_to_stock",
   "sold",
   "treated",
-  "is_sub_item"
+  "is_sub_item",
+  "article_article",
+  "fabricant",
+  "r\u00e9f\u00e9rence_fabricant"
  ],
  "fields": [
   {
@@ -24,13 +28,16 @@
    "in_filter": 1,
    "in_standard_filter": 1,
    "label": "Article",
-   "options": "Stock"
+   "options": "Stock",
+   "read_only_depends_on": "is_sub_item"
   },
   {
    "fetch_from": "item.designation",
    "fieldname": "item_name",
    "fieldtype": "Data",
-   "label": "Designation"
+   "hidden": 1,
+   "label": "Designation",
+   "read_only_depends_on": "eval:doc.is_sub_item"
   },
   {
    "fieldname": "sent_quantity",
@@ -57,7 +64,7 @@
    "fieldname": "place_to_stock",
    "fieldtype": "Autocomplete",
    "label": "Place to stock",
-   "mandatory_depends_on": "eval:doc.item && doc.quantity>0"
+   "mandatory_depends_on": "eval:doc.item && doc.quantity>0 && !doc.is_sub_item"
   },
   {
    "default": "0",
@@ -76,15 +83,35 @@
    "default": "0",
    "fieldname": "is_sub_item",
    "fieldtype": "Check",
-   "hidden": 1,
    "label": "is_sub_item"
+  },
+  {
+   "fetch_from": "item.article",
+   "fieldname": "article_article",
+   "fieldtype": "Link",
+   "label": "article_article",
+   "options": "Article"
+  },
+  {
+   "fetch_from": "article_article.manufacturer_name",
+   "fetch_if_empty": 1,
+   "fieldname": "fabricant",
+   "fieldtype": "Data",
+   "label": "Fabricant"
+  },
+  {
+   "fetch_from": "article_article.manufacturer",
+   "fetch_if_empty": 1,
+   "fieldname": "r\u00e9f\u00e9rence_fabricant",
+   "fieldtype": "Data",
+   "label": "R\u00e9f\u00e9rence fabricant"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-23 09:08:52.678734",
+ "modified": "2026-08-06 16:38:59.034650",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retour Items",

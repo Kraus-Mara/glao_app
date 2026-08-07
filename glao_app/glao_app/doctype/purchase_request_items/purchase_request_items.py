@@ -16,6 +16,7 @@ class PurchaseRequestItems(Document):
 
 		article: DF.Link | None
 		designation: DF.Data | None
+		fabricant: DF.Data | None
 		notes: DF.SmallText | None
 		parent: DF.Data
 		parentfield: DF.Data

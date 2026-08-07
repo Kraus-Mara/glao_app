@@ -8,8 +8,10 @@
  "field_order": [
   "section_break_0fpt",
   "item",
-  "designation",
-  "quantity"
+  "fabricant",
+  "r\u00e9f\u00e9rence_fabricant",
+  "quantity",
+  "designation"
  ],
  "fields": [
   {
@@ -36,13 +38,27 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Designation"
+  },
+  {
+   "fetch_from": "item.manufacturer_name",
+   "fieldname": "fabricant",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Fabricant"
+  },
+  {
+   "fetch_from": "item.manufacturer",
+   "fieldname": "r\u00e9f\u00e9rence_fabricant",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "R\u00e9f\u00e9rence fabricant"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-05-28 14:23:21.287628",
+ "modified": "2026-08-05 13:56:57.008221",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Nomenclature Items",

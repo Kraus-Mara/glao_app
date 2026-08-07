@@ -21,7 +21,7 @@ class PurchaseRequest(Document):
 
 		amended_from: DF.Link | None
 		items: DF.Table[PurchaseRequestItems]
-		job_no: DF.Link | None
+		job_no: DF.Link
 		needs_date: DF.Date | None
 		place: DF.Link | None
 		saved: DF.Check

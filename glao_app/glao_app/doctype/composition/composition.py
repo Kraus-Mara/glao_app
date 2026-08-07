@@ -37,16 +37,13 @@ class Composition(Document):
 
 	def _check_all(self):
 		for row in self.items:
-			# CAS 1 : C'est une ligne totalement nouvelle (ou qui n'avait pas été liée)
 			if not row.saved_item and row.item and row.quantity > 0:
 				stock = frappe.get_doc("Stock", row.item)
 
-				# On cherche d'abord un emplacement qui a du stock disponible
 				dispo = [d for d in stock.place_table if d.quantity >= row.quantity]
 				if not dispo and stock.place_table:
 					dispo = [d for d in stock.place_table if d.quantity > 0]
 
-				# Si on trouve un emplacement avec du stock, on le prend, sinon on se rabat sur le premier ou celui de la compo
 				if dispo:
 					row.saved_place = dispo[0].place
 				elif not row.saved_place:
@@ -56,15 +53,10 @@ class Composition(Document):
 				row.saved_item = row.item
 				row.saved_quantity = row.quantity
 
-			# CAS 2 : L'article a été modifié/remplacé sur une ligne existante
 			elif row.saved_item and row.saved_item != row.item:
-				# On recrédite l'ancien
 				self._add_stock(row.saved_item, row.saved_place, row.saved_quantity)
-				# On déduit le nouveau
 				row.saved_item = None
 				row.saved_quantity = 0
-				# Ce bloc va s'arrêter là, et au prochain save (ou en ré-exécutant la boucle),
-				# il sera traité par le CAS 1. Pour faire propre, on peut l'exécuter directement :
 				if row.item and row.quantity > 0:
 					stock = frappe.get_doc("Stock", row.item)
 					if not row.saved_place or row.saved_place not in [d.place for d in stock.place_table]:
@@ -73,7 +65,6 @@ class Composition(Document):
 					row.saved_item = row.item
 					row.saved_quantity = row.quantity
 
-			# CAS 3 : L'article est le même, mais la quantité a changé
 			elif row.saved_item and row.saved_quantity and row.saved_quantity != row.quantity:
 				diff = row.quantity - row.saved_quantity
 				if diff > 0:
@@ -110,7 +101,7 @@ class Composition(Document):
 				f"Stock insuffisant à l'emplacement {place_name} pour {item_code} : {ps_row.quantity} disponible, {qty_to_remove} requis"
 			)
 		if stock.is_referenced:
-			frappe.db.set_value("Stock", stock.name, "composition", self.name, update_modified=False)
+			stock.composition = self.name
 			stock.remove(ps_row)
 			stock.quantity = 0
 		else:
@@ -123,7 +114,7 @@ class Composition(Document):
 	def _add_stock(self, item_code, place_name, qty_to_add):
 		stock = frappe.get_doc("Stock", item_code, for_update=True)
 		if stock.is_referenced:
-			frappe.db.set_value("Stock", stock.name, "composition", None, update_modified=False)
+			stock.composition = None
 			stock.quantity = 1
 			stock.append(
 				"place_table",
@@ -152,14 +143,15 @@ class Composition(Document):
 				continue
 			if not row.item:
 				continue
-			stock_list = frappe.get_all("Stock", filters=[["name", "=", row.item]], limit=1)
-			if not stock_list:
-				frappe.throw(f"Stock introuvable : {row.item}")
-			stock = frappe.get_doc("Stock", stock_list[0].name, for_update=True)
-			if not stock.place_table:
-				frappe.throw(f"Aucun Places Stock trouvé pour {stock.name}")
+
+			if row.quantity == 0:
+				continue
+
+			ps = frappe.get_all("Places Stock", filters=[["parent", "=", row.item], ["external", "=", 0]])
+			if not ps:
+				frappe.throw(f"Aucun Places Stock trouvé pour {row.item}")
 			if not row.saved_place:
-				row.saved_place = stock.place_table[0].place
+				row.saved_place = ps[0].place
 			self._substract_stock(row.item, row.saved_place, row.quantity)
 			row.saved_item = row.item
 			row.saved_quantity = row.quantity

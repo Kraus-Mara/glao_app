@@ -179,16 +179,21 @@ class GestionDMC(Document):
 				)
 			if row.true_quantity > 0:
 				stock = frappe.get_doc("Stock", row.item_from_stock, for_update=True)
+				art = frappe.get_doc("Article", stock.article)
 				if self.starting_date and stock.closest_event_date:
 					if stock.closest_event_date < self.starting_date:
 						frappe.throw(
 							frappe._(
-								f"Impossible to book the item {row.item_from_stock}. The date of next ({stock.closest_event_date}) is behind the starting date of the DMC ({self.starting_date})."
+								f"Impossible to book the item {art.article_name} - {art.manufacturer_name} - {art.manufacturer} at line {row.idx}. The date of next ({stock.closest_event_date}) is behind the starting date of the DMC ({self.starting_date})."
 							)
 						)
 				stock.reserved_quantity += row.true_quantity
 				if stock.reserved_quantity > stock.quantity_in_spie_tm:
-					frappe.throw(frappe._("No enough items in stock : " + str(row.item_from_stock)))
+					frappe.throw(
+						frappe._(
+							f"No enough items in stock : {art.article_name} - {art.manufacturer_name} - {art.manufacturer} at line {row.idx}"
+						)
+					)
 				stock.save()
 				row.moved_quantity = row.true_quantity
 				row.saved_item = row.item_from_stock
@@ -314,7 +319,8 @@ class GestionDMC(Document):
 
 	def _create_client_place(self):
 		# Parent place
-		self.new_place(place_name="CLIENTS", is_group=1)
+
+		# self.new_place(place_name="CLIENTS", is_group=1)
 		self.new_place(place_name=str(self.client), parent_place="CLIENTS", is_group=1)
 		# Children places
 		# self.new_place(place_name="BOOK", parent_place="CLIENTS/" + str(self.client), external=False)

@@ -38,9 +38,10 @@
   }
  ],
  "grid_page_length": 50,
+ "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-30 10:03:59.978615",
+ "modified": "2026-08-05 09:18:47.871017",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Purchase Command",

@@ -9,7 +9,9 @@
   "section_break_if6x",
   "article",
   "designation",
-  "quantity"
+  "quantity",
+  "fabricant",
+  "r\u00e9f\u00e9rence_fabricant"
  ],
  "fields": [
   {
@@ -35,15 +37,30 @@
    "fetch_from": "article.shortname",
    "fieldname": "designation",
    "fieldtype": "Data",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Designation"
+  },
+  {
+   "fetch_from": "article.manufacturer_name",
+   "fieldname": "fabricant",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Fabricant"
+  },
+  {
+   "fetch_from": "article.manufacturer",
+   "fieldname": "r\u00e9f\u00e9rence_fabricant",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "R\u00e9f\u00e9rence fabricant"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-06-10 15:15:06.490288",
+ "modified": "2026-08-05 14:11:12.303833",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "DMC Items",

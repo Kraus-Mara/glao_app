@@ -27,6 +27,7 @@
   "providers",
   "alternatives_tab",
   "table_fucy",
+  "attention_ne_pas_se_tromper",
   "assembly_tab",
   "items",
   "rules",
@@ -120,7 +121,8 @@
   {
    "fieldname": "table_fucy",
    "fieldtype": "Table",
-   "options": "Alternatives"
+   "options": "Alternatives",
+   "show_description_on_click": 1
   },
   {
    "fieldname": "assembly_tab",
@@ -243,12 +245,17 @@
    "fieldname": "total_maximum",
    "fieldtype": "Int",
    "label": "Total maximum"
+  },
+  {
+   "fieldname": "attention_ne_pas_se_tromper",
+   "fieldtype": "Heading",
+   "label": "Consigne : attention, ne pas se tromper"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-29 16:00:49.603668",
+ "modified": "2026-08-05 15:55:53.336249",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Article",
@@ -271,6 +278,7 @@
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
  "search_fields": "article_name, manufacturer",
+ "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],

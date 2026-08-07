@@ -14,6 +14,8 @@ class RetourItems(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		article_article: DF.Link | None
+		fabricant: DF.Data | None
 		is_sub_item: DF.Check
 		item: DF.Link | None
 		item_name: DF.Data | None
@@ -23,6 +25,7 @@ class RetourItems(Document):
 		place_to_stock: DF.Autocomplete | None
 		quantity: DF.Int
 		reason: DF.Literal["", "R", "L", "Incomplete"]
+		référence_fabricant: DF.Data | None
 		sent_quantity: DF.Int
 		sold: DF.Check
 		treated: DF.Check

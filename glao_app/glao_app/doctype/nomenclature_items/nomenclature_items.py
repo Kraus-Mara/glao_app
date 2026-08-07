@@ -15,11 +15,13 @@ class NomenclatureItems(Document):
 		from frappe.types import DF
 
 		designation: DF.Data | None
+		fabricant: DF.Data | None
 		item: DF.Link | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
 		quantity: DF.Int
+		référence_fabricant: DF.Data | None
 	# end: auto-generated types
 
 	pass

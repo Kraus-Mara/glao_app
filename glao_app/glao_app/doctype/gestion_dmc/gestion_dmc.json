@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "color": "red",
  "creation": "2026-04-01 11:49:53.270839",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -144,7 +145,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-31 11:55:57.140213",
+ "modified": "2026-08-06 09:37:13.957459",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC",
@@ -168,6 +169,27 @@
  "rows_threshold_for_grid_search": 20,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": [],
+ "states": [
+  {
+   "color": "Red",
+   "title": "Draft"
+  },
+  {
+   "color": "Green",
+   "title": "Validated"
+  },
+  {
+   "color": "Green",
+   "title": "Partially validated"
+  },
+  {
+   "color": "Gray",
+   "title": "Not served"
+  },
+  {
+   "color": "Gray",
+   "title": "Shipped"
+  }
+ ],
  "track_changes": 1
 }

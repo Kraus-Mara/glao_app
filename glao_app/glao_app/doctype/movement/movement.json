@@ -6,8 +6,11 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "section_break_xelt",
   "type",
+  "denom",
+  "column_break_jvhk",
+  "explication",
+  "section_break_xelt",
   "article",
   "article_referenced",
   "article_to_register",
@@ -181,6 +184,7 @@
   {
    "fieldname": "designation",
    "fieldtype": "Data",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Designation",
    "read_only": 1
@@ -237,6 +241,7 @@
    "fetch_from": "article_to_register.designation",
    "fieldname": "shortname_other",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Shortname"
   },
   {
@@ -244,6 +249,7 @@
    "fetch_from": "article.shortname",
    "fieldname": "artfromstock",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Shortname"
   },
   {
@@ -251,6 +257,7 @@
    "fetch_from": "article_from_stock.designation",
    "fieldname": "short4",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Shortname"
   },
   {
@@ -258,6 +265,7 @@
    "fetch_from": "article_referenced.shortname",
    "fieldname": "shortname_entr",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Shortname",
    "read_only": 1
   },
@@ -289,12 +297,30 @@
    "fieldtype": "Select",
    "label": "Reason",
    "options": "R\nSS\nP\nL\nES\nIC\nRA"
+  },
+  {
+   "depends_on": "eval:doc.denom==\"Inventaire\"",
+   "fieldname": "explication",
+   "fieldtype": "Small Text",
+   "label": "Explication textuelle",
+   "mandatory_depends_on": "eval:doc.denom==\"Inventaire\""
+  },
+  {
+   "depends_on": "eval:doc.type==\"Add\" || doc.type==\"Pull\"",
+   "fieldname": "denom",
+   "fieldtype": "Select",
+   "label": "Explication",
+   "options": "Achat\nInventaire"
+  },
+  {
+   "fieldname": "column_break_jvhk",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-29 16:15:36.710172",
+ "modified": "2026-08-05 14:02:33.146761",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Movement",

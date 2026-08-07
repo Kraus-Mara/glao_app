@@ -16,10 +16,12 @@ class DMCItems(Document):
 
 		article: DF.Link | None
 		designation: DF.Data | None
+		fabricant: DF.Data | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
 		quantity: DF.Int
+		référence_fabricant: DF.Data | None
 	# end: auto-generated types
 
 	pass

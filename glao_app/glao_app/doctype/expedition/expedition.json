@@ -15,11 +15,11 @@
   "delivery_date",
   "client",
   "expedition_date",
-  "print_lof",
   "section_break_aajt",
   "carrier",
   "column_break_uals",
-  "status"
+  "status",
+  "print_lof"
  ],
  "fields": [
   {
@@ -44,6 +44,7 @@
   {
    "fieldname": "status",
    "fieldtype": "Select",
+   "in_standard_filter": 1,
    "label": "Status",
    "options": "Waiting\nShipped"
   },
@@ -65,6 +66,7 @@
    "label": "Shipping Date"
   },
   {
+   "depends_on": "eval:doc.status==\"Shipped\"",
    "fieldname": "print_lof",
    "fieldtype": "Button",
    "label": "Print LoF"
@@ -96,9 +98,10 @@
   }
  ],
  "grid_page_length": 50,
+ "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-29 16:33:57.046254",
+ "modified": "2026-08-06 09:40:30.524904",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Expedition",
@@ -122,5 +125,14 @@
  "rows_threshold_for_grid_search": 20,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [
+  {
+   "color": "Red",
+   "title": "Waiting"
+  },
+  {
+   "color": "Gray",
+   "title": "Shipped"
+  }
+ ]
 }

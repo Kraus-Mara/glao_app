@@ -17,7 +17,7 @@ frappe.ui.form.on("Composition", {
                         args: {
                             doctype: "Stock",
                             filters: [["Stock", "article", "=", nom_item.item], ["Stock", "not_yet_registered", "=", 0]],
-                            fields: ["name", "designation", "article"],
+                            fields: ["name", "designation", "article", "fabricant_hidden", "ref_constructeur"],
                             order_by: "creation asc"
                         }
                     }).then(r => {
@@ -32,6 +32,8 @@ frappe.ui.form.on("Composition", {
                                         name: stock_doc.name,
                                         article: stock_doc.article,
                                         designation: stock_doc.designation,
+										fabricant: stock_doc.fabricant_hidden,
+										ref_fabricant: stock_doc.ref_constructeur,
                                         remaining_qty: flt(p_row.quantity)
                                     };
                                 });
@@ -95,6 +97,8 @@ frappe.ui.form.on("Composition", {
         });
 	},
     refresh: function(frm) {
+		frm.set_df_property('items', 'cannot_add_rows', true);
+        frm.set_df_property('items', 'cannot_delete_rows', true);
         frm.set_query('saved_place', 'items', function(doc, cdt, cdn) {
             let row = locals[cdt][cdn];
 			if (row.saved_place) return;

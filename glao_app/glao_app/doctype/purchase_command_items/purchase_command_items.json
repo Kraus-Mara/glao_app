@@ -15,7 +15,9 @@
   "quantity",
   "pr_reference",
   "needs_date",
-  "notes"
+  "notes",
+  "fabricant",
+  "r\u00e9f\u00e9rence_fabricant"
  ],
  "fields": [
   {
@@ -29,6 +31,7 @@
    "fetch_from": "article.shortname",
    "fieldname": "designation",
    "fieldtype": "Data",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Designation"
   },
@@ -76,13 +79,27 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Needs date"
+  },
+  {
+   "fetch_from": "article.manufacturer_name",
+   "fieldname": "fabricant",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Fabricant"
+  },
+  {
+   "fetch_from": "article.manufacturer",
+   "fieldname": "r\u00e9f\u00e9rence_fabricant",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "R\u00e9f\u00e9rence fabricant"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-30 13:48:13.135858",
+ "modified": "2026-08-05 14:17:04.554874",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Purchase Command Items",

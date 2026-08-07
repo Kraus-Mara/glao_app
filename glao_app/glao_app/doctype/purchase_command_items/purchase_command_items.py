@@ -17,6 +17,7 @@ class PurchaseCommandItems(Document):
 		article: DF.Link | None
 		asked_quantity: DF.Int
 		designation: DF.Data | None
+		fabricant: DF.Data | None
 		needs_date: DF.Date | None
 		notes: DF.SmallText | None
 		parent: DF.Data
@@ -25,6 +26,7 @@ class PurchaseCommandItems(Document):
 		pr_reference: DF.Link | None
 		project: DF.Link | None
 		quantity: DF.Int
+		référence_fabricant: DF.Data | None
 		supplier: DF.Link | None
 	# end: auto-generated types
 

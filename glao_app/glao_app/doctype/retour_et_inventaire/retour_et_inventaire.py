@@ -71,7 +71,6 @@ class RetouretInventaire(Document):
 
 		target_site_place = f"CLIENTS/{client}/SITE"
 
-		# 1. Récupération des articles en stock (Items et Assemblies incluses)
 		stock_items = frappe.get_all(
 			"Places Stock",
 			filters=[["place", "=", target_site_place], ["quantity", ">", 0], ["parenttype", "=", "Stock"]],
@@ -89,6 +88,8 @@ class RetouretInventaire(Document):
 						{
 							"item": stock.parent,
 							"item_name": designation,
+							"fabricant": article_doc.manufacturer_name,
+							"référence_fabricant": article_doc.manufacturer,
 							"sent_quantity": 1,
 							"is_sub_item": 0,
 						},
@@ -104,17 +105,22 @@ class RetouretInventaire(Document):
 								{
 									"item": sub_item.item,
 									"item_name": sub_designation,
+									"fabricant": article_doc.manufacturer_name,
+									"référence_fabricant": article_doc.manufacturer,
 									"sent_quantity": sub_item.item_quantity,
 									"is_sub_item": 1,
 								},
 							)
 			else:
+				stock_doc = frappe.get_doc("Stock", stock.parent)
 				designation = frappe.db.get_value("Stock", stock.parent, "designation") or stock.parent
 				self.append(
 					"sent_items",
 					{
 						"item": stock.parent,
 						"item_name": designation,
+						"fabricant": stock_doc.fabricant_hidden,
+						"référence_fabricant": stock_doc.ref_constructeur,
 						"sent_quantity": stock.quantity,
 						"is_sub_item": 0,
 					},
@@ -195,6 +201,8 @@ class RetouretInventaire(Document):
 
 	def _process_returned_items(self):
 		source_place = None
+
+		# check the below items of the stm-c
 		for i, row in enumerate(self.sent_items):
 			if str(row.item).startswith("STM-C") and row.is_sub_item == 0 and row.sold:
 				j = i + 1
@@ -215,7 +223,7 @@ class RetouretInventaire(Document):
 							f"Impossible de solder l'ensemble {row.item} ({row.item_name}) : "
 							f"les quantités de ses sous-articles ne sont pas cohérentes avec la quantité du package principal."
 						)
-
+		# treat the stm-c
 		for i, row in enumerate(self.sent_items):
 			if not row.sold or row.treated:
 				continue
@@ -241,14 +249,12 @@ class RetouretInventaire(Document):
 
 				row.treated = 1
 
-				# On marque les sous-composants comme traités
 				j = i + 1
 				while j < len(self.sent_items) and self.sent_items[j].is_sub_item == 1:
 					self.sent_items[j].treated = 1
 					j += 1
 				continue
-
-			# CAS STANDARD (Hors STM-C)
+			# Standard case (stm-a or b)
 			if row.is_sub_item == 0:
 				if row.quantity > 0:
 					self._process_one_item_row(row, source_place)
@@ -319,7 +325,10 @@ class RetouretInventaire(Document):
 						target_place=row.place_to_stock,
 						quantity_to_manipulate=row.which_are_issued,
 					)
-
+		else:
+			frappe.throw(
+				frappe._(f"Etes-vous sur de la quantité ? {row.item} {row.item_name}, ligne {row.idx}")
+			)
 		row.treated = 1
 
 	def _process_returned_compositions(self):

@@ -21,7 +21,8 @@
    "fieldname": "job_no",
    "fieldtype": "Link",
    "label": "Job N\u00b0",
-   "options": "Projects"
+   "options": "Projects",
+   "reqd": 1
   },
   {
    "depends_on": "eval:doc.saved",
@@ -78,10 +79,11 @@
   }
  ],
  "grid_page_length": 50,
+ "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-07-23 10:16:16.917666",
+ "modified": "2026-08-05 09:19:17.548808",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Purchase Request",

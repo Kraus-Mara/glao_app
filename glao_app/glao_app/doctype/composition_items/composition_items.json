@@ -8,12 +8,15 @@
  "field_order": [
   "section_break_cwkc",
   "item",
+  "fabricant",
+  "r\u00e9f\u00e9rence_fabricant",
   "designation",
   "quantity",
   "closest_event_date",
   "saved_place",
   "saved_item",
-  "saved_quantity"
+  "saved_quantity",
+  "article_article"
  ],
  "fields": [
   {
@@ -38,6 +41,7 @@
    "fetch_from": "item.designation",
    "fieldname": "designation",
    "fieldtype": "Data",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Designation"
   },
@@ -62,13 +66,34 @@
    "fieldname": "saved_quantity",
    "fieldtype": "Int",
    "label": "saved_quantity"
+  },
+  {
+   "fetch_from": "article_article.manufacturer_name",
+   "fieldname": "fabricant",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Fabricant"
+  },
+  {
+   "fetch_from": "article_article.manufacturer",
+   "fieldname": "r\u00e9f\u00e9rence_fabricant",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "R\u00e9f\u00e9rence fabricant"
+  },
+  {
+   "fetch_from": "item.article",
+   "fieldname": "article_article",
+   "fieldtype": "Link",
+   "label": "article_article",
+   "options": "Article"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-29 10:29:41.909253",
+ "modified": "2026-08-06 15:10:57.392717",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Composition Items",
