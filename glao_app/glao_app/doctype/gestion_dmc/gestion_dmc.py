@@ -357,12 +357,23 @@ class GestionDMC(Document):
 				["parent", "=", item_from_stock],
 				["quantity", ">", 0],
 			],
-			fields=["place", "quantity"],
+			fields=["name", "place", "quantity"],
 		)
 		litiges = frappe.get_all("Places", filters=[["litige", "=", 1]], fields=["name"])
-		for p in litiges:
-			if p.name in places:
-				places.remove(p.name)
+		externals = frappe.get_all("Places", filters=[["external", "=", 1]], fields=["name"])
+		# frappe.throw(str(places))
+
+		for l in litiges:
+			for p in places:
+				if l.name == p.place:
+					# frappe.throw(str(l.name) + " " + str(p.place))
+					places.remove(p)
+		for e in externals:
+			for p in places:
+				if e.name in p.place:
+					# frappe.throw("n")
+					places.remove(p)
+		# frappe.throw(str(places))
 		return places
 
 	@frappe.whitelist()

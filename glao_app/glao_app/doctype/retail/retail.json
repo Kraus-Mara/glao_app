@@ -16,16 +16,18 @@
   },
   {
    "fieldname": "article_to_retail",
-   "fieldtype": "Autocomplete",
+   "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Article to retail",
+   "link_filters": "[[\"Article\",\"can_retail\",\"=\",1],\n[\"Article\",\"retail_target\",\"is\",\"Set\"]]",
+   "options": "Article",
    "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-08 11:45:21.624626",
+ "modified": "2026-09-03 10:33:11.999181",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retail",

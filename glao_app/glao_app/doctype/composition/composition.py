@@ -46,6 +46,7 @@ class Composition(Document):
 					dispo = [d for d in stock.place_table if d.quantity > 0]
 
 				if dispo:
+					# frappe.throw(str(dispo))
 					row.saved_place = dispo[0].place
 				elif not row.saved_place:
 					row.saved_place = stock.place_table[0].place if stock.place_table else self.place
@@ -93,17 +94,26 @@ class Composition(Document):
 
 	def _substract_stock(self, item_code, place_name, qty_to_remove):
 		stock = frappe.get_doc("Stock", item_code, for_update=True)
-		ps_items = [d for d in stock.place_table if d.place == place_name]
+		# ps_items = [d for d in stock.place_table if d.place == place_name]
+		ps_items = frappe.get_all(
+			"Places Stock", filters=[["parent", "=", stock.name], ["place", "=", place_name]], fields=["name"]
+		)
+		# frappe.throw(str(ps_items))
 		if not ps_items:
 			frappe.throw(f"Emplacement {place_name} introuvable pour l'article {item_code}")
-		ps_row = ps_items[0]
+			# frappe.throw("???")
+		ps_row = frappe.get_doc("Places Stock", ps_items[0])
+		# frappe.throw(str(ps_row))
 		if ps_row.quantity < qty_to_remove:
 			frappe.throw(
 				f"Stock insuffisant à l'emplacement {place_name} pour {item_code} : {ps_row.quantity} disponible, {qty_to_remove} requis"
 			)
 		if stock.is_referenced:
-			stock.composition = self.name
-			stock.remove(ps_row)
+			for r in stock.place_table:
+				if r.name == ps_row.name:
+					stock.remove(r)
+			stock.composition = str(self.name)
+
 			stock.quantity = 0
 		else:
 			ps_row.quantity -= qty_to_remove

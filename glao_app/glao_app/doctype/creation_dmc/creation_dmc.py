@@ -78,6 +78,8 @@ class CreationDMC(Document):
 				list_article_from_stock = frappe.get_all(
 					"Stock", filters=[["article", "=", str(row.article)]], fields=["name"]
 				)
+				if not list_article_from_stock:
+					frappe.throw("cet article n'a jamais été en stock")
 				for i in list_article_from_stock:
 					if "-SN-" in i.name:
 						flag_serial = True

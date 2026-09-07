@@ -8,9 +8,9 @@
  "field_order": [
   "section_break_cwkc",
   "item",
+  "designation",
   "fabricant",
   "r\u00e9f\u00e9rence_fabricant",
-  "designation",
   "quantity",
   "closest_event_date",
   "saved_place",
@@ -41,7 +41,6 @@
    "fetch_from": "item.designation",
    "fieldname": "designation",
    "fieldtype": "Data",
-   "hidden": 1,
    "in_list_view": 1,
    "label": "Designation"
   },
@@ -93,7 +92,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-08-06 15:10:57.392717",
+ "modified": "2026-09-03 11:37:59.193028",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Composition Items",

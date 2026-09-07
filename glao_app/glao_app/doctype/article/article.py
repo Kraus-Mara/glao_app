@@ -26,6 +26,7 @@ class Article(Document):
 		from glao_app.glao_app.doctype.characteristics.characteristics import Characteristics
 
 		article_name: DF.Data
+		can_retail: DF.Check
 		char_name: DF.Data | None
 		char_value: DF.Data | None
 		chars: DF.Table[Characteristics]
@@ -107,7 +108,9 @@ class Article(Document):
 				if r.retail and not fr:
 					self.char_name = r.characteristics_type
 					self.char_value = r.value
+					self.can_retail = 1
 					fr = True
+
 				elif r.retail and fr:
 					frappe.throw(frappe._("You can't have more than one retail easement"))
 

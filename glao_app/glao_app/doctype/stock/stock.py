@@ -29,12 +29,13 @@ class Stock(Document):
 		carnet_de_maintenance: DF.Table[Maintenancebook]
 		closest_event_date: DF.Date | None
 		code_spie_tm: DF.Data | None
-		composition: DF.Link | None
+		composition: DF.Data | None
 		designation: DF.Data | None
 		events: DF.Table[RefEvents]
 		fabricant_hidden: DF.Data | None
 		gessica_code: DF.Data | None
 		has_code: DF.Check
+		in_the_composition: DF.Link | None
 		is_referenced: DF.Check
 		not_yet_registered: DF.Check
 		periodicity: DF.Data | None
@@ -64,6 +65,7 @@ class Stock(Document):
 		self._check_dates()
 		self._count_stock_in_spie()
 		self._check_code_spie()
+		self.comp_rework()
 
 	def _check_code_spie(self):
 		if self.has_code:
@@ -84,6 +86,10 @@ class Stock(Document):
 		if self.article:
 			qty = sum(row.quantity for row in self.place_table if not getattr(row, "external", 0))
 			self.quantity_in_spie_tm = qty
+
+	def comp_rework(self):
+		if self.composition and not self.in_the_composition:
+			self.in_the_composition = self.composition
 
 	def _check_dates(self):
 		# list(self.events) prevents any issue from the modification of a self.events element during the process

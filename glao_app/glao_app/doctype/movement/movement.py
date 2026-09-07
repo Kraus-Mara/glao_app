@@ -77,7 +77,7 @@ class Movement(Document):
 					+ " "
 					+ str(self.denom)
 					+ " "
-					+ str(self.explication)
+					+ str(unidecode.unidecode(str(self.explication).upper()))
 					+ "-.#"
 				)
 
@@ -127,7 +127,6 @@ class Movement(Document):
 				self._transfert_referenced()
 			else:
 				self._transfert_normal()
-		# self._sort_events_by_closing_date()
 		# TODO : When we register two different batches of the same article
 		# The quantities of theses stock are not updated correctly
 
@@ -136,43 +135,6 @@ class Movement(Document):
 		self.designation = (
 			self.designation_add or self.stock_entry_designation or self.designation_pull or self.re_des
 		)
-
-	# def _sort_events_by_closing_date(self):
-	#   parent_name = frappe.get_all(
-	#       "Stock",
-	#       filters=[["article", "like", self.article], ["serial_no", "like", self.serial_no]],
-	#   )[0].name
-	#
-	#   parent_doc = frappe.get_doc("Stock", parent_name, for_update=True)
-	#   events = frappe.get_all(
-	#       "Ref Events",
-	#       filters=[
-	#           ["parent", "=", parent_doc],
-	#           ["article", "=", self.article],
-	#       ],
-	#   )
-	#   frappe.msgprint(str(events))
-	# events.sort(key=lambda e: e.event_date)
-	#
-	# new_rows = []
-	# for event in events:
-	#   if event.event == "VGP" and event.passed:
-	#       next_date = frappe.utils.add_months(event.event_date, event.increment)
-	#       new_rows.append(
-	#           {
-	#               "doctype": "Ref Events",
-	#               "event": "VGP",
-	#               "event_date": next_date,
-	#               "batch_no": event.batch_no,
-	#               "increment": event.increment,
-	#               "passed": 0,
-	#           }
-	#       )
-	#
-	# for row in new_rows:
-	#   self.append("events", row)
-	#
-	# self.get("events").sort(key=lambda e: e.event_date)
 
 	def _count_stock_in_spie(self):
 		if self.article_referenced:

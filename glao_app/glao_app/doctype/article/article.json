@@ -23,11 +23,11 @@
   "periodicity",
   "char_name",
   "char_value",
+  "can_retail",
   "tab_break_dcvv",
   "providers",
   "alternatives_tab",
   "table_fucy",
-  "attention_ne_pas_se_tromper",
   "assembly_tab",
   "items",
   "rules",
@@ -169,7 +169,7 @@
    "in_filter": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "OEM P/N",
+   "label": "R\u00e9f\u00e9rence Fabricant",
    "reqd": 1,
    "unique": 1
   },
@@ -247,15 +247,17 @@
    "label": "Total maximum"
   },
   {
-   "fieldname": "attention_ne_pas_se_tromper",
-   "fieldtype": "Heading",
-   "label": "Consigne : attention, ne pas se tromper"
+   "default": "0",
+   "fieldname": "can_retail",
+   "fieldtype": "Check",
+   "label": "can_retail",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-08-05 15:55:53.336249",
+ "modified": "2026-09-07 12:00:17.827896",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Article",
@@ -278,10 +280,8 @@
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
  "search_fields": "article_name, manufacturer",
- "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],
- "title_field": "article_name",
  "track_changes": 1
 }

@@ -25,6 +25,7 @@
   "spie_tm_code_id",
   "section_break_dttr",
   "quantity",
+  "in_the_composition",
   "composition",
   "column_break_vrys",
   "quantity_in_spie_tm",
@@ -162,8 +163,9 @@
   },
   {
    "fieldname": "composition",
-   "fieldtype": "Link",
-   "label": "In the composition",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "composition_data",
    "options": "Composition"
   },
   {
@@ -310,11 +312,17 @@
    "fieldname": "gessica_code",
    "fieldtype": "Data",
    "label": "Gessica_code"
+  },
+  {
+   "fieldname": "in_the_composition",
+   "fieldtype": "Link",
+   "label": "In the composition",
+   "options": "Composition"
   }
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-08-07 13:35:41.148675",
+ "modified": "2026-09-03 11:36:58.264536",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",
@@ -338,7 +346,6 @@
  "rows_threshold_for_grid_search": 20,
  "search_fields": "article, serial_no, designation, batch_no, quantity, closest_event_date",
  "show_name_in_global_search": 1,
- "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],

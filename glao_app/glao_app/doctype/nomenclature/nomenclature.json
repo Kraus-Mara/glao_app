@@ -18,7 +18,9 @@
   {
    "fieldname": "nomenclature_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Nomenclature Name",
+   "reqd": 1,
    "unique": 1
   },
   {
@@ -37,7 +39,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-09 10:48:30.958555",
+ "modified": "2026-09-03 11:33:28.716452",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Nomenclature",

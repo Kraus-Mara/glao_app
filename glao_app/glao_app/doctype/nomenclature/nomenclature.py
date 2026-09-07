@@ -19,7 +19,7 @@ class Nomenclature(Document):
 
 		is_active: DF.Check
 		items: DF.Table[NomenclatureItems]
-		nomenclature_name: DF.Data | None
+		nomenclature_name: DF.Data
 	# end: auto-generated types
 
 	def autoname(self):
