@@ -53,11 +53,10 @@
   {
    "fieldname": "status",
    "fieldtype": "Select",
-   "hidden": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Status",
-   "options": "Draft\nValidated\nPartially validated\nNot served\nShipped"
+   "options": "Draft\nValidated\nPartially validated\nNot served\nShipped\nNew DMC\nLeft DMC"
   },
   {
    "fieldname": "column_break_uabz",
@@ -145,7 +144,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-07 16:10:01.468264",
+ "modified": "2026-09-14 14:05:01.034344",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC",

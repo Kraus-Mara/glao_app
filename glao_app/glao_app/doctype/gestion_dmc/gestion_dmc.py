@@ -33,7 +33,9 @@ class GestionDMC(Document):
 		project: DF.Link | None
 		starting_date: DF.Date | None
 		state: DF.Literal["Draft", "Validated"]
-		status: DF.Literal["Draft", "Validated", "Partially validated", "Not served", "Shipped"]
+		status: DF.Literal[
+			"Draft", "Validated", "Partially validated", "Not served", "Shipped", "New DMC", "Left DMC"
+		]
 	# end: auto-generated types
 
 	def autoname(self):
@@ -47,7 +49,8 @@ class GestionDMC(Document):
 
 	def validate(self):
 		if self.state == "Draft":
-			self.status = "Draft"
+			if self.status is None:
+				self.status = "Draft"
 			# self.recup_compo()
 			# return 1
 			self._save_dmc()
@@ -60,9 +63,8 @@ class GestionDMC(Document):
 		"""Attribute the status depending of the state of the items"""
 		if self.state != "Validated":
 			return
-
-		self.status = "Draft"
-
+		if not self.status:
+			self.status = "Draft"
 		items_status = []
 		if self.gestion_items:
 			for r in self.gestion_items:
@@ -289,8 +291,8 @@ class GestionDMC(Document):
 			if row.no_serving:
 				continue
 
-			served_qty = flt(row.true_quantity) if row.item_from_stock else 0
-			missing_qty = flt(row.quantity) - served_qty
+			served_qty = frappe.utils.flt(row.true_quantity) if row.item_from_stock else 0
+			missing_qty = frappe.utils.flt(row.quantity) - served_qty
 
 			if missing_qty > 0:
 				items_to_add.append(
@@ -307,7 +309,7 @@ class GestionDMC(Document):
 			if comp_row.no_serving:
 				continue
 
-			served = bool(comp_row.comp_saved) and flt(comp_row.quantity or 0) > 0
+			served = bool(comp_row.comp_saved) and frappe.utils.flt(comp_row.quantity or 0) > 0
 
 			if not served:
 				compos_to_add.append(
