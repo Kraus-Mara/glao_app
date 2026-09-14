@@ -17,6 +17,7 @@ class GestionDMCItems(Document):
 		article: DF.Link | None
 		closest_event: DF.Date | None
 		designation: DF.Data | None
+		designation_requested: DF.Data | None
 		fabricant: DF.Data | None
 		is_referenced: DF.Check
 		item_from_stock: DF.Link | None

@@ -2,28 +2,73 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Retour et Inventaire', {
-    refresh: function(frm) {
-        apply_bold_styles(frm);
+    refresh(frm) {
+        apply_row_styles(frm, 'sent_items');
+        apply_row_styles(frm, 'sent_compositions');
     },
-    onload: function(frm) {
-        apply_bold_styles(frm);
-    },
-    sent_items_render: function(frm) {
-        apply_bold_styles(frm);
-    },
-    sent_compositions_render: function(frm) {
-        apply_bold_styles(frm);
-    }
+    sent_items_add(frm) { setTimeout(() => apply_row_styles(frm, 'sent_items'), 100); },
+    sent_items_remove(frm) { setTimeout(() => apply_row_styles(frm, 'sent_items'), 100); },
+    sent_compositions_add(frm) { setTimeout(() => apply_row_styles(frm, 'sent_compositions'), 100); },
+    sent_compositions_remove(frm) { setTimeout(() => apply_row_styles(frm, 'sent_compositions'), 100); },
 });
 
 frappe.ui.form.on("Retour Items", {
-    quantity: function(frm, cdt, cdn) {
-        suggest_places_to_stock(frm, cdt, cdn);
-    },
-    reason: function(frm, cdt, cdn) {
-        suggest_places_to_stock(frm, cdt, cdn);
-    }
+    quantity: (frm, cdt, cdn) => suggest_places_to_stock(frm, cdt, cdn),
+    reason:   (frm, cdt, cdn) => suggest_places_to_stock(frm, cdt, cdn),
+    item(frm, cdt, cdn) { setTimeout(() => apply_row_styles(frm, cdt.includes("sent_items") ? 'sent_items' : 'sent_compositions'), 50); }
 });
+
+frappe.ui.form.on("Retour Compos", {
+    quantity: (frm, cdt, cdn) => suggest_places_to_stock(frm, cdt, cdn),
+    reason:   (frm, cdt, cdn) => suggest_places_to_stock(frm, cdt, cdn),
+    item(frm, cdt, cdn) { setTimeout(() => apply_row_styles(frm, 'sent_compositions'), 50); }
+});
+
+/**
+ * Applique gras sur STM-C + indentation sur is_sub_item
+ */
+function apply_row_styles(frm, table_fieldname) {
+    const grid = frm.fields_dict[table_fieldname]?.grid;
+    if (!grid) return;
+
+    // On parcourt les lignes du DOM
+    const rows = grid.wrapper.find('.grid-row');
+    rows.each(function () {
+        const $row = $(this);
+        const row_name = $row.attr('data-name');
+        const doc = grid.grid_rows_by_docname?.[row_name]?.doc
+                 || (grid.get_row(row_name) || {}).doc;
+        if (!doc) return;
+
+        const isStmC     = String(doc.item || doc.article || '').startsWith('STM-C');
+        const isSubItem  = cint(doc.is_sub_item) === 1;
+
+        // Reset
+        $row.find('[data-fieldname="item"], [data-fieldname="article"]')
+            .css({ 'font-weight': '', 'padding-left': '', 'position': 'relative' })
+            .removeClass('stm-c-bold sub-item-indent');
+
+        // Gras sur les STM-C
+        if (isStmC) {
+            $row.find('[data-fieldname="item"], [data-fieldname="article"]')
+                .addClass('stm-c-bold')
+                .css('font-weight', '700');
+        }
+
+        // Indentation des sous-articles
+        if (isSubItem) {
+            const $cell = $row.find('[data-fieldname="item"], [data-fieldname="article"]');
+            $cell.addClass('sub-item-indent').css({
+                'padding-left': '28px',
+                'position': 'relative'
+            });
+            // Petit chevron ↳ pour la lisibilité
+            if (!$cell.find('.sub-arrow').length) {
+                $cell.prepend('<span class="sub-arrow" style="position:absolute;left:8px;color:#8d99a6;">↳</span>');
+            }
+        }
+    });
+}
 
 function suggest_places_to_stock(frm, cdt, cdn) {
     const row = locals[cdt][cdn];
@@ -47,37 +92,4 @@ function suggest_places_to_stock(frm, cdt, cdn) {
             }
         }
     });
-}
-
-function apply_bold_styles(frm) {
-    if (frm.fields_dict.sent_items && frm.fields_dict.sent_items.grid) {
-        frm.fields_dict.sent_items.grid.wrapper.find('.grid-row[data-name]').each(function() {
-            let docname = $(this).attr('data-name');
-            let row_data = (frm.doc.sent_items || []).find(r => r.name === docname);
-            if (row_data && row_data.is_sub_item === 1) {
-                set_row_bold($(this), true);
-            } else {
-                set_row_bold($(this), false);
-            }
-        });
-    }
-
-    // 2. Application du gras dans la table sent_compositions
-    if (frm.fields_dict.sent_compositions && frm.fields_dict.sent_compositions.grid) {
-        frm.fields_dict.sent_compositions.grid.wrapper.find('.grid-row[data-name]').each(function() {
-            let docname = $(this).attr('data-name');
-            let row_data = (frm.doc.sent_compositions || []).find(r => r.name === docname);
-            if (row_data && row_data.is_sub_item === 1) {
-                set_row_bold($(this), true);
-            } else {
-                set_row_bold($(this), false);
-            }
-        });
-    }
-}
-
-function set_row_bold($row, should_be_bold) {
-    let weight = should_be_bold ? 'bold' : 'normal';
-    $row.css('font-weight', weight);
-    $row.find('input, select, span, .grid-static-col, .static-area').css('font-weight', weight);
 }

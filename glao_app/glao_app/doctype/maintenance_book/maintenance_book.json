@@ -29,14 +29,14 @@
    "fieldname": "intervention",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "intervention"
+   "label": "Intervention"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-06-19 14:40:21.201505",
+ "modified": "2026-09-14 11:05:15.872645",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Maintenance book",

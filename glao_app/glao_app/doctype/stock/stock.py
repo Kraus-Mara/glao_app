@@ -26,6 +26,7 @@ class Stock(Document):
 		actif: DF.Check
 		article: DF.Link | None
 		batch_no: DF.Data | None
+		can_retail: DF.Check
 		carnet_de_maintenance: DF.Table[Maintenancebook]
 		closest_event_date: DF.Date | None
 		code_spie_tm: DF.Data | None
@@ -57,7 +58,7 @@ class Stock(Document):
 		if self.is_referenced and self.serial_no:
 			self.name = str(self.article) + "-SN-" + str(self.serial_no)
 		elif self.is_referenced and self.batch_no:
-			self.name = str(self.article) + "-BN-" + str(self.batch_no)
+			self.name = make_autoname(str(self.article) + "-BN-" + str(self.batch_no) + "-.#")
 		else:
 			self.name = str(self.article)
 
@@ -105,7 +106,9 @@ class Stock(Document):
 						{
 							"doctype": "Ref Events",
 							"event": row.event,
-							"event_date": add_to_date(row.event_date, days=periodicity),
+							"event_date": add_to_date(row.event_date, days=periodicity)
+							if not row.intervention_date
+							else add_to_date(row.intervention_date, days=periodicity),
 							"passed": 0,
 							"batch_no": row.batch_no,
 						},

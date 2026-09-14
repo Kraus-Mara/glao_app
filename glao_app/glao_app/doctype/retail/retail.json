@@ -6,28 +6,40 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "column_break_rzsq",
-  "article_to_retail"
+  "section_break_wjqv",
+  "article_to_retail",
+  "source_place",
+  "quantity"
  ],
  "fields": [
-  {
-   "fieldname": "column_break_rzsq",
-   "fieldtype": "Column Break"
-  },
   {
    "fieldname": "article_to_retail",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Article to retail",
-   "link_filters": "[[\"Article\",\"can_retail\",\"=\",1],\n[\"Article\",\"retail_target\",\"is\",\"Set\"]]",
-   "options": "Article",
+   "link_filters": "[[\"Stock\",\"can_retail\",\"=\",1]]",
+   "options": "Stock",
    "reqd": 1
+  },
+  {
+   "fieldname": "source_place",
+   "fieldtype": "Autocomplete",
+   "label": "Source Place"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "label": "Quantity"
+  },
+  {
+   "fieldname": "section_break_wjqv",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-03 10:33:11.999181",
+ "modified": "2026-09-10 10:38:55.679009",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retail",

@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "article",
+  "designation_requested",
   "fabricant",
   "r\u00e9f\u00e9rence_fabricant",
   "designation",
@@ -67,12 +68,12 @@
   },
   {
    "bold": 1,
-   "default": "1",
    "fieldname": "true_quantity",
    "fieldtype": "Int",
    "in_list_view": 1,
    "label": "Actual Quantity",
    "mandatory_depends_on": "eval:doc.source_place",
+   "non_negative": 1,
    "placeholder": "qty"
   },
   {
@@ -124,8 +125,7 @@
    "fieldname": "no_serving",
    "fieldtype": "Check",
    "in_list_view": 1,
-   "label": "Not Provided",
-   "read_only_depends_on": "eval:doc.true_quantity>0"
+   "label": "Not Provided"
   },
   {
    "fetch_from": "article.manufacturer_name",
@@ -139,13 +139,19 @@
    "fieldname": "r\u00e9f\u00e9rence_fabricant",
    "fieldtype": "Data",
    "label": "R\u00e9f\u00e9rence fabricant"
+  },
+  {
+   "fetch_from": "article.shortname",
+   "fieldname": "designation_requested",
+   "fieldtype": "Data",
+   "label": "Designation"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-08-06 15:56:55.006545",
+ "modified": "2026-09-11 10:21:45.167387",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC Items",

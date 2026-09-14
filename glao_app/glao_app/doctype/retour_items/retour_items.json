@@ -29,48 +29,59 @@
    "in_standard_filter": 1,
    "label": "Article",
    "options": "Stock",
-   "read_only_depends_on": "is_sub_item"
+   "read_only_depends_on": "is_sub_item",
+   "sticky": 1
   },
   {
    "fetch_from": "item.designation",
    "fieldname": "item_name",
    "fieldtype": "Data",
-   "hidden": 1,
    "label": "Designation",
-   "read_only_depends_on": "eval:doc.is_sub_item"
+   "read_only_depends_on": "eval:doc.is_sub_item",
+   "sticky": 1
   },
   {
    "fieldname": "sent_quantity",
    "fieldtype": "Int",
-   "label": "Sent quantity "
+   "label": "Sent quantity ",
+   "sticky": 1
   },
   {
    "fieldname": "quantity",
    "fieldtype": "Int",
-   "label": "Quantity "
+   "label": "Quantity ",
+   "sticky": 1
   },
   {
    "fieldname": "which_are_issued",
    "fieldtype": "Int",
-   "label": "Which are issued"
+   "label": "Which are issued",
+   "sticky": 1
   },
   {
    "fieldname": "reason",
    "fieldtype": "Select",
    "label": "Reason",
-   "options": "\nR\nL\nIncomplete"
+   "options": "\nR\nL\nIncomplete",
+   "sticky": 1
   },
   {
    "fieldname": "place_to_stock",
    "fieldtype": "Autocomplete",
+   "in_preview": 1,
    "label": "Place to stock",
-   "mandatory_depends_on": "eval:doc.item && doc.quantity>0 && !doc.is_sub_item"
+   "mandatory_depends_on": "eval:doc.item && doc.quantity>0 && !doc.is_sub_item",
+   "sticky": 1
   },
   {
    "default": "0",
    "fieldname": "sold",
    "fieldtype": "Check",
-   "label": "Sold"
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Sold",
+   "sticky": 1
   },
   {
    "default": "0",
@@ -97,21 +108,31 @@
    "fetch_if_empty": 1,
    "fieldname": "fabricant",
    "fieldtype": "Data",
-   "label": "Fabricant"
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Fabricant",
+   "sticky": 1
   },
   {
    "fetch_from": "article_article.manufacturer",
    "fetch_if_empty": 1,
    "fieldname": "r\u00e9f\u00e9rence_fabricant",
    "fieldtype": "Data",
-   "label": "R\u00e9f\u00e9rence fabricant"
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "R\u00e9f\u00e9rence fabricant",
+   "sticky": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-08-06 16:38:59.034650",
+ "modified": "2026-09-11 11:18:40.350723",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retour Items",

@@ -15,6 +15,7 @@ class PlaceRules(Document):
 		from frappe.types import DF
 
 		article: DF.Link | None
+		designation: DF.Data | None
 		expected_quantity: DF.Int
 		maximum_quantity: DF.Int
 		minimum_quantity: DF.Int

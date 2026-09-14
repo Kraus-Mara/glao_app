@@ -82,6 +82,7 @@ class Article(Document):
 		self.shortname = unidecode.unidecode(str(self.shortname).upper())
 		self.manufacturer_name = unidecode.unidecode(str(self.manufacturer_name).upper())
 		self.manufacturer = unidecode.unidecode(str(self.manufacturer).upper())
+		self.old_code = unidecode.unidecode(str(self.old_code).upper())
 		if contains(str(self.manufacturer), " "):
 			frappe.throw("A blank space is present in the manufacturer")
 		self._check_chars()

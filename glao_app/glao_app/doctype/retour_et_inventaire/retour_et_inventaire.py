@@ -534,25 +534,26 @@ class RetouretInventaire(Document):
 	@frappe.whitelist()
 	def get_target_places(self, item, reason=None):
 		ist = frappe.get_doc("Stock", item)
-		places = []
-		if reason == "L":
-			litigious_places = frappe.get_all(
+		all_internal = set(
+			frappe.get_all(
 				"Places",
-				filters=[["external", "=", 0], ["litige", "=", 1]],
+				filters=[["external", "=", 0]],
+				pluck="name",
 			)
-			for r in ist.place_table:
-				if r.place in [p.name for p in litigious_places]:
-					places.append(r.place)
-			if not places:
-				for p in litigious_places:
-					places.append(p.name)
-			return places
+		)
+		if reason == "L":
+			litigious = set(
+				frappe.get_all(
+					"Places",
+					filters=[["external", "=", 0], ["litige", "=", 1]],
+					pluck="name",
+				)
+			)
+			priority_from_stock = [r.place for r in ist.place_table if r.place in litigious]
+			other_litigious = [p for p in litigious if p not in priority_from_stock]
+			others = [p for p in all_internal if p not in priority_from_stock and p not in other_litigious]
+			return priority_from_stock + other_litigious + others
 
-		for r in ist.place_table:
-			if not r.external:
-				places.append(r.place)
-		if not places:
-			pla = frappe.get_all("Places", filters=[["external", "=", 0]], fields=["name"])
-			for p in pla:
-				places.append(p.name)
-		return places
+		priority_from_stock = [r.place for r in ist.place_table if r.place in all_internal]
+		others = [p for p in all_internal if p not in priority_from_stock]
+		return priority_from_stock + others

@@ -9,6 +9,7 @@
  "engine": "InnoDB",
  "field_order": [
   "article",
+  "designation",
   "minimum_quantity",
   "expected_quantity",
   "maximum_quantity"
@@ -38,13 +39,19 @@
    "fieldtype": "Int",
    "in_list_view": 1,
    "label": "Maximum quantity"
+  },
+  {
+   "fetch_from": "article.shortname",
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Designation"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-24 13:01:51.397401",
+ "modified": "2026-09-14 10:12:17.165493",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Place Rules",

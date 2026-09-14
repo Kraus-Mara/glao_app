@@ -47,6 +47,7 @@ class GestionDMC(Document):
 
 	def validate(self):
 		if self.state == "Draft":
+			self.status = "Draft"
 			# self.recup_compo()
 			# return 1
 			self._save_dmc()
@@ -65,10 +66,12 @@ class GestionDMC(Document):
 		items_status = []
 		if self.gestion_items:
 			for r in self.gestion_items:
-				if bool(r.item_from_stock and r.true_quantity > 0):
-					items_status.append(2 if r.true_quantity == r.quantity else 1)
-				else:
+				if not r.item_from_stock or frappe.utils.flt(r.true_quantity) <= 0:
 					items_status.append(0)
+				elif frappe.utils.flt(r.true_quantity) >= frappe.utils.flt(r.quantity):
+					items_status.append(2)
+				else:
+					items_status.append(1)
 
 		compos_valid = (
 			[bool(r.composition and r.quantity > 0) for r in self.compositions_de_dmc]
@@ -139,6 +142,7 @@ class GestionDMC(Document):
 						)
 					)
 				stock = frappe.get_doc("Stock", row.saved_item, for_update=True)
+				old_reserv = stock.reserved_quantity
 				stock.reserved_quantity += row.true_quantity - row.moved_quantity
 				if stock.reserved_quantity > stock.quantity_in_spie_tm:
 					frappe.throw(
@@ -149,7 +153,7 @@ class GestionDMC(Document):
 							+ "quantity on spie tm site : "
 							+ str(stock.quantity_in_spie_tm)
 							+ " of which "
-							+ str(stock.reserved_quantity)
+							+ str(old_reserv)
 							+ " are reserved"
 						)
 					)
@@ -250,7 +254,7 @@ class GestionDMC(Document):
 			frappe.throw("\n".join(errors), title="Pull error")
 
 		# Passed through all without throwing an error
-		if self.status != "Draft":
+		if self.status not in ["Draft", "Left DMC", "New DMC"]:
 			if self.status == "Partially validated":
 				frappe.msgprint(frappe._("DMC partially validated"), title="Confirmation")
 				self.create_next_dmc()
@@ -260,48 +264,61 @@ class GestionDMC(Document):
 				frappe.msgprint(frappe._("DMC saved in draft, items reserved"), title="Confirmation")
 			elif self.status == "Not served":
 				frappe.msgprint(frappe._("DMC not validated, closed"), title="Confirmation")
-			frappe.get_doc(
-				{
-					"doctype": "Expedition",
-					"dmc": self.name,
-					"delivery_date": self.delivery_date,
-				}
-			).insert(ignore_permissions=True)
+
+			# Expédition uniquement si quelque chose est réellement servi
+			if self._has_served_items():
+				frappe.get_doc(
+					{
+						"doctype": "Expedition",
+						"dmc": self.name,
+						"delivery_date": self.delivery_date,
+					}
+				).insert(ignore_permissions=True)
+			else:
+				frappe.msgprint(
+					frappe._("Aucun article servi, aucune expédition créée."),
+					title="Info",
+					indicator="blue",
+				)
 
 	def create_next_dmc(self):
 		items_to_add = []
 		compos_to_add = []
+
 		for row in self.gestion_items:
-			if not row.no_serving:
-				if row.item_from_stock and (row.quantity - row.true_quantity) > 0:
-					items_to_add.append(
-						{
-							"doctype": "Gestion DMC Items",
-							"article": row.article,
-							"quantity": (row.quantity - row.true_quantity),
-							"item_from_stock": None,
-							"source_place": None,
-						}
-					)
-				if not row.item_from_stock:
-					items_to_add.append(
-						{
-							"doctype": "Gestion DMC Items",
-							"article": row.article,
-							"quantity": row.quantity,
-							"item_from_stock": None,
-							"source_place": None,
-						}
-					)
+			if row.no_serving:
+				continue
+
+			served_qty = flt(row.true_quantity) if row.item_from_stock else 0
+			missing_qty = flt(row.quantity) - served_qty
+
+			if missing_qty > 0:
+				items_to_add.append(
+					{
+						"doctype": "Gestion DMC Items",
+						"article": row.article,
+						"quantity": missing_qty,
+						"item_from_stock": None,
+						"source_place": None,
+					}
+				)
+
 		for comp_row in self.compositions_de_dmc:
-			if not comp_row.no_serving:
-				if not comp_row.composition:
-					compos_to_add.append(
-						{
-							"doctype": "Gestion DMC Composition",
-							"nomenclature": comp_row.nomenclature,
-						}
-					)
+			if comp_row.no_serving:
+				continue
+
+			served = bool(comp_row.comp_saved) and flt(comp_row.quantity or 0) > 0
+
+			if not served:
+				compos_to_add.append(
+					{
+						"doctype": "Gestion DMC Composition",
+						"nomenclature": comp_row.nomenclature,
+					}
+				)
+		if not items_to_add and not compos_to_add:
+			return
+
 		frappe.get_doc(
 			{
 				"doctype": "Gestion DMC",
@@ -310,7 +327,7 @@ class GestionDMC(Document):
 				"delivery_date": self.delivery_date,
 				"creation_dmc": self.name,
 				"state": "Draft",
-				"status": "Draft",
+				"status": "Left DMC",
 				"gestion_items": items_to_add,
 				"compositions_de_dmc": compos_to_add,
 				"notes": self.notes,
@@ -328,9 +345,22 @@ class GestionDMC(Document):
 			location=self.delivery_address,
 		).save(ignore_permissions=True)
 
-	def _create_client_place(self):
-		# Parent place
+	def _has_served_items(self):
+		"""True s'il y a au moins un article ou une composition effectivement servis."""
+		for row in self.gestion_items or []:
+			if row.no_serving:
+				continue
+			if row.item_from_stock and frappe.utils.flt(row.true_quantity) > 0:
+				return True
 
+		for comp_row in self.compositions_de_dmc or []:
+			if comp_row.no_serving:
+				continue
+			if comp_row.comp_saved and frappe.utils.flt(comp_row.quantity or 0) > 0:
+				return True
+		return False
+
+	def _create_client_place(self):
 		# self.new_place(place_name="CLIENTS", is_group=1)
 		self.new_place(place_name=str(self.client), parent_place="CLIENTS", is_group=1)
 		# Children places
@@ -353,28 +383,23 @@ class GestionDMC(Document):
 	def get_source_places(self, item_from_stock):
 		places = frappe.get_all(
 			"Places Stock",
-			filters=[
-				["parent", "=", item_from_stock],
-				["quantity", ">", 0],
-			],
+			filters=[["parent", "=", item_from_stock], ["quantity", ">", 0]],
 			fields=["name", "place", "quantity"],
 		)
-		litiges = frappe.get_all("Places", filters=[["litige", "=", 1]], fields=["name"])
-		externals = frappe.get_all("Places", filters=[["external", "=", 1]], fields=["name"])
-		# frappe.throw(str(places))
 
-		for l in litiges:
-			for p in places:
-				if l.name == p.place:
-					# frappe.throw(str(l.name) + " " + str(p.place))
-					places.remove(p)
-		for e in externals:
-			for p in places:
-				if e.name in p.place:
-					# frappe.throw("n")
-					places.remove(p)
-		# frappe.throw(str(places))
-		return places
+		litiges = {p.name for p in frappe.get_all("Places", filters=[["litige", "=", 1]], fields=["name"])}
+		externals = {
+			p.name for p in frappe.get_all("Places", filters=[["external", "=", 1]], fields=["name"])
+		}
+
+		result = []
+		for p in places:
+			if p.place in litiges:
+				continue
+			if any(ext in p.place for ext in externals):
+				continue
+			result.append(p)
+		return result
 
 	@frappe.whitelist()
 	def get_items_and_substitutes(self, item_asked):

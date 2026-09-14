@@ -3,6 +3,7 @@
 
 from hashlib import new
 from warnings import filters
+from operator import contains
 import frappe
 from frappe.core.doctype.doctype import doctype
 from frappe.exceptions import NotFound, UniqueValidationError
@@ -33,8 +34,6 @@ class Movement(Document):
 		article_name: DF.Data | None
 		article_referenced: DF.Link | None
 		article_to_register: DF.Link | None
-		char_name: DF.Data | None
-		char_value: DF.Data | None
 		denom: DF.Literal["Achat", "Inventaire"]
 		designation: DF.Data | None
 		designation_add: DF.Data | None
@@ -69,16 +68,7 @@ class Movement(Document):
 				self.name = make_autoname(str(hour) + " " + str(self.article) + " " + str(self.type) + "-.#")
 			else:
 				self.name = make_autoname(
-					str(hour)
-					+ " "
-					+ str(self.article)
-					+ " "
-					+ str(self.type)
-					+ " "
-					+ str(self.denom)
-					+ " "
-					+ str(unidecode.unidecode(str(self.explication).upper()))
-					+ "-.#"
+					str(hour) + " " + str(self.article) + " " + str(self.type) + " " + str(self.denom) + "-.#"
 				)
 
 		elif self.article_from_stock:
@@ -326,14 +316,51 @@ class Movement(Document):
 			# Here it should separate the stock construction between two types :
 			# The issue is that the quantities has to be grouped in the Places Stock but
 			# split by batches, how can we do that ? the obvious solution that comes to my mind is
-			# to regroup inside the Places Stock by batches, and so it would appear on multiple
-			# lines, for each batch : a quantity and a place.
+			# to regroup Stock by batches, the same as serials.
 			# As for serials it's already handled
 			if detail.batch_no:
+				if contains(str(detail.batch_no), " "):
+					frappe.throw("Un espace est présent dans le numéro de lot")
 				detail.batch_no = unidecode.unidecode(str(detail.batch_no).upper())
 				event_date = detail.cdl
 				event = "DLU"
-				try:
+				sim = frappe.get_all(
+					"Stock", filters=[["article", "=", detail.article], ["batch_no", "=", detail.batch_no]]
+				)
+				ev = None
+				if sim:
+					for r in sim:
+						doc = frappe.get_doc("Stock", r.name)
+						ev = frappe.get_all(
+							"Ref Events",
+							filters=[
+								["parent", "=", doc.name],
+								["event", "=", "DLU"],
+								["event_date", "=", detail.cdl],
+							],
+						)
+				if ev:
+					# Already exists, so we must override the Places Stock line that matches
+					# the batch number with the new quantity
+					docname = frappe.get_all(
+						"Stock",
+						filters=[
+							["article", "like", self.article],
+							["batch_no", "like", detail.batch_no],
+						],
+					)[0].name
+					doc = frappe.get_doc("Stock", docname, for_update=True)
+					# So here, i am supposed to fetch from the parent doctype, the child, then
+					# increment quantity of an amount of detail.quantity_for_batch
+					# doc.place_table points towards the child,
+					ps = doc.place_table
+					for row in ps:
+						if self.target_place == row.place:
+							row.quantity += detail.quantity_for_batch
+
+					doc.quantity = sum(row.quantity for row in doc.place_table)
+					doc.save()
+				else:
 					# frappe.msgprint(str(detail.batch_no))
 					frappe.new_doc(
 						"Stock",
@@ -361,27 +388,9 @@ class Movement(Document):
 							},
 						],
 					).insert(ignore_if_duplicate=False, ignore_permissions=True)
-				except frappe.exceptions.DuplicateEntryError:
-					# Already exists, so we must override the Places Stock line that matches
-					# the batch number with the new quantity
-					docname = frappe.get_all(
-						"Stock",
-						filters=[
-							["article", "like", self.article],
-							["batch_no", "like", detail.batch_no],
-						],
-					)[0].name
-					doc = frappe.get_doc("Stock", docname, for_update=True)
-					# So here, i am supposed to fetch from the parent doctype, the child, then
-					# increment quantity of an amount of detail.quantity_for_batch
-					# doc.place_table points towards the child,
-					ps = doc.place_table
-					for row in ps:
-						if self.target_place == row.place:
-							row.quantity += detail.quantity_for_batch
-					doc.save()
-
 			elif detail.serial_no:
+				if contains(str(detail.serial_no), " "):
+					frappe.throw("Un espace est présent dans le numéro de série")
 				detail.serial_no = unidecode.unidecode(str(detail.serial_no).upper())
 				event_date = detail.next_rv
 				event = "VGP"
@@ -550,26 +559,12 @@ class Movement(Document):
 	def _creer_instances(self):
 		if not self.placetostock or len(self.placetostock) == 0:
 			frappe.throw(frappe._("You need to add some places in the table"))
-		throw_msg = []
-		doc_for_assembly = frappe.get_doc("Article", str(self.article))
-		if doc_for_assembly.is_assembly:
-			for row in doc_for_assembly.items:
-				exists = frappe.get_all("Stock", filters=[["article", "like", str(row.item)]])
-				if len(exists) == 0:
-					throw_msg.append(
-						frappe._("Never added article : " + str(row.shortname) + " (" + str(row.item) + ")")
-					)
-		if len(throw_msg) > 0:
-			throw_msg.append(frappe._("Try to add in null quantity theses articles"))
-			frappe.throw(throw_msg, as_list=True)
 
 		for row in self.placetostock:
 			if row.quantity < 0:
 				frappe.throw("Quantity issue")
 		for doc in self.placetostock:
 			try:
-				if self.char_value:
-					doc.quantity *= int(self.char_value)
 				# Getting all corresponding Places Stock, obviously there's only one
 				existing = frappe.get_all(
 					"Places Stock",
