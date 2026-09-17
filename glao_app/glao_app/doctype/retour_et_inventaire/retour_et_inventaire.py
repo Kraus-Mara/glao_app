@@ -43,9 +43,10 @@ class RetouretInventaire(Document):
 
 	def _check_and_close_project(self):
 		client = frappe.db.get_value("Projects", self.project, "company")
-		if not client:
+		fva = frappe.db.get_value("Projects", self.project, "name")
+		if not client or not fva:
 			return
-		target_site_place = f"CLIENTS/{client}/SITE"
+		target_site_place = f"CLIENTS/{client}/{fva}"
 
 		remaining_items = frappe.db.count(
 			"Places Stock", filters=[["place", "=", target_site_place], ["quantity", ">", 0]]
@@ -67,11 +68,11 @@ class RetouretInventaire(Document):
 		self.set("sent_compositions", [])
 
 		client = frappe.db.get_value("Projects", self.project, "company")
-		if not client:
+		fva = frappe.db.get_value("Projects", self.project, "name")
+		if not client or not fva:
 			frappe.throw(f"Aucune entreprise (company) définie pour le projet {self.project}")
 
-		target_site_place = f"CLIENTS/{client}/SITE"
-
+		target_site_place = f"CLIENTS/{client}/{fva}"
 		stock_items = frappe.get_all(
 			"Places Stock",
 			filters=[["place", "=", target_site_place], ["quantity", ">", 0], ["parenttype", "=", "Stock"]],
@@ -191,7 +192,10 @@ class RetouretInventaire(Document):
 
 	def _get_source_place(self):
 		client = frappe.db.get_value("Projects", self.project, "company")
-		place = f"CLIENTS/{client}/SITE"
+		fva = frappe.db.get_value("Projects", self.project, "name")
+		if not client or not fva:
+			frappe.throw(frappe._("Are you sure about the project ?"))
+		place = f"CLIENTS/{client}/{fva}"
 		if not place:
 			frappe.throw(f"Aucun lieu chantier défini pour le projet {self.project}")
 		return place

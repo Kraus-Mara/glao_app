@@ -22,7 +22,7 @@ class PlacesStock(Document):
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
-		place: DF.Link | None
+		place: DF.Autocomplete | None
 		quantity: DF.Int
 		serial: DF.Data | None
 	# end: auto-generated types

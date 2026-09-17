@@ -827,5 +827,23 @@ class Movement(Document):
 				frappe.db.set_value("Stock", str(self.article_from_stock), "quantity", tot_row)
 			frappe.msgprint(frappe._("Article(s) moved with success"))
 
+	@frappe.whitelist()
+	def get_target_places(self, item=None):
+		if not item:
+			item = self.article
 
-pass
+		place_table = frappe.get_all(
+			"Places Stock",
+			filters=[["article", "=", item], ["external", "=", 0], ["parenttype", "=", "Stock"]],
+			fields=["place", "quantity"],
+		)
+
+		all_internal = set(frappe.get_all("Places", filters=[["external", "=", 0]], pluck="name"))
+
+		internal_with_stock = {r.place for r in place_table if r.place in all_internal}
+
+		priority = [
+			{"place": r.place, "quantity": r.quantity} for r in place_table if r.place in all_internal
+		]
+		others = [{"place": p, "quantity": None} for p in all_internal - internal_with_stock]
+		return priority + others

@@ -141,6 +141,8 @@ class GestionDMC(Document):
 					frappe.throw(
 						frappe._(
 							"You need to add multiple lines for each serial number, you can't reserve more than one of the same serial number"
+							+ ", line "
+							+ str(row.idx)
 						)
 					)
 				stock = frappe.get_doc("Stock", row.saved_item, for_update=True)
@@ -157,6 +159,8 @@ class GestionDMC(Document):
 							+ " of which "
 							+ str(old_reserv)
 							+ " are reserved"
+							+ ", line "
+							+ str(row.idx)
 						)
 					)
 				stock.save()
@@ -363,18 +367,25 @@ class GestionDMC(Document):
 		return False
 
 	def _create_client_place(self):
+		"""This creates the CLIENTS/ places, but how could it works with project number ?"""
 		# self.new_place(place_name="CLIENTS", is_group=1)
-		self.new_place(place_name=str(self.client), parent_place="CLIENTS", is_group=1)
+		p = frappe.get_all(
+			"Places",
+			filters=[["name", "=", "CLIENTS/" + str(self.client)]],
+			fields=["name"],
+		)  # returns either the folder if it exists, neither a null list
+		# frappe.throw(str(p))
+
+		if not p:
+			self.new_place(place_name=str(self.client), parent_place="CLIENTS", is_group=1)
 		# Children places
-		# self.new_place(place_name="BOOK", parent_place="CLIENTS/" + str(self.client), external=False)
-		self.new_place(place_name="SITE", parent_place="CLIENTS/" + str(self.client))
-		# self.new_place(place_name="WAIT", parent_place="CLIENTS/" + str(self.client), external=False)
+		self.new_place(place_name=str(self.project), parent_place="CLIENTS/" + str(self.client))
 
 	def _check_places(self):
 		# First we check if the place client already exists
 		places = frappe.get_all(
 			"Places",
-			filters=[["name", "like", "CLIENTS/" + str(self.client) + "/SITE"]],
+			filters=[["name", "=", "CLIENTS/" + str(self.client) + "/" + str(self.project)]],
 			fields=["name"],
 		)  # returns either the place if it exists, neither a null list
 		if not places:

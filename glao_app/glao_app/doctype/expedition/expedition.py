@@ -45,7 +45,6 @@ class Expedition(Document):
 		"""transfers item to CLIENTS/SITE and substract this quantity in stock.reserved_quantity"""
 		dmc_items = frappe.get_all("Gestion DMC Items", filters=[["parent", "=", self.dmc]])
 		dmc = frappe.get_doc("Gestion DMC", str(self.dmc))
-		client = dmc.client
 		for doc in dmc_items:
 			r = frappe.get_doc("Gestion DMC Items", doc.name)
 			if r.no_serving:
@@ -57,7 +56,7 @@ class Expedition(Document):
 					article_from_stock=r.item_from_stock,
 					quantity_to_manipulate=r.true_quantity,
 					source_place=r.source_place,
-					target_place="CLIENTS/" + str(client) + "/SITE",
+					target_place="CLIENTS/" + str(dmc.client) + "/" + str(dmc.project),
 				).save()
 
 				sd = frappe.get_doc("Stock", str(r.item_from_stock), for_update=True)
@@ -68,7 +67,12 @@ class Expedition(Document):
 			c = frappe.get_doc("Gestion DMC Compositions", d.name)
 			if c.comp_saved:
 				frappe.db.set_value("Composition", c.composition, "not_available", 1)
-				frappe.db.set_value("Composition", c.composition, "place", "CLIENTS/" + str(client) + "/SITE")
+				frappe.db.set_value(
+					"Composition",
+					c.composition,
+					"place",
+					"CLIENTS/" + str(dmc.client) + "/" + str(dmc.project),
+				)
 				frappe.db.set_value("Composition", c.composition, "reserved", 0)
 				frappe.db.set_value("Composition", c.composition, "by_dmc", None)
 

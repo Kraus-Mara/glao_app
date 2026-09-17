@@ -143,7 +143,8 @@ class PurchaseRequest(Document):
 	def _get_inventory_issues(self):
 		project = frappe.get_doc("Projects", str(self.job_no))
 		client = project.company
-		site = "CLIENTS/" + str(client) + "/SITE"
+		site = "CLIENTS/" + str(client) + "/" + project.name
+		# frappe.throw(site)
 		ps = frappe.get_all(
 			"Places Stock",
 			filters=[["place", "=", site], ["parenttype", "=", "Stock"]],

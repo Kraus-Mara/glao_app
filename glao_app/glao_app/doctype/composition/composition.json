@@ -83,6 +83,7 @@
   },
   {
    "fetch_from": "project.company",
+   "fetch_if_empty": 1,
    "fieldname": "client",
    "fieldtype": "Data",
    "label": "Project client",
@@ -127,7 +128,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-08-07 13:59:40.308081",
+ "modified": "2026-09-16 16:49:30.059345",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Composition",

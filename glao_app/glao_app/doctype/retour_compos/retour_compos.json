@@ -21,7 +21,8 @@
   "compo_row_name",
   "article_article",
   "fabricant",
-  "reference_fabricant"
+  "reference_fabricant",
+  "closest_event_date"
  ],
  "fields": [
   {
@@ -93,7 +94,6 @@
    "fetch_from": "article.designation",
    "fieldname": "designation",
    "fieldtype": "Data",
-   "hidden": 1,
    "in_list_view": 1,
    "label": "Designation",
    "read_only": 1
@@ -129,13 +129,20 @@
    "fieldname": "reference_fabricant",
    "fieldtype": "Data",
    "label": "R\u00e9f\u00e9rence fabricant"
+  },
+  {
+   "fetch_from": "article.closest_event_date",
+   "fetch_if_empty": 1,
+   "fieldname": "closest_event_date",
+   "fieldtype": "Date",
+   "label": "Closest Event Date"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-08-05 14:09:31.746969",
+ "modified": "2026-09-16 16:22:43.254007",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retour Compos",

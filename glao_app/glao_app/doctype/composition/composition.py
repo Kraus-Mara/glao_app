@@ -35,6 +35,14 @@ class Composition(Document):
 	def validate(self):
 		self._link_stocks()
 		self._check_all()
+		self._fetch_project()
+
+	def _fetch_project(self):
+		if str(self.place).startswith("CLIENTS"):
+			project = str(self.place).split("/")[2]
+			p = frappe.get_doc("Projects", project)
+			if p:
+				self.project = p.name
 
 	def _check_all(self):
 		for row in self.items:
