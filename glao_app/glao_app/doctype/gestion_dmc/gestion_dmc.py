@@ -185,8 +185,9 @@ class GestionDMC(Document):
 						+ " Currently, "
 						+ str(place.quantity)
 						+ " is available in the selected place "
-						+ str(row.source_place),
-						title="Error",
+						+ str(row.source_place)
+						+ " at line"
+						+ str(row.idx),
 					)
 				)
 			if row.true_quantity > 0:

@@ -20,11 +20,11 @@ class Projects(Document):
 
 		company: DF.Link | None
 		completed: DF.Check
-		compositions: DF.Table[ProjectCompositionsSent]
 		end_date: DF.Date | None
-		items: DF.Table[ProjectItemsSent]
 		job_no: DF.Data | None
 		location: DF.Data | None
+		project_compositions_sent: DF.Table[ProjectCompositionsSent]
+		project_items_sent: DF.Table[ProjectItemsSent]
 		project_title: DF.Data | None
 		starting_date: DF.Date | None
 	# end: auto-generated types

@@ -34,10 +34,14 @@ class Expedition(Document):
 		self.name = make_autoname(str(self.project) + "-" + str(self.client) + " expedition " + ".#")
 
 	def validate(self):
-		if self.status == "Shipped":
-			self._send_dmc()
+
+		previous = self.get_doc_before_save()
+		previous_status = previous.status if previous else None
+
+		if self.status == "Shipped" and previous_status != "Shipped":
 			if not self.expedition_date:
 				self.expedition_date = now()
+			self._send_dmc()
 		else:
 			return 1
 
@@ -45,6 +49,7 @@ class Expedition(Document):
 		"""transfers item to CLIENTS/SITE and substract this quantity in stock.reserved_quantity"""
 		dmc_items = frappe.get_all("Gestion DMC Items", filters=[["parent", "=", self.dmc]])
 		dmc = frappe.get_doc("Gestion DMC", str(self.dmc))
+		project = frappe.get_doc("Projects", self.project)
 		for doc in dmc_items:
 			r = frappe.get_doc("Gestion DMC Items", doc.name)
 			if r.no_serving:
@@ -62,6 +67,18 @@ class Expedition(Document):
 				sd = frappe.get_doc("Stock", str(r.item_from_stock), for_update=True)
 				sd.reserved_quantity -= r.true_quantity
 				sd.save(ignore_permissions=True)
+				if project:
+					project.append(
+						"project_items_sent",
+						{
+							"article": r.item_from_stock,
+							"designation": r.get("designation"),
+							"quantity": r.true_quantity,
+							"source_place": r.source_place,
+							"date": self.expedition_date,
+							"expedition": self.name,
+						},
+					)
 		dmc_compos = frappe.get_all("Gestion DMC Compositions", filters=[["parent", "=", self.dmc]])
 		for d in dmc_compos:
 			c = frappe.get_doc("Gestion DMC Compositions", d.name)
@@ -75,6 +92,23 @@ class Expedition(Document):
 				)
 				frappe.db.set_value("Composition", c.composition, "reserved", 0)
 				frappe.db.set_value("Composition", c.composition, "by_dmc", None)
+				if project:
+					doc_comp = frappe.get_doc("Composition", c.composition)
+					for r in doc_comp.items:
+						project.append(
+							"project_compositions_sent",
+							{
+								"composition": c.composition,
+								"article": r.item,
+								"designation": r.designation,
+								"quantity": r.quantity,
+								"source_place": r.source_place,
+								"date": self.expedition_date,
+								"expedition": self.name,
+							},
+						)
+		if project:
+			project.save(ignore_permissions=True)
 
 		frappe.db.set_value("Gestion DMC", dmc.name, "status", "Shipped")
 		frappe.msgprint("Items and Compositions were sent with success")

@@ -118,7 +118,7 @@ class Stock(Document):
 			# keep the closest event date then put it in self.closest_event_date
 		for row in self.events:
 			if not row.passed and row.event_date:
-				if self.closest_event_date is None or date_diff(row.event_date, today()) < date_diff(
+				if self.closest_event_date is None or date_diff(row.event_date, today()) > date_diff(
 					self.closest_event_date, today()
 				):
 					self.closest_event_date = row.event_date

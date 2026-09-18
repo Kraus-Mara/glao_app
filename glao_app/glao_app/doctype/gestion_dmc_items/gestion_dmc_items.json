@@ -46,7 +46,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Article Servi",
-   "link_filters": "[\n[\"Stock\", \"quantity\", \">\", 0],[\"Stock\",\"not_yet_registered\", \"=\", 0],\n[\"Stock\", \"rebut\", \"=\",0]\n]",
+   "link_filters": "[\n[\"Stock\", \"quantity\", \">\", 0],[\"Stock\",\"not_yet_registered\", \"=\", 0],\n[\"Stock\", \"rebut\", \"=\",0], [\"Stock\", \"quantity_in_spie_tm\",\">\",0]\n]",
    "options": "Stock"
   },
   {
@@ -151,7 +151,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-09-11 10:21:45.167387",
+ "modified": "2026-09-18 11:51:39.838989",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC Items",

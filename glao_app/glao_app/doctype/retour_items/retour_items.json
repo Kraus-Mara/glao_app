@@ -70,7 +70,7 @@
    "fieldtype": "Autocomplete",
    "in_preview": 1,
    "label": "Place to stock",
-   "mandatory_depends_on": "eval:doc.item && doc.quantity>0 && !doc.is_sub_item",
+   "mandatory_depends_on": "eval:(doc.item && doc.quantity>0) && (!doc.reason || (!doc.reason && (doc.quantity != sent_quantity)) || doc.reason == \"L\")",
    "sticky": 1
   },
   {
@@ -80,7 +80,7 @@
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "Sold",
+   "label": "Solder",
    "sticky": 1
   },
   {
@@ -132,7 +132,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-09-11 11:18:40.350723",
+ "modified": "2026-09-18 13:19:48.936509",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retour Items",

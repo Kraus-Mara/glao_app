@@ -14,8 +14,8 @@
   "starting_date",
   "end_date",
   "completed",
-  "items",
-  "compositions"
+  "project_items_sent",
+  "project_compositions_sent"
  ],
  "fields": [
   {
@@ -65,7 +65,7 @@
   },
   {
    "allow_bulk_edit": 1,
-   "fieldname": "items",
+   "fieldname": "project_items_sent",
    "fieldtype": "Table",
    "label": "Items",
    "options": "Project Items Sent",
@@ -73,7 +73,7 @@
   },
   {
    "allow_bulk_edit": 1,
-   "fieldname": "compositions",
+   "fieldname": "project_compositions_sent",
    "fieldtype": "Table",
    "label": "Compositions",
    "options": "Project Compositions Sent",
@@ -84,7 +84,7 @@
  "index_web_pages_for_search": 1,
  "is_calendar_and_gantt": 1,
  "links": [],
- "modified": "2026-09-14 16:55:37.727554",
+ "modified": "2026-09-18 09:22:25.952469",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Projects",
