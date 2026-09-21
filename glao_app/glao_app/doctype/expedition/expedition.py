@@ -102,7 +102,7 @@ class Expedition(Document):
 								"article": r.item,
 								"designation": r.designation,
 								"quantity": r.quantity,
-								"source_place": r.source_place,
+								"source_place": r.saved_place,
 								"date": self.expedition_date,
 								"expedition": self.name,
 							},
