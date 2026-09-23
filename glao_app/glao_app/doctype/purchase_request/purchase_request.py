@@ -5,6 +5,8 @@ from warnings import filters
 import frappe
 from frappe.model.document import Document
 from frappe.model.naming import make_autoname
+from frappe.utils.nestedset import get_descendants_of
+from collections import defaultdict
 
 
 class PurchaseRequest(Document):
@@ -111,34 +113,83 @@ class PurchaseRequest(Document):
 			self._get_inventory_issues()
 
 	def _get_place_issues(self):
-		pr = frappe.get_all(
+		self.items = []
+
+		if not self.place:
+			return
+
+		places = [self.place] + list(get_descendants_of("Places", self.place, ignore_permissions=True))
+
+		# Req 1 — Règles
+		rules = frappe.get_all(
 			"Place Rules",
-			filters=[["parent", "=", self.place], ["parenttype", "=", "Places"]],
-			fields=["name", "parent", "article", "minimum_quantity", "expected_quantity", "maximum_quantity"],
+			filters=[
+				["parent", "in", places],
+				["parenttype", "=", "Places"],
+			],
+			fields=["parent", "article", "minimum_quantity", "expected_quantity"],
 		)
-		for r in pr:
-			ps = frappe.get_all(
-				"Places Stock",
-				filters=[
-					["parenttype", "=", "Stock"],
-					["place", "=", self.place],
-					["article", "=", r.article],
-				],
-				fields=["parent", "quantity"],
+		if not rules:
+			return
+
+		articles = list({r.article for r in rules if r.article})
+
+		# Req 2 — Stocks (tous emplacements + tous articles concernés)
+		places_stock = frappe.get_all(
+			"Places Stock",
+			filters=[
+				["parenttype", "=", "Stock"],
+				["place", "in", places],
+				["article", "in", articles],
+			],
+			fields=["parent", "place", "article", "quantity"],
+		)
+
+		stock_qty = defaultdict(float)
+		stock_parent = {}
+		for row in places_stock:
+			key = (row.place, row.article)
+			stock_qty[key] += row.quantity or 0
+			stock_parent.setdefault(key, row.parent)
+
+		# Identifier les règles en déficit
+		pending = []  # (rule, current_qty, stock_name)
+		needed_names = set()
+		for r in rules:
+			if not r.article:
+				continue
+			key = (r.parent, r.article)
+			co = stock_qty.get(key, 0.0)
+			if co < (r.minimum_quantity or 0):
+				sname = stock_parent.get(key)
+				if sname:
+					pending.append((r, co, sname))
+					needed_names.add(sname)
+
+		if not pending:
+			return
+
+		# Req 3 — Docs Stock nécessaires (pour designation / ref_constructeur)
+		stocks = frappe.get_all(
+			"Stock",
+			filters=[["name", "in", list(needed_names)]],
+			fields=["name", "article", "designation", "ref_constructeur"],
+		)
+		stock_map = {s.name: s for s in stocks}
+
+		for r, co, sname in pending:
+			s = stock_map.get(sname)
+			if not s:
+				continue
+			self.append(
+				"items",
+				{
+					"article": s.article,
+					"designation": s.designation,
+					"reference": s.ref_constructeur,
+					"quantity": (r.expected_quantity or 0) - co,
+				},
 			)
-			if ps:
-				co = sum([l.quantity for l in ps])
-				s = frappe.get_doc("Stock", ps[0].parent)
-				if co < r.minimum_quantity:
-					self.append(
-						"items",
-						{
-							"article": s.article,
-							"designation": s.designation,
-							"reference": s.ref_constructeur,
-							"quantity": (r.expected_quantity - co),  # quantity left ON site
-						},
-					)
 
 	def _get_inventory_issues(self):
 		project = frappe.get_doc("Projects", str(self.job_no))

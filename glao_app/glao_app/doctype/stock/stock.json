@@ -145,11 +145,13 @@
    "label": "Ref constructeur"
   },
   {
+   "depends_on": "eval:doc.has_code",
    "fieldname": "code_spie_tm",
    "fieldtype": "Data",
    "in_filter": 1,
    "in_standard_filter": 1,
-   "label": "Code SPIE TM"
+   "label": "Code SPIE TM",
+   "unique": 1
   },
   {
    "allow_in_quick_entry": 1,
@@ -330,7 +332,7 @@
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2026-09-11 09:43:28.488154",
+ "modified": "2026-09-23 11:18:36.774841",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",

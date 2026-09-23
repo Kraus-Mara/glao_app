@@ -2,6 +2,8 @@
 # For license information, please see license.txt
 
 import frappe
+
+from operator import contains
 from frappe.model.document import Document
 from frappe.model.naming import make_autoname
 from glao_app.glao_app.doctype.ref_events.ref_events import RefEvents
@@ -69,19 +71,55 @@ class Stock(Document):
 		self.comp_rework()
 
 	def _check_code_spie(self):
-		if self.has_code:
-			if not self.spie_tm_code_id and not self.code_spie_tm:
-				self.spie_tm_code_id = make_autoname(
-					str(self.article)
-					+ " "
-					+ str(str(self.designation).split(" ")[0][0])
-					+ str(str(self.designation).split(" ")[0][1])
-					+ ".####"
-				)
-				self.code_spie_tm = str(str(self.spie_tm_code_id).split(" ")[1])
-			if self.spie_tm_code_id and self.code_spie_tm:
-				if not self.code_spie_tm == str(str(self.spie_tm_code_id).split(" ")[1]):
-					self.spie_tm_code_id = str(self.article) + " " + str(self.code_spie_tm)
+
+		if contains(str(self.code_spie_tm), " "):
+			frappe.throw("Le code spie contient des espaces")
+
+		if not self.has_code:
+			return
+		if not self.spie_tm_code_id and not self.code_spie_tm:
+			# le préfixe est crééé à l'aide du nom de la famille de l'article :
+			# PESON -> PESXXXX
+			# ELINGUE -> ELIXXX
+			article = frappe.get_doc("Article", self.article)
+			group = article.group
+
+			# Construire le préfixe (les 3 premières lettres de group)
+			first_word = group.split(" ")[0]
+			if len(first_word) < 2:
+				prefix = first_word[0] + first_word[1]
+			else:
+				prefix = first_word[0] + first_word[1] + first_word[2]
+
+			# Chercher les codes existants avec ce préfixe pour ce même article
+			existing = frappe.db.get_all(
+				"Stock",
+				filters={
+					"article": self.article,
+					"code_spie_tm": ["like", f"{prefix}%"],
+				},
+				fields=["code_spie_tm"],
+			)
+
+			max_num = 0
+			for row in existing:
+				code = row.get("code_spie_tm") or ""
+				if code.startswith(prefix):
+					try:
+						num = int(code[len(prefix) :])
+						if num > max_num:
+							max_num = num
+					except ValueError:
+						continue
+
+			next_num = max_num + 1
+			self.code_spie_tm = f"{prefix}{next_num:04d}"
+			self.spie_tm_code_id = f"{self.article} {self.code_spie_tm}"
+
+		if self.spie_tm_code_id and self.code_spie_tm:
+			current = str(self.spie_tm_code_id).split(" ")[-1]
+			if current != str(self.code_spie_tm):
+				self.spie_tm_code_id = f"{self.article} {self.code_spie_tm}"
 
 	def _count_stock_in_spie(self):
 		if self.article:
