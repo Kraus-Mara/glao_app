@@ -838,7 +838,14 @@ class Movement(Document):
 			fields=["place", "quantity"],
 		)
 
-		all_internal = set(frappe.get_all("Places", filters=[["external", "=", 0]], pluck="name"))
+		# ✅ On ne garde que les Places internes ET non-groupes
+		all_internal = set(
+			frappe.get_all(
+				"Places",
+				filters=[["external", "=", 0], ["is_group", "=", 0]],
+				pluck="name",
+			)
+		)
 
 		internal_with_stock = {r.place for r in place_table if r.place in all_internal}
 

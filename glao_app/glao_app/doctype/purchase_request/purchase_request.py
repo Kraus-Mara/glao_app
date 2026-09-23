@@ -17,7 +17,9 @@ class PurchaseRequest(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
-		from glao_app.glao_app.doctype.purchase_request_items.purchase_request_items import PurchaseRequestItems
+		from glao_app.glao_app.doctype.purchase_request_items.purchase_request_items import (
+			PurchaseRequestItems,
+		)
 
 		amended_from: DF.Link | None
 		items: DF.Table[PurchaseRequestItems]
@@ -25,6 +27,7 @@ class PurchaseRequest(Document):
 		needs_date: DF.Date | None
 		place: DF.Link | None
 		saved: DF.Check
+		service: DF.Data
 		type: DF.Literal["", "Manual", "Place", "Return"]
 	# end: auto-generated types
 
@@ -78,6 +81,7 @@ class PurchaseRequest(Document):
 					"asked_quantity": row.quantity,
 					"needs_date": self.needs_date,
 					"notes": row.notes,
+					"service": self.service,
 				}
 				for row in self.items
 			]
@@ -95,10 +99,11 @@ class PurchaseRequest(Document):
 						"project": self.job_no,
 						"article": r.article,
 						"designation": r.designation,
-						"supplier": r.providers,
+						"providers": r.providers,
 						"asked_quantity": r.quantity,
 						"needs_date": self.needs_date,
 						"notes": r.notes,
+						"service": self.service,
 					},
 				)
 			doc.flags.ignore_permissions = True
@@ -112,13 +117,11 @@ class PurchaseRequest(Document):
 
 	def _get_place_issues(self):
 		self.items = []
-
 		if not self.place:
 			return
 
 		places = [self.place] + list(get_descendants_of("Places", self.place, ignore_permissions=True))
 
-		# Req 1 — Règles
 		rules = frappe.get_all(
 			"Place Rules",
 			filters=[
@@ -131,8 +134,9 @@ class PurchaseRequest(Document):
 			return
 
 		articles = list({r.article for r in rules if r.article})
+		if not articles:
+			return
 
-		# Req 2 — Stocks (tous emplacements + tous articles concernés)
 		places_stock = frappe.get_all(
 			"Places Stock",
 			filters=[
@@ -150,8 +154,7 @@ class PurchaseRequest(Document):
 			stock_qty[key] += row.quantity or 0
 			stock_parent.setdefault(key, row.parent)
 
-		# Identifier les règles en déficit
-		pending = []  # (rule, current_qty, stock_name)
+		pending = []
 		needed_names = set()
 		for r in rules:
 			if not r.article:
@@ -167,11 +170,10 @@ class PurchaseRequest(Document):
 		if not pending:
 			return
 
-		# Req 3 — Docs Stock nécessaires (pour designation / ref_constructeur)
 		stocks = frappe.get_all(
 			"Stock",
 			filters=[["name", "in", list(needed_names)]],
-			fields=["name", "article", "designation", "ref_constructeur"],
+			fields=["name", "article", "designation", "ref_constructeur", "fabricant_hidden"],
 		)
 		stock_map = {s.name: s for s in stocks}
 
@@ -184,8 +186,10 @@ class PurchaseRequest(Document):
 				{
 					"article": s.article,
 					"designation": s.designation,
+					"fabricant": s.fabricant_hidden,
 					"reference": s.ref_constructeur,
 					"quantity": (r.expected_quantity or 0) - co,
+					"emplacement_source": r.parent,
 				},
 			)
 
@@ -193,7 +197,6 @@ class PurchaseRequest(Document):
 		project = frappe.get_doc("Projects", str(self.job_no))
 		client = project.company
 		site = "CLIENTS/" + str(client) + "/" + project.name
-		# frappe.throw(site)
 		ps = frappe.get_all(
 			"Places Stock",
 			filters=[["place", "=", site], ["parenttype", "=", "Stock"]],
@@ -204,27 +207,23 @@ class PurchaseRequest(Document):
 			stocks = frappe.get_all(
 				"Stock",
 				filters=[["name", "in", stock_names], ["quantity", ">", 0]],
-				fields=["name", "designation", "ref_constructeur", "quantity", "article"],
+				fields=["name", "designation", "ref_constructeur", "fabricant_hidden", "quantity", "article"],
 			)
-			# f = frappe.get_all(
-			# 	"Article Providers",
-			# 	filters=[["parent", "=", stock_names]],
-			# 	fields=["providers"],
-			# 	as_list=True,
-			# )
-			# pro = str([r.providers for r in f]).join("\n")
-			# frappe.throw(pro)
 			for s in stocks:
+				# Dans _get_inventory_issues, pour les stocks du site :
 				self.append(
 					"items",
 					{
 						"article": s.article,
 						"designation": s.designation,
+						"fabricant": s.fabricant_hidden,
 						"reference": s.ref_constructeur,
-						"quantity": s.quantity,  # quantity left ON site
+						"quantity": s.quantity,
+						"emplacement_source": site,
 					},
 				)
 
+		# Pour les movements Pull :
 		movements = frappe.get_all(
 			"Movement",
 			filters=[["type", "=", "Pull"], ["source_place", "=", str(site)]],
@@ -235,18 +234,15 @@ class PurchaseRequest(Document):
 			for m in movements:
 				link_stock = frappe.get_doc("Movement", m)
 				art = frappe.get_doc("Stock", str(link_stock.article_from_stock))
-				# f = frappe.get_all(
-				# 	"Article Providers", filters=[["parent", "=", art]], fields=["providers"], as_list=True
-				# )
-				# pro = str([r.providers for r in f]).join("\n")
-				# frappe.throw(pro)
 				self.append(
 					"items",
 					{
 						"article": art.article,
 						"designation": art.designation,
+						"fabricant": art.fabricant_hidden,
 						"reference": art.ref_constructeur,
 						"quantity": link_stock.quantity_to_manipulate,
+						"emplacement_source": str(site),
 					},
 				)
 

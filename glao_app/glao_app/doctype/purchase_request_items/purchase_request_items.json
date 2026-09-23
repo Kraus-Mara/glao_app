@@ -17,7 +17,8 @@
   "part_no",
   "price",
   "quantity",
-  "notes"
+  "notes",
+  "emplacement_source"
  ],
  "fields": [
   {
@@ -91,13 +92,19 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Fabricant"
+  },
+  {
+   "fieldname": "emplacement_source",
+   "fieldtype": "Link",
+   "label": "Emplacement Source",
+   "options": "Places"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-09-14 13:47:16.996429",
+ "modified": "2026-09-23 15:19:06.481393",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Purchase Request Items",

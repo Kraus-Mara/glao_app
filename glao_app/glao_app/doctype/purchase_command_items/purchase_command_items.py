@@ -27,6 +27,7 @@ class PurchaseCommandItems(Document):
 		project: DF.Link | None
 		quantity: DF.Int
 		référence_fabricant: DF.Data | None
+		service: DF.Data | None
 		supplier: DF.Link | None
 	# end: auto-generated types
 
