@@ -21,6 +21,8 @@ class CreationDMC(Document):
 		amended_from: DF.Link | None
 		compositions: DF.Table[DMCCompositions]
 		contact: DF.Autocomplete | None
+		date_bslh: DF.Date | None
+		date_sxre: DF.Date | None
 		delivery_address: DF.Data | None
 		delivery_date: DF.Date | None
 		dmc_items: DF.Table[DMCItems]

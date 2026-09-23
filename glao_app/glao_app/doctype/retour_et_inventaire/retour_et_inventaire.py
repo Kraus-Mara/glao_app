@@ -467,21 +467,21 @@ class RetouretInventaire(Document):
 									item_row.quantity = max(0, new_qty)
 									compo_doc.save(ignore_permissions=True)
 
-									# Litigation movement
-									self._create_movement(
-										type="Transfert",
-										article_from_stock=row.article,
-										source_place=item_row.saved_place,
-										target_place=row.place_for_litigation,
-										quantity_to_manipulate=row.which_are_issued,
-									)
-									# Stock fixing
-									self._create_movement(
-										type="Pull",
-										article_from_stock=row.article,
-										source_place=item_row.saved_place,
-										quantity_to_manipulate=row.which_are_issued,
-									)
+									# # Litigation movement
+									# self._create_movement(
+									# 	type="Transfert",
+									# 	article_from_stock=row.article,
+									# 	source_place=item_row.saved_place,
+									# 	target_place=row.place_for_litigation,
+									# 	quantity_to_manipulate=row.which_are_issued,
+									# )
+									# # Stock fixing
+									# self._create_movement(
+									# 	type="Pull",
+									# 	article_from_stock=row.article,
+									# 	source_place=item_row.saved_place,
+									# 	quantity_to_manipulate=row.which_are_issued,
+									# )
 								if "-SN-" in (row.article or ""):
 									self._flag_stock_as_rebut(row.article)
 							else:
@@ -489,12 +489,12 @@ class RetouretInventaire(Document):
 								new_qty = row.quantity - missing
 								item_row.quantity = max(0, new_qty)
 								# Stock fixing
-								self._create_movement(
-									type="Pull",
-									article_from_stock=row.article,
-									source_place=item_row.saved_place,
-									quantity_to_manipulate=missing,
-								)
+								# self._create_movement(
+								# 	type="Pull",
+								# 	article_from_stock=row.article,
+								# 	source_place=item_row.saved_place,
+								# 	quantity_to_manipulate=missing,
+								# )
 							break
 					row.treated = 1
 

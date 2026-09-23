@@ -8,6 +8,10 @@
   "project",
   "column_break_akwt",
   "project_title",
+  "section_break_rvcl",
+  "date_bslh",
+  "column_break_xirv",
+  "date_sxre",
   "section_break_bryp",
   "contact",
   "column_break_kdei",
@@ -101,13 +105,33 @@
   {
    "fieldname": "section_break_bryp",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_rvcl",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "project.starting_date",
+   "fieldname": "date_bslh",
+   "fieldtype": "Date",
+   "label": "Starting Date"
+  },
+  {
+   "fieldname": "column_break_xirv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "project.end_date",
+   "fieldname": "date_sxre",
+   "fieldtype": "Date",
+   "label": "End Date"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-08-06 09:26:18.775797",
+ "modified": "2026-09-23 00:46:29.307079",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Creation DMC",
