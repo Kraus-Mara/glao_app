@@ -331,8 +331,9 @@
   }
  ],
  "grid_page_length": 50,
+ "in_create": 1,
  "links": [],
- "modified": "2026-09-25 14:09:40.565861",
+ "modified": "2026-09-25 14:32:22.947342",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",
