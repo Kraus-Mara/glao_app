@@ -17,9 +17,7 @@ class PurchaseRequest(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
-		from glao_app.glao_app.doctype.purchase_request_items.purchase_request_items import (
-			PurchaseRequestItems,
-		)
+		from glao_app.glao_app.doctype.purchase_request_items.purchase_request_items import PurchaseRequestItems
 
 		amended_from: DF.Link | None
 		items: DF.Table[PurchaseRequestItems]

@@ -63,7 +63,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-08-07 14:52:03.486835",
+ "modified": "2026-09-25 14:09:38.854420",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retour et Inventaire",
@@ -78,7 +78,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "System Manager",
+   "role": "GLAO User",
    "share": 1,
    "write": 1
   }

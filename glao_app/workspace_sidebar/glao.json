@@ -3,7 +3,7 @@
  "creation": "2026-02-23 14:30:53.853264",
  "docstatus": 0,
  "doctype": "Workspace Sidebar",
- "for_user": "Administrator",
+ "for_user": "",
  "header_icon": "monitor-dot",
  "idx": 1,
  "items": [
@@ -291,8 +291,8 @@
    "type": "Link"
   }
  ],
- "modified": "2026-07-30 13:51:54.155705",
- "modified_by": "Administrator",
+ "modified": "2026-09-25 14:04:06.124700",
+ "modified_by": "antoine.kraus@spie.com",
  "module": "Glao App",
  "module_onboarding": "",
  "name": "GLAO",

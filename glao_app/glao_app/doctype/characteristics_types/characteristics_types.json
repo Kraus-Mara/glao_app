@@ -53,7 +53,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-09 10:56:00.815940",
+ "modified": "2026-09-25 14:09:38.414674",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Characteristics types",
@@ -68,7 +68,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "System Manager",
+   "role": "GLAO User",
    "share": 1,
    "write": 1
   }

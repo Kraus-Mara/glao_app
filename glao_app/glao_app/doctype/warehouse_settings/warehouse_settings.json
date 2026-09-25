@@ -21,7 +21,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2026-07-13 11:21:10.173191",
+ "modified": "2026-09-25 14:09:38.076379",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Warehouse settings",
@@ -33,7 +33,7 @@
    "email": 1,
    "print": 1,
    "read": 1,
-   "role": "System Manager",
+   "role": "GLAO User",
    "share": 1,
    "write": 1
   }
