@@ -7,7 +7,10 @@ app_license = "gpao-3.0"
 
 # Apps
 # ------------------
-fixtures = [{"dt": "Workspace", "filters": [["module", "=", "Glao App"]]}]
+fixtures = [
+	{"dt": "Workspace", "filters": [["module", "=", "Glao App"]]},
+	{"dt": "Translation", "filters": [["language", "=", "fr"]]},
+]
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page
