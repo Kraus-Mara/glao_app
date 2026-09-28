@@ -83,6 +83,9 @@ class Expedition(Document):
 		for d in dmc_compos:
 			c = frappe.get_doc("Gestion DMC Compositions", d.name)
 			if c.comp_saved:
+				# Check if user didn't un-reserved the composition
+				if not frappe.db.get_value("Composition", c.composition, "by_dmc", c.name):
+					continue
 				frappe.db.set_value("Composition", c.composition, "not_available", 1)
 				frappe.db.set_value(
 					"Composition",
