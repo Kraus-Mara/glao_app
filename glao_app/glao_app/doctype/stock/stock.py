@@ -138,7 +138,7 @@ class Stock(Document):
 				fields=["place", "quantity"],
 			)
 			for r in d:
-				p = frappe.get_doc("Places", d.place)
+				p = frappe.get_doc("Places", r.place)
 				if p.external == 0:
 					sum += r.quantity
 
