@@ -417,12 +417,11 @@ def export_expedition_pdf(name):
 						<td>
 
 							<!-- LISTE DE COLISAGE -->
-							<div class="bl-lc-title">LISTE DE COLISAGE</div>
 							<table class="bl-table bl-lc-table">
 								<thead>
 									<tr>
-										<th style="width: 12%;">Quantité</th>
-										<th style="width: 43%;">Désignation de chaque colis</th>
+										<th style="width: 12%;">Quantité de colis</th>
+										<th style="width: 43%;">Désignation</th>
 										<th style="width: 15%;">Poids (kg)</th>
 										<th style="width: 30%;">Dimensions (cm)</th>
 									</tr>
@@ -447,6 +446,7 @@ def export_expedition_pdf(name):
 							</table>
 
 							<!-- COMPOSITIONS -->
+							<div class="bl-lc-title">LISTE DE COLISAGE</div>
 							{% if data.bom_rows and data.bom_rows|length > 0 %}
 							<h3 class="bl-section">Compositions (BoM)</h3>
 							<table class="bl-table">
