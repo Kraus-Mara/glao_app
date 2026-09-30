@@ -97,6 +97,8 @@
   {
    "fieldname": "service",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Service"
   }
  ],
@@ -104,7 +106,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-09-25 14:29:47.975515",
+ "modified": "2026-09-30 15:50:01.489430",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Purchase Command Items",

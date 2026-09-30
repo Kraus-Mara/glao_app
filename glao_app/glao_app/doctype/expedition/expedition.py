@@ -399,7 +399,7 @@ def export_expedition_pdf(name):
 										<h3>DESTINATAIRE</h3>
 										<p><strong style="font-size: 14px";>{{ expedition.client or 'N/A' }}</strong></p>
 										<p>{{ data.project.location or 'N/A' }}</p>
-										<p><strong>Contact :</strong> {{ data.contact }}</p>
+										<p><strong style="font-size: 14px";>Contact :</strong> {{ data.contact }}</p>
 									</td>
 								</tr>
 							</table>

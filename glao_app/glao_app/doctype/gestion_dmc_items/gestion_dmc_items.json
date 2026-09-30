@@ -144,6 +144,8 @@
    "fetch_from": "article.shortname",
    "fieldname": "designation_requested",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Designation"
   }
  ],
@@ -151,7 +153,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-09-30 13:47:02.980083",
+ "modified": "2026-09-30 15:48:39.316807",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC Items",

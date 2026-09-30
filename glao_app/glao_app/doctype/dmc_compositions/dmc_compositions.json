@@ -22,6 +22,8 @@
    "default": "1",
    "fieldname": "quantity",
    "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Quantity"
   }
  ],
@@ -29,7 +31,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-09-25 14:29:49.916952",
+ "modified": "2026-09-30 15:48:05.960128",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "DMC Compositions",

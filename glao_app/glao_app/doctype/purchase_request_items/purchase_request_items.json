@@ -96,6 +96,8 @@
   {
    "fieldname": "emplacement_source",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Emplacement Source",
    "options": "Places"
   }
@@ -104,7 +106,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-09-25 14:29:48.306830",
+ "modified": "2026-09-30 15:49:36.508151",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Purchase Request Items",
