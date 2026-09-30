@@ -16,12 +16,4 @@ frappe.ui.form.on("Expedition", {
             )
         );
     },
-    print_excel(frm) {
-	if (frm.doc.status != "Shipped") return;
-        window.open(
-            frappe.urllib.get_full_url(
-                `/api/method/glao_app.glao_app.doctype.expedition.expedition.print_excel?name=${encodeURIComponent(frm.doc.name)}`
-            )
-        );
-    },
 });
