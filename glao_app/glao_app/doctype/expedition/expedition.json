@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "dmc",
+  "n_expe",
   "section_break_wtke",
   "project",
   "column_break_ioif",
@@ -95,13 +96,18 @@
    "fieldname": "carrier",
    "fieldtype": "Data",
    "label": "Carrier"
+  },
+  {
+   "fieldname": "n_expe",
+   "fieldtype": "Data",
+   "label": "Num\u00e9ro d'exp\u00e9dition"
   }
  ],
  "grid_page_length": 50,
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-30 15:19:30.063784",
+ "modified": "2026-09-30 15:30:40.576670",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Expedition",

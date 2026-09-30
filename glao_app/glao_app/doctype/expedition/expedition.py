@@ -6,6 +6,7 @@ from frappe.model.document import Document
 from frappe.utils import now
 from frappe.model.naming import make_autoname
 from frappe.utils.pdf import get_pdf
+from frappe.utils import formatdate, getdate
 
 
 class Expedition(Document):
@@ -23,6 +24,7 @@ class Expedition(Document):
 		dmc: DF.Link | None
 		expedition_date: DF.Date | None
 		job_no: DF.Data | None
+		n_expe: DF.Data | None
 		project: DF.Link | None
 		status: DF.Literal["Waiting", "Shipped"]
 	# end: auto-generated types
@@ -31,6 +33,8 @@ class Expedition(Document):
 		self.name = make_autoname(str(self.project) + "-" + str(self.client) + " expedition " + ".#")
 
 	def validate(self):
+		if not self.n_expe:
+			self.n_expe = make_autoname("EXP" + ".#")
 		previous = self.get_doc_before_save()
 		previous_status = previous.status if previous else None
 
@@ -117,7 +121,7 @@ class Expedition(Document):
 # ============================================================
 @frappe.whitelist()
 def _get_item_weight(item_code):
-	"""Retourne le poids (float, kg) d'un article depuis ses caractéristiques."""
+	"""Retourne le Poids (float, kg) d'un article depuis ses caractéristiques."""
 	if not item_code:
 		return 0.0
 	try:
@@ -127,7 +131,7 @@ def _get_item_weight(item_code):
 
 	total_kg = 0.0
 	for row in article.chars or []:
-		if (row.characteristics_type or "").upper() == "POIDS":
+		if (row.characteristics_type or "").upper() == "Poids":
 			try:
 				value = float(row.value or 0)
 			except TypeError, ValueError:
@@ -144,7 +148,7 @@ def _get_item_weight(item_code):
 
 @frappe.whitelist()
 def _get_composition_weight(composition_name):
-	"""Retourne le poids total (float, kg) d'une composition = somme des poids de ses articles."""
+	"""Retourne le Poids net total (float, kg) d'une composition = somme des Poids de ses articles."""
 	if not composition_name:
 		return 0.0
 	try:
@@ -164,7 +168,7 @@ def _get_composition_weight(composition_name):
 # COLLECTE DES DONNÉES
 # ============================================================
 def _collect_expedition_data(expedition):
-	"""Collecte les articles, compositions et poids calculés pour une expédition donnée."""
+	"""Collecte les articles, compositions et Poids calculés pour une expédition donnée."""
 	project = frappe.get_doc("Projects", expedition.project)
 	dmc = frappe.get_doc("Gestion DMC", expedition.dmc)
 
@@ -250,6 +254,9 @@ def export_expedition_pdf(name):
 	carrier = getattr(expedition, "carrier", None)
 	data = _collect_expedition_data(expedition)
 
+	expedition_date_short = (
+		formatdate(expedition.expedition_date, "dd/MM/yy") if expedition.expedition_date else "N/A"
+	)
 	html_content = frappe.render_template(
 		"""
 		<style>
@@ -370,8 +377,9 @@ def export_expedition_pdf(name):
 								<table>
 									<tr>
 										<td style="vertical-align: top;">
-											<h1>BON DE LIVRAISON</h1>
-											<p class="bl-num">N° {{ expedition.name }}</p>
+											<h1>BON DE LIVRAISON N° {{ expedition.n_expe }}</h1>
+											<p class="bl-num">N° {{ expedition.name }} du {{
+											expedition_date_short }}</p>
 										</td>
 									</tr>
 								</table>
@@ -399,8 +407,8 @@ def export_expedition_pdf(name):
 							<table class="bl-transport">
 								<tr>
 									<td><strong style="font-size: 12px";>Transporteur :</strong> {{ carrier or 'N/A' }}</td>
-									<td><strong style="font-size: 12px";>Date d'expédition :</strong> {{ expedition.expedition_date or 'N/A' }}</td>
-									<td><strong style="font-size: 12px";>Poids net :</strong> {{ data.total_weight }} kg</td>
+									<td><strong style="font-size: 12px";>Date d'expédition :</strong> {{ expedition_date_short or 'N/A' }}</td>
+									<td><strong style="font-size: 12px";>Poids net total :</strong> {{ data.total_weight }} kg</td>
 								</tr>
 							</table>
 						</td>
@@ -466,7 +474,7 @@ def export_expedition_pdf(name):
 								</tbody>
 								<tfoot>
 									<tr>
-										<td colspan="2" class="bl-right"><strong>Poids total compositions</strong></td>
+										<td colspan="2" class="bl-right"><strong>Poids net total compositions</strong></td>
 										<td class="bl-right"><strong>{{ '%.3f'|format(data.total_weight_bom) }}</strong></td>
 										<td class="bl-empty">&nbsp;</td>
 									</tr>
@@ -480,8 +488,8 @@ def export_expedition_pdf(name):
 							<table class="bl-table">
 								<thead>
 									<tr>
-										<th style="width: 32%;">Article</th>
-										<th style="width: 42%;">Désignation</th>
+										<th style="width: 24%;">Article</th>
+										<th style="width: 50%;">Désignation</th>
 										<th style="width: 8%;">Quantité</th>
 										<th style="width: 10%;">Poids unit. (kg)</th>
 										<th style="width: 8%;">N° de colis</th>
@@ -500,7 +508,7 @@ def export_expedition_pdf(name):
 								</tbody>
 								<tfoot>
 									<tr>
-										<td colspan="3" class="bl-right"><strong>Poids total articles</strong></td>
+										<td colspan="3" class="bl-right"><strong>Poids net total articles</strong></td>
 										<td class="bl-right"><strong>{{ '%.3f'|format(data.total_weight_items) }}</strong></td>
 										<td class="bl-empty">&nbsp;</td>
 									</tr>
@@ -511,7 +519,7 @@ def export_expedition_pdf(name):
 							<!-- TOTAL -->
 							<table class="bl-total">
 								<tr>
-									<td class="bl-total-label">POIDS NET DE L'EXPÉDITION</td>
+									<td class="bl-total-label">POIDS NET TOTAL DE L'EXPÉDITION</td>
 									<td class="bl-total-value">{{ '%.3f'|format(data.total_weight) }} kg</td>
 								</tr>
 							</table>
@@ -541,7 +549,7 @@ def export_expedition_pdf(name):
 
 								<p class="bl-sign-mention">
 									Le signataire reconnaît avoir reçu les articles listés ci-dessus en bon état apparent.
-									Toute réserve doit être formulée par écrit dans les 48 heures.
+									Toute réserve doit être formulée par écrit dans les 24 heures.
 								</p>
 							</div>
 
@@ -555,6 +563,7 @@ def export_expedition_pdf(name):
 			"expedition": expedition,
 			"data": data,
 			"carrier": carrier,
+			"expedition_date_short": expedition_date_short,
 		},
 	)
 
