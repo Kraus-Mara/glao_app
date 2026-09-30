@@ -731,31 +731,102 @@ class Movement(Document):
 			frappe.msgprint(frappe._("[ ERROR ] : Article(s) not found"), indicator="red")
 
 	def _transfert_referenced(self):
-		existing = frappe.get_all("Places Stock", filters=[["parent", "=", self.article_from_stock]])
-		if not existing:
-			frappe.msgprint(frappe._("Places Stock not found for " + str(self.article_from_stock)))
-			return
-		for doc in existing:
-			temp = frappe.get_doc("Places Stock", doc.name)
-			if temp.quantity == 0:
-				frappe.msgprint(frappe._("The article has no quantity, add some before doing this"))
-			else:
-				temp.delete()  # Delete the old place
-				to_save = frappe.get_doc("Stock", str(self.article_from_stock), for_update=True)
+		article_name = str(self.article_from_stock)
+		qty_to_transfer = float(self.quantity_to_manipulate or 1)
+		is_sn = "-SN-" in article_name
+		existing = frappe.get_all(
+			"Places Stock",
+			filters=[["parent", "=", article_name]],
+			fields=["name", "place", "quantity"],
+		)
 
-				to_save.append(
-					"place_table",
-					{
-						"doctype": "Places Stock",
-						"place": self.target_place,
-						"quantity": 1,
-						"article": to_save.article,
-						"serial": to_save.serial_no,
-					},
+		if not existing:
+			frappe.msgprint(frappe._("Aucune place trouvée pour {0}").format(article_name))
+			return
+
+		# Trouver la ligne source correspondant au lieu source
+		source_row = None
+		for row in existing:
+			if row.place == self.source_place and float(row.quantity or 0) > 0:
+				source_row = row
+				break
+
+		if not source_row:
+			frappe.throw(
+				frappe._("Aucun stock disponible dans {0} pour {1}").format(self.source_place, article_name)
+			)
+
+		available_qty = float(source_row.quantity or 0)
+
+		# ---------- Vérification des quantités ----------
+		if is_sn:
+			if qty_to_transfer != 1:
+				frappe.throw(
+					frappe._("Un article sérialisé ({0}) ne peut être transféré que par 1").format(
+						article_name
+					)
 				)
-				to_save.quantity = 1
-				to_save.save()  # No need to insert, because I already know that there's only one child
-			frappe.msgprint(frappe._("Tracked article transfered with success"), title="Confirmation")
+			if available_qty < 1:
+				frappe.throw(
+					frappe._("Aucun exemplaire disponible pour l'article sérialisé {0}").format(article_name)
+				)
+		else:
+			if qty_to_transfer <= 0:
+				frappe.throw(frappe._("La quantité à transférer doit être supérieure à 0"))
+
+			if available_qty < qty_to_transfer:
+				frappe.throw(
+					frappe._(
+						"Stock insuffisant pour {0} dans {1} : {2} disponible(s), {3} demandé(s)"
+					).format(article_name, self.source_place, available_qty, qty_to_transfer)
+				)
+
+		# ---------- Traitement du Stock ----------
+		stock = frappe.get_doc("Stock", article_name, for_update=True)
+
+		# 1. Décrémenter la ligne source (ou la supprimer si elle tombe à 0)
+		for row in stock.place_table:
+			if row.place == self.source_place:
+				row.quantity = float(row.quantity or 0) - qty_to_transfer
+				break
+
+		# Nettoyer les lignes à 0
+		stock.place_table = [r for r in stock.place_table if float(r.quantity or 0) > 0]
+
+		# 2. Incrémenter (ou créer) la ligne cible
+		target_row = None
+		for row in stock.place_table:
+			if row.place == self.target_place:
+				target_row = row
+				break
+
+		if target_row:
+			target_row.quantity = float(target_row.quantity or 0) + qty_to_transfer
+		else:
+			stock.append(
+				"place_table",
+				{
+					"doctype": "Places Stock",
+					"place": self.target_place,
+					"quantity": qty_to_transfer,
+					"article": stock.article,
+					"serial": getattr(stock, "serial_no", None),
+				},
+			)
+
+		# 3. Recalculer la quantité totale du Stock
+		#    (au lieu de forcer à 1)
+		stock.quantity = sum(float(r.quantity or 0) for r in stock.place_table)
+
+		stock.save(ignore_permissions=True)
+
+		frappe.msgprint(
+			frappe._("Article {0} transféré avec succès ({1} exemplaire(s))").format(
+				article_name, qty_to_transfer
+			),
+			title="Confirmation",
+			indicator="green",
+		)
 
 	def _transfert_normal(self):
 		source = frappe.get_all(

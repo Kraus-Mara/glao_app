@@ -187,7 +187,6 @@
   {
    "fieldname": "closest_event_date",
    "fieldtype": "Date",
-   "hidden": 1,
    "label": "Closest event date",
    "read_only": 1,
    "show_on_timeline": 1
@@ -332,7 +331,7 @@
  "grid_page_length": 50,
  "in_create": 1,
  "links": [],
- "modified": "2026-09-30 13:59:59.671156",
+ "modified": "2026-09-30 14:26:39.602131",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",
