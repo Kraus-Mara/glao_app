@@ -253,13 +253,12 @@ def export_expedition_pdf(name):
 	html_content = frappe.render_template(
 		"""
 		<style>
-			@page { size: A4; margin: 10mm; }
-			.bl-container { font-family: sans-serif; font-size: 10px; color: #222; }
-			.bl-container * { font-size: 10px; box-sizing: border-box; }
+			@page { size: A4; margin: 8mm; }
+			.bl-container { font-family: sans-serif; font-size: 8px; color: #222; }
+			.bl-container * { font-size: 8px; box-sizing: border-box; }
 
 			/* ------------------------------------------------------------
 			   TABLE PRINCIPALE : le <thead> se répète sur chaque page
-			   grâce à display: table-header-group (comportement natif)
 			   ------------------------------------------------------------ */
 			.bl-main-table {
 				width: 100%;
@@ -272,73 +271,94 @@ def export_expedition_pdf(name):
 				padding: 0;
 			}
 
-			/* En-tête */
-			.bl-header { border-bottom: 2px solid #003a70; padding-bottom: 6px; margin-bottom: 8px; }
+			/* ---------- EN-TÊTE (compact) ---------- */
+			.bl-header {
+				border-bottom: 1.5px solid #003a70;
+				padding-bottom: 3px;
+				margin-bottom: 4px;
+			}
 			.bl-header table { width: 100%; border-collapse: collapse; }
-			.bl-header h1 { color: #003a70; font-size: 10px; margin: 0 0 2px 0; font-weight: bold; }
-			.bl-header .bl-num { font-size: 10px; margin: 0; }
+			.bl-header h1 { color: #003a70; font-size: 10px; margin: 0 0 1px 0; font-weight: bold; }
+			.bl-header .bl-num { font-size: 8px; margin: 0; }
 			.bl-header .bl-right-block { text-align: right; }
-			.bl-header .bl-right-block p { margin: 1px 0; }
+			.bl-header .bl-right-block p { margin: 0; font-size: 8px; }
 
-			/* Expéditeur / Destinataire */
-			.bl-parties { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
-			.bl-parties td { vertical-align: top; padding: 5px; }
+			/* ---------- EXPÉDITEUR / DESTINATAIRE (compact) ---------- */
+			.bl-parties { width: 100%; border-collapse: collapse; margin-bottom: 4px; }
+			.bl-parties td { vertical-align: top; padding: 3px 4px; }
 			.bl-party { width: 50%; border: 1px solid #ccc; }
-			.bl-party h3 { margin: 0 0 3px 0; font-size: 10px; color: #003a70; text-transform: uppercase; }
-			.bl-party p { margin: 1px 0; font-size: 10px; }
+			.bl-party h3 { margin: 0 0 2px 0; font-size: 8px; color: #003a70; text-transform: uppercase; font-weight: bold; }
+			.bl-party p { margin: 0; font-size: 8px; line-height: 1.15; }
 
-			/* Transporteur */
-			.bl-transport { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
-			.bl-transport td { padding: 4px 6px; border: 1px solid #ccc; background: #f7f9fc; font-size: 10px; }
+			/* ---------- TRANSPORTEUR (compact) ---------- */
+			.bl-transport { width: 100%; border-collapse: collapse; margin-bottom: 4px; }
+			.bl-transport td { padding: 2px 4px; border: 1px solid #ccc; background: #f7f9fc; font-size: 8px; }
 
-			/* Sections */
-			.bl-section { color: #003a70; font-size: 10px; font-weight: bold;
-						margin: 8px 0 4px 0; border-bottom: 1px solid #003a70; padding-bottom: 2px; }
+			/* ---------- SECTIONS ---------- */
+			.bl-section {
+				color: #003a70;
+				font-size: 9px;
+				font-weight: bold;
+				margin: 6px 0 2px 0;
+				border-bottom: 1px solid #003a70;
+				padding-bottom: 1px;
+			}
 
-			/* Tableaux */
-			.bl-table { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
-			.bl-table th, .bl-table td { border: 1px solid #bbb; padding: 3px 4px; font-size: 10px; }
-			.bl-table th { background: #003a70; color: #fff; font-weight: bold; text-align: left; font-size: 10px; }
+			/* ---------- TABLEAUX DE DONNÉES (police 8px) ---------- */
+			.bl-table { width: 100%; border-collapse: collapse; margin-bottom: 4px; }
+			.bl-table th, .bl-table td {
+				border: 0.5px solid #bbb;
+				padding: 1px 3px;
+				font-size: 8px;
+				line-height: 1.2;
+			}
+			.bl-table th {
+				background: #003a70;
+				color: #fff;
+				font-weight: bold;
+				text-align: left;
+				font-size: 8px;
+			}
 			.bl-table tbody tr:nth-child(even) { background: #f5f7fa; }
-			.bl-table tfoot td { background: #eef3f8; font-weight: bold; font-size: 10px; }
+			.bl-table tfoot td { background: #eef3f8; font-weight: bold; font-size: 8px; }
 			.bl-center { text-align: center; }
 			.bl-right { text-align: right; }
-			.bl-empty { background: #fff; height: 16px; line-height: 16px; padding: 3px 4px; }
+			.bl-empty { background: #fff; height: 13px; line-height: 13px; padding: 1px 3px; }
 
-			/* Total */
-			.bl-total { width: 100%; border-collapse: collapse; margin-top: 10px; }
-			.bl-total-label { background: #003a70; color: #fff; padding: 6px;
-							font-weight: bold; text-align: right; font-size: 10px; }
-			.bl-total-value { background: #003a70; color: #fff; padding: 6px;
-							font-weight: bold; text-align: right; font-size: 10px; width: 30%; }
+			/* ---------- TOTAL ---------- */
+			.bl-total { width: 100%; border-collapse: collapse; margin-top: 6px; }
+			.bl-total-label { background: #003a70; color: #fff; padding: 4px;
+							font-weight: bold; text-align: right; font-size: 8px; }
+			.bl-total-value { background: #003a70; color: #fff; padding: 4px;
+							font-weight: bold; text-align: right; font-size: 8px; width: 30%; }
 
-			/* Signatures */
-			.bl-signatures { margin-top: 14px; page-break-inside: avoid; }
-			.bl-sign-table { width: 100%; border-collapse: separate; border-spacing: 8px 0; }
-			.bl-sign-box { width: 50%; border: 1px solid #bbb; padding: 6px 8px;
+			/* ---------- SIGNATURES (compact) ---------- */
+			.bl-signatures { margin-top: 8px; page-break-inside: avoid; }
+			.bl-sign-table { width: 100%; border-collapse: separate; border-spacing: 6px 0; }
+			.bl-sign-box { width: 50%; border: 1px solid #bbb; padding: 4px 6px;
 						vertical-align: top; background: #fafbfd; }
-			.bl-sign-title { margin: 0 0 5px 0; font-weight: bold; font-size: 10px;
+			.bl-sign-title { margin: 0 0 3px 0; font-weight: bold; font-size: 8px;
 							color: #003a70; text-transform: uppercase;
-							border-bottom: 1px solid #003a70; padding-bottom: 2px; }
-			.bl-sign-sub { margin: 2px 0; font-size: 10px; }
-			.bl-sign-area { margin-top: 6px; height: 50px; border: 1px dashed #aaa;
+							border-bottom: 1px solid #003a70; padding-bottom: 1px; }
+			.bl-sign-sub { margin: 1px 0; font-size: 8px; }
+			.bl-sign-area { margin-top: 4px; height: 40px; border: 1px dashed #aaa;
 							background: #fff; position: relative; }
-			.bl-sign-label { position: absolute; bottom: 2px; left: 4px;
-							font-size: 10px; color: #888; font-style: italic; }
-			.bl-sign-mention { margin-top: 8px; font-size: 10px; font-style: italic;
+			.bl-sign-label { position: absolute; bottom: 1px; left: 3px;
+							font-size: 8px; color: #888; font-style: italic; }
+			.bl-sign-mention { margin-top: 6px; font-size: 8px; font-style: italic;
 							color: #555; text-align: center; }
 
-			/* Liste de colisage */
-			.bl-lc-title { color: #003a70; font-size: 10px; font-weight: bold;
-						text-align: center; margin: 10px 0 4px 0; text-transform: uppercase; }
-			.bl-lc-table th { background: #003a70; color: #fff; font-size: 10px;
-							text-align: center; padding: 3px 3px; }
-			.bl-lc-table td { height: 16px; padding: 2px 4px; }
+			/* ---------- LISTE DE COLISAGE (compact) ---------- */
+			.bl-lc-title { color: #003a70; font-size: 9px; font-weight: bold;
+						text-align: center; margin: 6px 0 2px 0; text-transform: uppercase; }
+			.bl-lc-table th { background: #003a70; color: #fff; font-size: 8px;
+							text-align: center; padding: 1px 3px; }
+			.bl-lc-table td { height: 13px; padding: 1px 3px; font-size: 8px; }
 		</style>
 
 		<div class="bl-container">
 			<!-- ============================================================
-			     TABLE UNIQUE : le <thead> se répète sur toutes les pages
+			     TABLE UNIQUE : <thead> répété sur chaque page
 			     ============================================================ -->
 			<table class="bl-main-table">
 
@@ -391,7 +411,7 @@ def export_expedition_pdf(name):
 					</tr>
 				</thead>
 
-				<!-- ============ CONTENU (une seule fois, s'enchaîne) ============ -->
+				<!-- ============ CONTENU ============ -->
 				<tbody>
 					<tr>
 						<td>
@@ -546,10 +566,10 @@ def export_expedition_pdf(name):
 		html_content,
 		options={
 			"page-size": "A4",
-			"margin-top": "10mm",
-			"margin-bottom": "10mm",
-			"margin-left": "10mm",
-			"margin-right": "10mm",
+			"margin-top": "8mm",
+			"margin-bottom": "8mm",
+			"margin-left": "8mm",
+			"margin-right": "8mm",
 			"encoding": "UTF-8",
 		},
 	)
