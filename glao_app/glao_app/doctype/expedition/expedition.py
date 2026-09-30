@@ -278,21 +278,21 @@ def export_expedition_pdf(name):
 				margin-bottom: 4px;
 			}
 			.bl-header table { width: 100%; border-collapse: collapse; }
-			.bl-header h1 { color: #003a70; font-size: 10px; margin: 0 0 1px 0; font-weight: bold; }
-			.bl-header .bl-num { font-size: 8px; margin: 0; }
+			.bl-header h1 { color: #003a70; font-size: 16px; margin: 0 0 1px 0; font-weight: bold; }
+			.bl-header .bl-num { font-size: 14px; margin: 0; }
 			.bl-header .bl-right-block { text-align: right; }
-			.bl-header .bl-right-block p { margin: 0; font-size: 8px; }
+			.bl-header .bl-right-block p { margin: 0; font-size: 12px; }
 
 			/* ---------- EXPÉDITEUR / DESTINATAIRE (compact) ---------- */
 			.bl-parties { width: 100%; border-collapse: collapse; margin-bottom: 4px; }
 			.bl-parties td { vertical-align: top; padding: 3px 4px; }
 			.bl-party { width: 50%; border: 1px solid #ccc; }
-			.bl-party h3 { margin: 0 0 2px 0; font-size: 8px; color: #003a70; text-transform: uppercase; font-weight: bold; }
-			.bl-party p { margin: 0; font-size: 8px; line-height: 1.15; }
+			.bl-party h3 { margin: 0 0 2px 0; font-size: 14px; color: #003a70; text-transform: uppercase; font-weight: bold; }
+			.bl-party p { margin: 0; font-size: 14px; line-height: 1.15; }
 
 			/* ---------- TRANSPORTEUR (compact) ---------- */
 			.bl-transport { width: 100%; border-collapse: collapse; margin-bottom: 4px; }
-			.bl-transport td { padding: 2px 4px; border: 1px solid #ccc; background: #f7f9fc; font-size: 8px; }
+			.bl-transport td { padding: 2px 4px; border: 1px solid #ccc; background: #f7f9fc; font-size: 14px; }
 
 			/* ---------- SECTIONS ---------- */
 			.bl-section {
@@ -373,10 +373,6 @@ def export_expedition_pdf(name):
 											<h1>BON DE LIVRAISON</h1>
 											<p class="bl-num">N° {{ expedition.name }}</p>
 										</td>
-										<td class="bl-right-block" style="vertical-align: top;">
-											<p><strong>Affaire :</strong> {{ expedition.project or 'N/A' }}</p>
-											<p><strong>Date :</strong> {{ expedition.expedition_date or 'N/A' }}</p>
-										</td>
 									</tr>
 								</table>
 							</div>
@@ -385,7 +381,7 @@ def export_expedition_pdf(name):
 								<tr>
 									<td class="bl-party">
 										<h3>EXPÉDITEUR</h3>
-										<p><strong>SPIE TURBOMACHINERY</strong></p>
+										<p><strong style="font-size: 14px";>SPIE TURBOMACHINERY</strong></p>
 										<p>Z.I du Pont Long</p>
 										<p>5 avenue des Frères Wright</p>
 										<p>64140 LONS, France</p>
@@ -393,7 +389,7 @@ def export_expedition_pdf(name):
 									</td>
 									<td class="bl-party">
 										<h3>DESTINATAIRE</h3>
-										<p><strong>{{ expedition.client or 'N/A' }}</strong></p>
+										<p><strong style="font-size: 14px";>{{ expedition.client or 'N/A' }}</strong></p>
 										<p>{{ data.project.location or 'N/A' }}</p>
 										<p><strong>Contact :</strong> {{ data.contact }}</p>
 									</td>
@@ -402,9 +398,9 @@ def export_expedition_pdf(name):
 
 							<table class="bl-transport">
 								<tr>
-									<td><strong>Transporteur :</strong> {{ carrier or 'N/A' }}</td>
-									<td><strong>Date d'expédition :</strong> {{ expedition.expedition_date or 'N/A' }}</td>
-									<td><strong>Poids net :</strong> {{ data.total_weight }} kg</td>
+									<td><strong style="font-size: 12px";>Transporteur :</strong> {{ carrier or 'N/A' }}</td>
+									<td><strong style="font-size: 12px";>Date d'expédition :</strong> {{ expedition.expedition_date or 'N/A' }}</td>
+									<td><strong style="font-size: 12px";>Poids net :</strong> {{ data.total_weight }} kg</td>
 								</tr>
 							</table>
 						</td>
@@ -448,14 +444,14 @@ def export_expedition_pdf(name):
 							<!-- COMPOSITIONS -->
 							<div class="bl-lc-title">LISTE DE COLISAGE</div>
 							{% if data.bom_rows and data.bom_rows|length > 0 %}
-							<h3 class="bl-section">Compositions (BoM)</h3>
+							<h3 class="bl-section">Compositions</h3>
 							<table class="bl-table">
 								<thead>
 									<tr>
 										<th style="width: 44%;">Composition</th>
 										<th style="width: 14%;">Quantité</th>
 										<th style="width: 20%;">Poids unit. (kg)</th>
-										<th style="width: 22%;">Nombre de colis</th>
+										<th style="width: 22%;">N° de colis</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -484,11 +480,11 @@ def export_expedition_pdf(name):
 							<table class="bl-table">
 								<thead>
 									<tr>
-										<th style="width: 15%;">Article</th>
-										<th style="width: 37%;">Désignation</th>
-										<th style="width: 12%;">Quantité</th>
-										<th style="width: 16%;">Poids unit. (kg)</th>
-										<th style="width: 20%;">Nombre de colis</th>
+										<th style="width: 32%;">Article</th>
+										<th style="width: 42%;">Désignation</th>
+										<th style="width: 8%;">Quantité</th>
+										<th style="width: 10%;">Poids unit. (kg)</th>
+										<th style="width: 8%;">N° de colis</th>
 									</tr>
 								</thead>
 								<tbody>
