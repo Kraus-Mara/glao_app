@@ -52,6 +52,7 @@
    "fetch_from": "characteristics_type.standard_periodicity",
    "fieldname": "periodicity",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "periodicity"
   }
  ],
@@ -59,7 +60,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-09-25 14:29:51.686876",
+ "modified": "2026-09-30 13:39:37.883950",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Characteristics",

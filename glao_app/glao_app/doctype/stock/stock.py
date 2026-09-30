@@ -135,10 +135,12 @@ class Stock(Document):
 			d = frappe.get_all(
 				"Places Stock",
 				filters=[["parenttype", "=", "Stock"], ["parent", "=", self.name], ["external", "=", 0]],
-				fields=["quantity"],
+				fields=["place", "quantity"],
 			)
 			for r in d:
-				sum += r.quantity
+				p = frappe.get_doc("Places", d.place)
+				if p.external == 0:
+					sum += r.quantity
 
 			self.quantity_in_spie_tm = sum
 

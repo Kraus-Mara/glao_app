@@ -26,6 +26,7 @@
    "fieldname": "item",
    "fieldtype": "Link",
    "in_filter": 1,
+   "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Article",
    "options": "Stock",
@@ -36,6 +37,8 @@
    "fetch_from": "item.designation",
    "fieldname": "item_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Designation",
    "read_only_depends_on": "eval:doc.is_sub_item",
    "sticky": 1
@@ -43,24 +46,32 @@
   {
    "fieldname": "sent_quantity",
    "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Sent quantity ",
    "sticky": 1
   },
   {
    "fieldname": "quantity",
    "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Quantity ",
    "sticky": 1
   },
   {
    "fieldname": "which_are_issued",
    "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Which are issued",
    "sticky": 1
   },
   {
    "fieldname": "reason",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Reason",
    "options": "\nR\nL\nIncomplete",
    "sticky": 1
@@ -68,7 +79,9 @@
   {
    "fieldname": "place_to_stock",
    "fieldtype": "Autocomplete",
+   "in_list_view": 1,
    "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "Place to stock",
    "mandatory_depends_on": "eval:(doc.item && doc.quantity>0) && (!doc.reason || (!doc.reason && (doc.quantity != sent_quantity)) || doc.reason == \"L\")",
    "sticky": 1
@@ -132,7 +145,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-09-30 09:12:33.621783",
+ "modified": "2026-09-30 13:43:31.114527",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retour Items",
