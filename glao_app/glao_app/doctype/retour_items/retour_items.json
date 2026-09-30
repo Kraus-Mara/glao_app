@@ -80,7 +80,7 @@
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "Solder",
+   "label": "Trait\u00e9e",
    "sticky": 1
   },
   {
@@ -132,7 +132,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-09-25 14:29:49.328673",
+ "modified": "2026-09-30 09:12:33.621783",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retour Items",

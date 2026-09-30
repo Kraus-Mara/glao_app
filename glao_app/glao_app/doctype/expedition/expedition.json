@@ -19,7 +19,8 @@
   "carrier",
   "column_break_uals",
   "status",
-  "print_lof"
+  "print_lof",
+  "print_excel"
  ],
  "fields": [
   {
@@ -95,13 +96,18 @@
    "fieldname": "carrier",
    "fieldtype": "Data",
    "label": "Carrier"
+  },
+  {
+   "fieldname": "print_excel",
+   "fieldtype": "Button",
+   "label": "Print Excel"
   }
  ],
  "grid_page_length": 50,
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-25 14:29:25.105343",
+ "modified": "2026-09-30 11:40:04.998040",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Expedition",

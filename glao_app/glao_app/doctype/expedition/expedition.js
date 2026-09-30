@@ -12,7 +12,15 @@ frappe.ui.form.on("Expedition", {
 	if (frm.doc.status != "Shipped") return;
         window.open(
             frappe.urllib.get_full_url(
-                `/api/method/glao_app.glao_app.doctype.expedition.expedition.export_expedition_excel?name=${encodeURIComponent(frm.doc.name)}`
+                `/api/method/glao_app.glao_app.doctype.expedition.expedition.export_expedition_pdf?name=${encodeURIComponent(frm.doc.name)}`
+            )
+        );
+    },
+    print_excel(frm) {
+	if (frm.doc.status != "Shipped") return;
+        window.open(
+            frappe.urllib.get_full_url(
+                `/api/method/glao_app.glao_app.doctype.expedition.expedition.print_excel?name=${encodeURIComponent(frm.doc.name)}`
             )
         );
     },

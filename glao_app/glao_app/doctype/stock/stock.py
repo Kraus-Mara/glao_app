@@ -65,6 +65,7 @@ class Stock(Document):
 			self.name = str(self.article)
 
 	def validate(self):
+		self._fix_places_stock_external()
 		self._check_dates()
 		self._count_stock_in_spie()
 		self._check_code_spie()
@@ -121,10 +122,25 @@ class Stock(Document):
 			if current != str(self.code_spie_tm):
 				self.spie_tm_code_id = f"{self.article} {self.code_spie_tm}"
 
+	def _fix_places_stock_external(self):
+		if self.article:
+			for r in self.place_table:
+				p = frappe.get_doc("Places", str(r.place))
+				if p.external != r.external:
+					r.external = p.external
+
 	def _count_stock_in_spie(self):
 		if self.article:
-			qty = sum(row.quantity for row in self.place_table if not getattr(row, "external", 0))
-			self.quantity_in_spie_tm = qty
+			sum = 0
+			d = frappe.get_all(
+				"Places Stock",
+				filters=[["parenttype", "=", "Stock"], ["parent", "=", self.name], ["external", "=", 0]],
+				fields=["quantity"],
+			)
+			for r in d:
+				sum += r.quantity
+
+			self.quantity_in_spie_tm = sum
 
 	def comp_rework(self):
 		if self.composition and not self.in_the_composition:

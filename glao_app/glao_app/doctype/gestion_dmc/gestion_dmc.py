@@ -16,7 +16,9 @@ class GestionDMC(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
-		from glao_app.glao_app.doctype.gestion_dmc_compositions.gestion_dmc_compositions import GestionDMCCompositions
+		from glao_app.glao_app.doctype.gestion_dmc_compositions.gestion_dmc_compositions import (
+			GestionDMCCompositions,
+		)
 		from glao_app.glao_app.doctype.gestion_dmc_items.gestion_dmc_items import GestionDMCItems
 
 		client: DF.Data | None
@@ -31,7 +33,9 @@ class GestionDMC(Document):
 		project: DF.Link | None
 		starting_date: DF.Date | None
 		state: DF.Literal["Draft", "Validated"]
-		status: DF.Literal["Draft", "Validated", "Partially validated", "Not served", "Shipped", "New DMC", "Left DMC"]
+		status: DF.Literal[
+			"Draft", "Validated", "Partially validated", "Not served", "Shipped", "New DMC", "Left DMC"
+		]
 	# end: auto-generated types
 
 	def autoname(self):
@@ -44,6 +48,10 @@ class GestionDMC(Document):
 		return 1
 
 	def validate(self):
+		old_doc = self.get_doc_before_save()
+		if old_doc:
+			if old_doc.state == "Validated":
+				frappe.throw("Le document a déjà été enregistré et validé, impossible de modifier.")
 		if self.state == "Draft":
 			if self.status is None:
 				self.status = "Draft"
@@ -175,14 +183,14 @@ class GestionDMC(Document):
 			if place.quantity < row.true_quantity:
 				frappe.throw(
 					frappe._(
-						"Not enough "
+						"Pas assez de "
 						+ str(row.item_from_stock)
-						+ ", either add a line with a different source, either add some in the source place."
-						+ " Currently, "
+						+ ", au choix, ajoutez une ligne avec un emplacement source différent, ou bien ajoutez en l'emplacement actuel."
+						+ " Actuellement, "
 						+ str(place.quantity)
-						+ " is available in the selected place "
+						+ " sont disponible "
 						+ str(row.source_place)
-						+ " at line"
+						+ " [ WARNING ] Ligne "
 						+ str(row.idx),
 					)
 				)
