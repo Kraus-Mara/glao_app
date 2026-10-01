@@ -21,6 +21,7 @@ class ProjectItemsSent(Document):
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
+		prochaine_échéance: DF.Date | None
 		quantity: DF.Int
 		source_place: DF.Link | None
 	# end: auto-generated types

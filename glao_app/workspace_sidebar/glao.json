@@ -289,10 +289,22 @@
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "square-split-horizontal",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "D\u00e9tail",
+   "link_to": "Retail",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
   }
  ],
- "modified": "2026-09-25 14:04:06.124700",
- "modified_by": "antoine.kraus@spie.com",
+ "modified": "2026-10-01 14:18:46.012004",
+ "modified_by": "Administrator",
  "module": "Glao App",
  "module_onboarding": "",
  "name": "GLAO",

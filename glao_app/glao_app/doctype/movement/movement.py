@@ -111,6 +111,8 @@ class Movement(Document):
 			if self.second:
 				self._pull_referenced()
 			else:
+				if self.quantity_to_manipulate == 0:
+					frappe.throw("Quantité nulle ?")
 				self._pull_normal()
 		if self.type == "Transfert":
 			if self.second:

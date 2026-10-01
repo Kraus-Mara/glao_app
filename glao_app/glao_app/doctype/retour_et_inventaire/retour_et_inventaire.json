@@ -6,10 +6,13 @@
  "engine": "InnoDB",
  "field_order": [
   "project",
+  "client",
+  "adresse",
   "sent_items",
   "sent_compositions",
   "saved",
   "place_for_compositions",
+  "type_retour",
   "status"
  ],
  "fields": [
@@ -55,6 +58,28 @@
   {
    "fieldname": "status",
    "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nEn cours\nTrait\u00e9"
+  },
+  {
+   "fetch_from": "project.company",
+   "fieldname": "client",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Client"
+  },
+  {
+   "fetch_from": "project.location",
+   "fieldname": "adresse",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Adresse"
+  },
+  {
+   "fieldname": "type_retour",
+   "fieldtype": "Select",
    "label": "Type de retour",
    "options": "\nFictif (LD)"
   }
@@ -63,7 +88,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-25 14:29:24.851962",
+ "modified": "2026-10-01 15:45:06.463641",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retour et Inventaire",
@@ -89,8 +114,12 @@
  "sort_order": "DESC",
  "states": [
   {
-   "color": "Yellow",
-   "title": "Fictif (LD)"
+   "color": "Green",
+   "title": "Trait\u00e9"
+  },
+  {
+   "color": "Red",
+   "title": "En cours"
   }
  ]
 }

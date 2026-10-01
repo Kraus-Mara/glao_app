@@ -2,6 +2,7 @@
  "actions": [],
  "allow_bulk_edit": 1,
  "allow_rename": 1,
+ "autoname": "DETAIL-.####",
  "creation": "2026-07-08 11:18:06.871537",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -16,7 +17,7 @@
    "fieldname": "article_to_retail",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Article to retail",
+   "label": "Article \u00e0 d\u00e9tailler",
    "link_filters": "[[\"Stock\",\"can_retail\",\"=\",1]]",
    "options": "Stock",
    "reqd": 1
@@ -39,10 +40,11 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-25 14:29:24.116648",
+ "modified": "2026-10-01 14:41:54.429442",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retail",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

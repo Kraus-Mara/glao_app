@@ -18,12 +18,15 @@ class RetouretInventaire(Document):
 		from glao_app.glao_app.doctype.retour_compos.retour_compos import RetourCompos
 		from glao_app.glao_app.doctype.retour_items.retour_items import RetourItems
 
+		adresse: DF.Data | None
+		client: DF.Data | None
 		place_for_compositions: DF.Link | None
 		project: DF.Link | None
 		saved: DF.Check
 		sent_compositions: DF.Table[RetourCompos]
 		sent_items: DF.Table[RetourItems]
-		status: DF.Literal["", "Fictif (LD)"]
+		status: DF.Literal["", "En cours", "Trait\u00e9"]
+		type_retour: DF.Literal["", "Fictif (LD)"]
 	# end: auto-generated types
 
 	def autoname(self):
@@ -36,9 +39,21 @@ class RetouretInventaire(Document):
 		first_save = not self.saved
 		if first_save:
 			self._fetch_all_stuff()
+			self.status = "En cours"
 		self.saved = 1
 		self._process_returned_items()
 		self._process_returned_compositions()
+		fsi = True
+		fsc = True
+		for i in self.sent_items:
+			if not i.sold:
+				fsi = False
+
+		for j in self.sent_compositions:
+			if not j.sold:
+				fsc = False
+		if fsi and fsc:
+			self.status = "Traité"
 		self._check_and_close_project()
 
 	def _check_and_close_project(self):

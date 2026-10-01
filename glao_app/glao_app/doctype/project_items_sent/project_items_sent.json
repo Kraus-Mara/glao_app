@@ -12,7 +12,8 @@
   "quantity",
   "expedition",
   "date",
-  "source_place"
+  "source_place",
+  "prochaine_\u00e9ch\u00e9ance"
  ],
  "fields": [
   {
@@ -60,13 +61,21 @@
    "in_standard_filter": 1,
    "label": "Source place",
    "options": "Places"
+  },
+  {
+   "fetch_from": "article.closest_event_date",
+   "fieldname": "prochaine_\u00e9ch\u00e9ance",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Prochaine \u00c9ch\u00e9ance"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-09-30 15:46:44.622220",
+ "modified": "2026-10-01 15:39:44.449246",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Project Items Sent",

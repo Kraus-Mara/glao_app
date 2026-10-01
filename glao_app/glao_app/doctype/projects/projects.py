@@ -18,15 +18,15 @@ class Projects(Document):
 		from glao_app.glao_app.doctype.project_compositions_sent.project_compositions_sent import ProjectCompositionsSent
 		from glao_app.glao_app.doctype.project_items_sent.project_items_sent import ProjectItemsSent
 
-		company: DF.Link | None
+		company: DF.Link
 		completed: DF.Check
-		end_date: DF.Date | None
-		job_no: DF.Data | None
-		location: DF.Data | None
+		end_date: DF.Date
+		job_no: DF.Data
+		location: DF.Data
 		project_compositions_sent: DF.Table[ProjectCompositionsSent]
 		project_items_sent: DF.Table[ProjectItemsSent]
-		project_title: DF.Data | None
-		starting_date: DF.Date | None
+		project_title: DF.Data
+		starting_date: DF.Date
 	# end: auto-generated types
 
 	def autoname(self):
