@@ -50,7 +50,6 @@ class Stock(Document):
 		ref_constructeur: DF.Data | None
 		reserved_quantity: DF.Int
 		serial_no: DF.Data | None
-		spie_tm_code_id: DF.Data | None
 		total_expected: DF.Int
 		total_maximum: DF.Int
 		total_minimum: DF.Int
@@ -78,7 +77,7 @@ class Stock(Document):
 
 		if not self.has_code:
 			return
-		if not self.spie_tm_code_id and not self.code_spie_tm:
+		if not self.code_spie_tm:
 			# le préfixe est crééé à l'aide du nom de la famille de l'article :
 			# PESON -> PESXXXX
 			# ELINGUE -> ELIXXX
@@ -115,12 +114,6 @@ class Stock(Document):
 
 			next_num = max_num + 1
 			self.code_spie_tm = f"{prefix}{next_num:04d}"
-			self.spie_tm_code_id = f"{self.article} {self.code_spie_tm}"
-
-		if self.spie_tm_code_id and self.code_spie_tm:
-			current = str(self.spie_tm_code_id).split(" ")[-1]
-			if current != str(self.code_spie_tm):
-				self.spie_tm_code_id = f"{self.article} {self.code_spie_tm}"
 
 	def _fix_places_stock_external(self):
 		if self.article:
