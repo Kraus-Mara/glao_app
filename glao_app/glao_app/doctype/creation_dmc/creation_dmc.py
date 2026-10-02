@@ -25,7 +25,7 @@ class CreationDMC(Document):
 		date_bslh: DF.Date | None
 		date_sxre: DF.Date | None
 		delivery_address: DF.Data | None
-		delivery_date: DF.Date | None
+		delivery_date: DF.Date
 		dmc_items: DF.Table[DMCItems]
 		dmc_name: DF.Data | None
 		notes: DF.SmallText | None

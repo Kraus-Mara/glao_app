@@ -281,6 +281,7 @@ class RetouretInventaire(Document):
 				else:
 					self._create_movement(
 						type="Pull",
+						reason=row.reason,
 						article_from_stock=row.item,
 						source_place=source_place,
 						quantity_to_manipulate=row.sent_quantity,
@@ -303,6 +304,7 @@ class RetouretInventaire(Document):
 				self._flag_stock_as_rebut(row.item)
 				self._create_movement(
 					type="Pull",
+					reason=row.reason,
 					article_from_stock=row.item,
 					source_place=source_place,
 					quantity_to_manipulate=1,
@@ -318,6 +320,7 @@ class RetouretInventaire(Document):
 					)
 					self._create_movement(
 						type="Pull",
+						reason=row.reason,
 						article_from_stock=row.item,
 						source_place=source_place,
 						quantity_to_manipulate=row.which_are_issued,
@@ -325,6 +328,7 @@ class RetouretInventaire(Document):
 				elif row.quantity == row.which_are_issued:
 					self._create_movement(
 						type="Pull",
+						reason=row.reason,
 						article_from_stock=row.item,
 						source_place=source_place,
 						quantity_to_manipulate=row.which_are_issued,
@@ -415,6 +419,7 @@ class RetouretInventaire(Document):
 								compo_doc.save(ignore_permissions=True)
 								self._create_movement(
 									type="Pull",
+									reason=row.reason,
 									article_from_stock=row.article,
 									source_place=item_row.saved_place,
 									quantity_to_manipulate=1,
