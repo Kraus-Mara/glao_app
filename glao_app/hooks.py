@@ -150,7 +150,7 @@ scheduler_events = {
 	# "all": [
 	#     "glao_app.tasks.all"
 	# ],
-	"daily": ["glao_app.tasks.check_ref_events"],
+	"daily": ["glao_app.tasks.check_and_notify_stock_events"],
 	# "hourly": [
 	#     "glao_app.tasks.hourly"
 	# ],
