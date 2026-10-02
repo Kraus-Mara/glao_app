@@ -10,7 +10,9 @@ def check_and_notify_stock_events():
 	"""
 	today_date = getdate(today())
 
-	suivis = frappe.get_all("Stock", filters=[["is_referenced", "=", 1]])
+	suivis = frappe.get_all(
+		"Stock", filters=[["is_referenced", "=", 1], ["quantity", ">", 0], ["rebut", "=", 0]]
+	)
 
 	recipients = get_groupe_6_recipients()
 	if not recipients:
