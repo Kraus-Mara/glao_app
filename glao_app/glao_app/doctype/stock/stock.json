@@ -323,7 +323,7 @@
  "grid_page_length": 50,
  "in_create": 1,
  "links": [],
- "modified": "2026-10-01 09:33:53.887541",
+ "modified": "2026-10-02 13:56:56.562026",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Stock",
@@ -337,7 +337,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "GLAO User",
+   "role": "Groupe 6",
    "share": 1,
    "write": 1
   }

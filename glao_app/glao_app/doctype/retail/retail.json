@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_bulk_edit": 1,
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "DETAIL-.####",
  "creation": "2026-07-08 11:18:06.871537",
@@ -40,7 +41,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-01 14:41:54.429442",
+ "modified": "2026-10-02 13:56:54.548327",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Retail",
@@ -55,7 +56,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "GLAO User",
+   "role": "Groupe 6",
    "share": 1,
    "write": 1
   }

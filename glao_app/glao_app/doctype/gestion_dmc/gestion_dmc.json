@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "color": "red",
  "creation": "2026-04-01 11:49:53.270839",
@@ -146,7 +147,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-02 09:23:20.362305",
+ "modified": "2026-10-02 13:56:56.094783",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Gestion DMC",

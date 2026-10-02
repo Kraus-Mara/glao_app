@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "creation": "2026-02-04 14:40:19.568120",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -77,7 +78,7 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2026-09-25 14:29:30.250693",
+ "modified": "2026-10-02 13:56:58.881799",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Articles Group",
@@ -93,7 +94,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "GLAO User",
+   "role": "Groupe 6",
    "share": 1,
    "write": 1
   }

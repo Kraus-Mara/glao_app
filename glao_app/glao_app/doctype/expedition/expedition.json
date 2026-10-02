@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "Expedition-.####",
  "creation": "2026-06-24 11:39:27.555231",
@@ -110,7 +111,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-02 09:24:41.207289",
+ "modified": "2026-10-02 13:56:55.339445",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Expedition",

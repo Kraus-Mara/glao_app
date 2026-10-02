@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:unit_name",
  "creation": "2026-02-09 11:55:27.426645",
@@ -47,7 +48,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-25 14:29:28.954477",
+ "modified": "2026-10-02 13:56:58.084989",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Units",
@@ -74,7 +75,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "GLAO User",
+   "role": "Groupe 6",
    "share": 1,
    "write": 1
   }

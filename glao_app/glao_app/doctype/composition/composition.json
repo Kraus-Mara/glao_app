@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "creation": "2026-05-21 14:59:43.597263",
  "doctype": "DocType",
@@ -128,7 +129,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-25 14:29:25.822637",
+ "modified": "2026-10-02 13:56:55.819862",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Composition",
@@ -142,7 +143,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "GLAO User",
+   "role": "Groupe 6",
    "share": 1,
    "write": 1
   }
