@@ -11,7 +11,7 @@ fixtures = [
 	{"dt": "Workspace", "filters": [["module", "=", "Glao App"]]},
 	{"dt": "Translation", "filters": [["language", "=", "fr"]]},
 	{"dt": "Role", "filters": [["name", "like", "Groupe%"]]},
-	{"dt": "Custom DocPerm", "filters": [["parent", "like", "GLAO%"]]},
+	{"dt": "Custom DocPerm", "filters": [["role", "like", "Groupe%"]]},
 ]
 # required_apps = []
 
