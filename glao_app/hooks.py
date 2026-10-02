@@ -10,6 +10,8 @@ app_license = "gpao-3.0"
 fixtures = [
 	{"dt": "Workspace", "filters": [["module", "=", "Glao App"]]},
 	{"dt": "Translation", "filters": [["language", "=", "fr"]]},
+	{"dt": "Role", "filters": [["name", "like", "Groupe%"]]},
+	{"dt": "Custom DocPerm", "filters": [["parent", "like", "GLAO%"]]},
 ]
 # required_apps = []
 
