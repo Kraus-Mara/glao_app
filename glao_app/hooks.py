@@ -16,15 +16,15 @@ fixtures = [
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-#   {
-#       "name": "glao_app",
-#       "logo": "/assets/frappe/images/color-circle.png",
-#       "title": "GLAO",
-#       "route": "/desk/home",
-#       "has_permission": "glao_app.api.permission.has_app_permission",
-#   }
-# ]
+add_to_apps_screen = [
+	{
+		"name": "glao_app",
+		"logo": "/assets/frappe/images/ent.png",
+		"title": "GLAO",
+		"route": "/desk/article",
+		# "has_permission": "glao_app.api.permission.has_app_permission",
+	}
+]
 
 # Includes in <head>
 # ------------------

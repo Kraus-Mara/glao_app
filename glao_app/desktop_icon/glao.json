@@ -7,11 +7,11 @@
  "hidden": 0,
  "icon_image": "https://raw.githubusercontent.com/Kraus-Mara/glao_app/refs/heads/main/supp_assets/ent.png",
  "icon_type": "App",
- "idx": 0,
+ "idx": 1,
  "label": "GLAO",
  "link_to": "GLAO",
  "link_type": "Workspace Sidebar",
- "modified": "2026-10-01 11:56:31.279372",
+ "modified": "2026-10-02 11:11:09.730732",
  "modified_by": "Administrator",
  "name": "GLAO",
  "owner": "Administrator",
@@ -20,6 +20,24 @@
  "roles": [
   {
    "role": "All"
+  },
+  {
+   "role": "Groupe 1"
+  },
+  {
+   "role": "Groupe 2"
+  },
+  {
+   "role": "Groupe 3"
+  },
+  {
+   "role": "Groupe 4"
+  },
+  {
+   "role": "Groupe 5"
+  },
+  {
+   "role": "Groupe 6"
   }
  ],
  "sidebar": "GLAO",
