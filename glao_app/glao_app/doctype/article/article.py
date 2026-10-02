@@ -79,7 +79,11 @@ class Article(Document):
 
 	def validate(self):
 		self.article_name = unidecode.unidecode(str(self.article_name).upper())
-		self.shortname = unidecode.unidecode(str(self.shortname).upper())
+		if not self.shortname:
+			self.shortname = unidecode.unidecode(str(self.article_name).upper())
+		else:
+			self.shortname = unidecode.unidecode(str(self.shortname).upper())
+
 		self.manufacturer_name = unidecode.unidecode(str(self.manufacturer_name).upper())
 		self.manufacturer = unidecode.unidecode(str(self.manufacturer).upper())
 		self.old_code = unidecode.unidecode(str(self.old_code).upper())
