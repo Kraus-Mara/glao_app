@@ -22,10 +22,10 @@ class Projects(Document):
 		completed: DF.Check
 		end_date: DF.Date
 		job_no: DF.Data
-		location: DF.Data
+		location: DF.Data | None
 		project_compositions_sent: DF.Table[ProjectCompositionsSent]
 		project_items_sent: DF.Table[ProjectItemsSent]
-		project_title: DF.Data
+		project_title: DF.Data | None
 		starting_date: DF.Date
 	# end: auto-generated types
 

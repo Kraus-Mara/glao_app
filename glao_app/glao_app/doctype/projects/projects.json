@@ -25,6 +25,9 @@
   {
    "fieldname": "company",
    "fieldtype": "Link",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Client",
    "link_filters": "[[\"Company\",\"company_type\",\"=\",\"Client\"]]",
    "options": "Company",
@@ -34,8 +37,9 @@
    "fetch_from": "company.location",
    "fieldname": "location",
    "fieldtype": "Data",
-   "label": "Address",
-   "reqd": 1
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Address"
   },
   {
    "fieldname": "starting_date",
@@ -66,8 +70,9 @@
   {
    "fieldname": "project_title",
    "fieldtype": "Data",
-   "label": "Project Title",
-   "reqd": 1
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Project Title"
   },
   {
    "allow_bulk_edit": 1,
@@ -90,7 +95,7 @@
  "index_web_pages_for_search": 1,
  "is_calendar_and_gantt": 1,
  "links": [],
- "modified": "2026-10-01 15:38:17.515962",
+ "modified": "2026-10-02 09:18:59.539536",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Projects",
@@ -105,7 +110,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "GLAO User",
+   "role": "Responsable Logistique",
    "share": 1,
    "write": 1
   }

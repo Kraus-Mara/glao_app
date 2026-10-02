@@ -6,6 +6,7 @@
  "engine": "InnoDB",
  "field_order": [
   "project",
+  "client",
   "column_break_akwt",
   "project_title",
   "section_break_rvcl",
@@ -99,6 +100,7 @@
    "fetch_from": "project.project_title",
    "fieldname": "project_title",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Project Title",
    "read_only": 1
   },
@@ -125,13 +127,21 @@
    "fieldname": "date_sxre",
    "fieldtype": "Date",
    "label": "End Date"
+  },
+  {
+   "fetch_from": "project.company",
+   "fieldname": "client",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Client"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-09-25 14:29:51.161469",
+ "modified": "2026-10-02 09:22:35.439273",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Creation DMC",
@@ -147,7 +157,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "GLAO User",
+   "role": "Responsable Logistique",
    "share": 1,
    "submit": 1,
    "write": 1

@@ -16,9 +16,7 @@ class GestionDMC(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
-		from glao_app.glao_app.doctype.gestion_dmc_compositions.gestion_dmc_compositions import (
-			GestionDMCCompositions,
-		)
+		from glao_app.glao_app.doctype.gestion_dmc_compositions.gestion_dmc_compositions import GestionDMCCompositions
 		from glao_app.glao_app.doctype.gestion_dmc_items.gestion_dmc_items import GestionDMCItems
 
 		client: DF.Data | None
@@ -33,9 +31,7 @@ class GestionDMC(Document):
 		project: DF.Link | None
 		starting_date: DF.Date | None
 		state: DF.Literal["Draft", "Validated"]
-		status: DF.Literal[
-			"Draft", "Validated", "Partially validated", "Not served", "Shipped", "New DMC", "Left DMC"
-		]
+		status: DF.Literal["Draft", "Validated", "Partially validated", "Not served", "Shipped", "New DMC", "Left DMC"]
 	# end: auto-generated types
 
 	def autoname(self):

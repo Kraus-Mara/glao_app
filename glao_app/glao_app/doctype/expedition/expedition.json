@@ -33,6 +33,7 @@
    "fetch_from": "dmc.project",
    "fieldname": "project",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Job No",
    "options": "Projects"
   },
@@ -59,6 +60,8 @@
    "fetch_from": "dmc.client",
    "fieldname": "client",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Client"
   },
   {
@@ -107,7 +110,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-30 15:30:40.576670",
+ "modified": "2026-10-02 09:24:41.207289",
  "modified_by": "Administrator",
  "module": "Glao App",
  "name": "Expedition",
@@ -122,7 +125,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "GLAO User",
+   "role": "Responsable Logistique",
    "share": 1,
    "write": 1
   }

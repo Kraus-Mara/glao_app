@@ -19,6 +19,7 @@ class CreationDMC(Document):
 		from glao_app.glao_app.doctype.dmc_items.dmc_items import DMCItems
 
 		amended_from: DF.Link | None
+		client: DF.Data | None
 		compositions: DF.Table[DMCCompositions]
 		contact: DF.Autocomplete | None
 		date_bslh: DF.Date | None
