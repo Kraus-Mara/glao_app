@@ -110,10 +110,13 @@ def check_and_notify_stock_events():
 # Helpers
 # ============================================================
 def get_groupe_6_recipients():
-	"""Retourne la liste des utilisateurs actifs avec le rôle Groupe 6."""
+	"""Retourne la liste des utilisateurs actifs avec le rôle Groupe 5 ou Groupe 6."""
 	users = frappe.get_all(
 		"Has Role",
-		filters={"role": "Groupe 6", "parenttype": "User"},
+		filters={
+			"role": ["in", ["Groupe 5", "Groupe 6"]],
+			"parenttype": "User",
+		},
 		pluck="parent",
 		distinct=True,
 	)
