@@ -1,0 +1,94 @@
+sudo apt update
+sudo apt install git redis-server libmariadb-dev mariadb-server mariadb-client pkg-config build-essential
+sudo mariadb-secure-installation
+-> 
+
+Switch to unix_socket authentication [Y/n] Y
+Change the root password? [Y/n] n
+Remove anonymous users? [Y/n] Y
+Disallow root login remotely? [Y/n] Y  
+Remove test database and access to it? [Y/n] Y 
+Reload privilege tables now? [Y/n] Y
+
+sudo apt install xvfb libfontconfig xfonts-75dpi
+
+wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.jammy_amd64.deb
+sudo dpkg -i wkhtmltox_0.12.6.1-3.jammy_amd64.deb
+sudo apt --fix-broken install
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+Puis 
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+nvm install 24
+npm install -g yarn
+
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+Puis 
+
+source $HOME/.local/bin/env
+
+uv python install 3.14
+uv tool install frappe-bench
+
+bench init production_bench --frappe-branch v16.25.0 --python python3.14
+        -> SUCCESS: Bench production_bench initialized
+
+cd production_bench/
+
+bench new-site stm-glao.northeurope.cloudapp.azure.com
+
+Si le mot de passe ne fonctionne pas :
+
+sudo mysql
+-> ALTER USER 'root'@'localhost' IDENTIFIED BY 'NouveauMDP';
+-> FLUSH PRIVILEGES;
+-> EXIT;
+
+bench use stm-glao.northeurope.cloudapp.azure.com
+bench get-app https://github.com/Kraus-Mara/glao_app
+
+source env/bin/activate
+pip install unidecode 
+pip install "ansible==5.4.0" "ansible-core==2.12.2"
+deactivate
+bench install-app glao_app (--force si besoin) 
+
+la commande
+bench list-apps DOIT ABSOLUMENT RETOURNER CECI
+
+frappe   16.25.0
+glao_app 0.0.1
+
+Si c'est pas le cas y'a une erreur quelque part
+
+sudo apt install -y nginx supervisor fail2ban
+sudo -E env "PATH=$PATH" bench setup production glaoadmin
+
+sudo ln -sf ~/production_bench/config/supervisor.conf /etc/supervisor/conf.d/frappe-bench.conf
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl status
+Si le status retourne 
+production_bench-redis:production_bench-redis-cache               RUNNING   pid 8794, uptime 0:00:08
+production_bench-redis:production_bench-redis-queue               RUNNING   pid 8795, uptime 0:00:08
+production_bench-web:production_bench-frappe-web                  RUNNING   pid 8796, uptime 0:00:08
+-> production_bench-web:production_bench-node-socketio               BACKOFF   Exited too quickly (process log may have details)
+production_bench-workers:production_bench-frappe-long-worker-0    RUNNING   pid 8808, uptime 0:00:08
+production_bench-workers:production_bench-frappe-schedule         RUNNING   pid 8802, uptime 0:00:08
+production_bench-workers:production_bench-frappe-short-worker-0   RUNNING   pid 8803, uptime 0:00:08
+
+Alors 
+npm install socket.io-client
+sudo supervisorctl restart production_bench-web:production_bench-node-socketio
+
+
+sudo usermod -aG glaoadmin www-data
+sudo chmod g+x /home/glaoadmin
+sudo chmod -R g+rX /home/glaoadmin/production_bench/sites
+sudo systemctl restart nginx
