@@ -34,7 +34,6 @@ frappe.ui.form.on("Composition", {
                                         designation: stock_doc.designation,
                                         fabricant: stock_doc.fabricant_hidden,
                                         ref_fabricant: stock_doc.ref_constructeur,
-                                        place: p_row.place,
                                         remaining_qty: flt(p_row.quantity)
                                     };
                                 });
@@ -51,16 +50,14 @@ frappe.ui.form.on("Composition", {
                     for (let nom_item of nomenclature_doc.items) {
                         let required_qty = flt(nom_item.quantity);
 
-                        // Toutes les lignes de stock disponibles pour cet article
                         let available_lines = Object.values(global_stock_pool)
                             .filter(s => s.article === nom_item.item && s.remaining_qty > 0);
 
-                        // Détection : article suivi (SN/BN) ou non
-                        const is_serialized = /-(SN|BN)-/.test(nom_item.item || "");
+                        // ✅ Détection sur le nom du STOCK (contient -SN-), pas sur l'article
+                        const is_serialized = available_lines.some(l => /-SN-/.test(l.name || ""));
 
                         if (is_serialized) {
-                            // ========== ARTICLE SUIVI ==========
-                            // On garde l'éclatement ligne par ligne (chaque série est unique)
+                            // ========== ARTICLE SÉRIALISÉ (SN) : on split ==========
                             for (let stock_line of available_lines) {
                                 if (required_qty <= 0) break;
                                 let take = Math.min(required_qty, stock_line.remaining_qty);
@@ -73,57 +70,31 @@ frappe.ui.form.on("Composition", {
                                 stock_line.remaining_qty -= take;
                                 required_qty -= take;
                             }
-
-                            if (required_qty > 0) {
-                                missing_items_messages.push(
-                                    __("Stock insuffisant"),
-                                    __("Article {0} ({1}) : quantité manquante : {2}", [nom_item.designation, nom_item.item, required_qty])
-                                );
-                            }
                         } else {
-                            // ========== ARTICLE NON-SUIVI ==========
-                            // On calcule la quantité totale disponible, mais on ne crée qu'UNE ligne
-
-                            const total_available = available_lines.reduce(
-                                (sum, s) => sum + flt(s.remaining_qty), 0
-                            );
-
-                            // Quantité à mettre dans la ligne unique
-                            const qty_to_place = required_qty;
-                            const qty_missing = Math.max(0, required_qty - total_available);
-
-                            if (total_available <= 0) {
-                                // Aucun stock disponible du tout
-                                missing_items_messages.push(
-                                    __("Stock insuffisant"),
-                                    __("Article {0} ({1}) : quantité manquante : {2}", [nom_item.designation, nom_item.item, required_qty])
-                                );
-                            } else {
-                                // Une seule ligne avec la quantité demandée.
-                                // Même si le stock total est insuffisant, on met la quantité demandée.
-                                // L'utilisateur verra au moment du choix de l'emplacement qu'il faut regrouper.
+                            // ========== ARTICLE BN ou STANDARD : pas de split ==========
+                            // Une seule ligne avec la quantité demandée.
+                            // L'utilisateur répartira via saved_place si le stock est dispersé.
+                            if (available_lines.length > 0) {
                                 final_rows.push({
                                     item: available_lines[0].name,
                                     designation: available_lines[0].designation,
-                                    quantity: qty_to_place
+                                    quantity: required_qty
                                 });
-
-                                // Si on veut prévenir quand même d'un manque :
-                                if (qty_missing > 0) {
-                                    frappe.show_alert({
-                                        message: __("Attention : quantité disponible ({0}) inférieure à la demande ({1}) pour {2}", [total_available, required_qty, nom_item.designation]),
-                                        indicator: "orange"
-                                    }, 8);
-                                }
+                                required_qty = 0;
                             }
+                        }
+
+                        if (required_qty > 0) {
+                            missing_items_messages.push(
+                                __("Insufficient Stock available"),
+                                __(`Article {0} ({1}) : missing quantity is {2}`, [nom_item.designation, nom_item.item, required_qty])
+                            );
                         }
                     }
 
-                    // Si au moins un article suivi est manquant, on bloque.
-                    // Pour les non-suivis, on laisse passer (l'utilisateur gère via saved_place).
                     if (missing_items_messages.length > 0) {
                         frappe.msgprint({
-                            title: __("Stock insuffisant"),
+                            title: __("Insufficient Stock available"),
                             message: missing_items_messages,
                             indicator: "red",
                             as_list: true
@@ -158,7 +129,7 @@ frappe.ui.form.on("Composition", {
                     if (!r.message) return;
                     const data = r.message.map((s) => ({
                         value: s.place,
-                        label: __("{0} ({1} disponible(s))", [s.place, s.quantity]),
+                        label: __(`${s.place} (${s.quantity} available)`),
                     }));
                     const grid_row = frm.fields_dict["items"].grid.grid_rows_by_docname[cdn];
                     if (grid_row) {
